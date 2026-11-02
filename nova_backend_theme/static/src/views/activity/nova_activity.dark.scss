@@ -1,0 +1,93 @@
+///
+/// Nova activity view (dark).
+///
+/// NOTE: the light activity shell ships in web.assets_backend_lazy, which
+/// loads after the dark bundle and wins every specificity tie. Every rule
+/// below therefore carries an extra .o_web_client scope.
+///
+.o_web_client .o_activity_view {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    box-shadow: none;
+}
+
+.o_web_client .o_activity_view > table thead th {
+    --table-bg: linear-gradient(to bottom,
+        #{$o-gray-200}, #{rgba($o-gray-200, 0.75)});
+    background: var(--table-bg);
+    box-shadow: inset 0px -1px 0 0 $o-border-color;
+    color: $nova-ink;
+}
+
+.o_web_client .o_activity_view .o_activity_summary_cell .o-mail-ActivityCell-counter {
+    color: $nova-ink;
+}
+
+.o_web_client .o_activity_view > table tfoot.o_activity_view_table_footer {
+    background-color: $o-gray-200;
+}
+
+// Summary cells: the light fills are full-strength success/danger/
+// warning with white ink — neon slabs in dark. Keep the hue, lose the
+// glare: deep translucent fills with full ink. !important because the
+// bg-*-light utilities paint with it, and the gradient overlay with it.
+.o_web_client .o_activity_view .o_activity_summary_cell {
+    &.planned {
+        background-color: rgba($o-success, 0.22) !important;
+        background-image: none !important;
+        color: $nova-ink;
+
+        a {
+            color: $nova-ink;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &.overdue {
+        background-color: rgba($o-danger, 0.25) !important;
+        background-image: none !important;
+        color: $nova-ink;
+
+        a {
+            color: $nova-ink;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &.today {
+        background-color: rgba($o-warning, 0.22) !important;
+        background-image: none !important;
+        color: $nova-ink;
+
+        a {
+            color: $nova-ink;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &.done {
+        background-color: $o-gray-200 !important;
+        background-image: none !important;
+
+        a {
+            color: $nova-ink-muted;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+.o_activity_record > div:hover {
+    background: rgba(255, 255, 255, 0.06);
+}

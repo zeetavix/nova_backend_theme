@@ -1,0 +1,17 @@
+///
+/// Nova onboarding strip (dark).
+///
+
+.o_onboarding_container {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    box-shadow: none;
+}
+
+.o_onboarding_step:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.o_onboarding_completed_message {
+    color: map-get($o-theme-text-colors, "success");
+}

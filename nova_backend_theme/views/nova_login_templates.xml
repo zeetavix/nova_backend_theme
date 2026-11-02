@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Nova login: a branded split shell — story on the left, sign-in card
+         on the right — instead of a lone card floating in empty space.
+
+         Loud failure if the stock footer ever moves: install aborts on a
+         missed xpath. Every addition is additive; removing the module
+         restores the stock login. -->
+    <template id="nova_login_layout" inherit_id="web.login_layout" name="Nova Login Layout">
+        <!-- Drop the "Powered by Odoo" promo anchor (Manage Databases stays). -->
+        <xpath expr="//a[contains(@href, 'utm_medium=auth')]" position="replace"/>
+
+        <!-- Brand panel: sits beside the card on desktop, above it on mobile.
+             The two-panel grid itself is applied by nova_login.scss through
+             `.container:has(> .o_database_list)`, so no parent xpath is
+             needed (Odoo's view engine will not walk the parent axis). -->
+        <!-- The stock card sets its classes through t-attf-class, so match
+             the attribute rather than hasclass(). -->
+        <xpath expr="//div[contains(@t-attf-class, 'o_database_list')]" position="before">
+            <t t-set="nova_brand" t-value="request.env.company._nova_branding()"/>
+            <aside class="nova_login_brand" aria-hidden="true">
+                <div class="nova_login_brand_inner">
+                    <div class="nova_login_lockup"
+                         t-attf-class="nova_login_lockup #{'is_wordmark' if nova_brand['logo_wordmark'] else ''}">
+                        <img t-if="nova_brand['has_logo']" class="nova_login_mark"
+                             t-attf-class="nova_login_mark #{'is_wordmark' if nova_brand['logo_wordmark'] else ''} #{'is_light' if nova_brand['logo_light'] else 'is_dark'}"
+                             t-att-src="nova_brand['logo_url']" alt=""/>
+                        <svg t-else="" class="nova_login_mark" viewBox="0 0 64 64" focusable="false" role="presentation">
+                            <defs>
+                                <linearGradient id="novaLoginMarkGrad" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0" stop-color="#5BD3CB"/>
+                                    <stop offset="1" stop-color="#0B6B77"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="64" height="64" rx="17" fill="url(#novaLoginMarkGrad)"/>
+                            <text x="32" y="45" text-anchor="middle"
+                                  font-family="Inter, Segoe UI, Arial, sans-serif"
+                                  font-size="34" font-weight="700" fill="#ffffff">Z</text>
+                        </svg>
+                        <span class="nova_login_wordmark" t-if="not (nova_brand['has_logo'] and nova_brand['logo_wordmark'])"><t t-out="nova_brand['name']"/></span>
+                    </div>
+                    <h1 class="nova_login_headline">Your business,<br/>in one calm place.</h1>
+                    <p class="nova_login_sub">Records, invoices and conversations — right where you left them.</p>
+                    <ul class="nova_login_points">
+                        <li>
+                            <span class="nova_login_tick">&#10003;</span>
+                            <span>Every module in one place</span>
+                        </li>
+                        <li>
+                            <span class="nova_login_tick">&#10003;</span>
+                            <span>Instant search and command palette</span>
+                        </li>
+                        <li>
+                            <span class="nova_login_tick">&#10003;</span>
+                            <span>Light and dark, both first-class</span>
+                        </li>
+                    </ul>
+                    <p class="nova_login_foot">
+                        <span>Secure sign-in</span>
+                        <t t-if="nova_brand['email']">
+                            <span class="nova_login_sep">&#183;</span>
+                            <a t-att-href="'mailto:' + nova_brand['email']"
+                               t-out="nova_brand['email']"/>
+                        </t>
+                        <t t-else="">
+                            <span class="nova_login_sep">&#183;</span>
+                            <span t-out="nova_brand['name']"/>
+                        </t>
+                    </p>
+                </div>
+            </aside>
+        </xpath>
+    </template>
+</odoo>

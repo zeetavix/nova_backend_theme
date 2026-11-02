@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="nova_backend_theme.NovaToastBell" owl="1">
+        <div class="nova_bell">
+            <button
+                type="button"
+                class="nova_bell_btn"
+                t-on-click="() => this.toggle()"
+                aria-label="Notification history"
+                t-att-aria-expanded="this.state.open ? 'true' : 'false'"
+            >
+                <span class="nova_bell_icon" aria-hidden="true">✦</span>
+                <span t-if="this.state.unread" class="nova_bell_count"><t t-out="this.state.unread"/></span>
+            </button>
+            <div t-if="this.state.open" class="nova_bell_panel" role="dialog" aria-label="Recent notifications">
+                <div class="nova_bell_head">
+                    <span>Recent notifications</span>
+                    <button type="button" class="nova_bell_close" t-on-click="() => this.close()" aria-label="Close notification history">×</button>
+                </div>
+                <p t-if="!this.state.items.length" class="nova_bell_empty">Nothing yet — toasts land here.</p>
+                <ul t-else="" class="nova_bell_list">
+                    <t t-foreach="this.state.items" t-as="toast" t-key="toast_index + '-' + toast.ts + '-' + toast.message">
+                        <li>
+                            <button
+                                type="button"
+                                class="nova_bell_item"
+                                t-att-class="'nova_bell_' + toast.type"
+                                t-on-click="(ev) => this.replay(toast, ev)"
+                                t-att-aria-label="'Show again: ' + toast.message"
+                            >
+                                <span class="nova_bell_item_text">
+                                    <span t-if="toast.title" class="nova_bell_item_title"><t t-out="toast.title"/></span>
+                                    <span class="nova_bell_item_msg"><t t-out="toast.message"/></span>
+                                </span>
+                                <span class="nova_bell_item_time"><t t-out="this.timeLabel(toast.ts)"/></span>
+                            </button>
+                        </li>
+                    </t>
+                </ul>
+            </div>
+        </div>
+    </t>
+</templates>

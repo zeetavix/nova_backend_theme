@@ -1,0 +1,105 @@
+///
+/// Nova command palette — a true spotlight (Ctrl+K). Floating 16px sheet,
+/// large search row, calm rows, blue-soft focus, squircle icons.
+/// Verified hooks from command_palette.scss + palette template.
+///
+
+.o_command_palette {
+    border: 1px solid $o-border-color;
+    border-radius: 16px;
+    box-shadow: $nova-shadow-lg;
+    overflow: hidden;
+
+    > .modal-body {
+        padding: 6px;
+    }
+}
+
+// Search row: borderless input, 16px type, muted icon.
+.o_command_palette_search {
+    border-bottom: 1px solid $o-border-color;
+    padding: 12px 16px;
+    gap: 8px;
+
+    input {
+        font-size: 16px;
+        color: $nova-ink;
+        background: transparent;
+
+        &::placeholder {
+            color: $nova-ink-muted;
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 2px 0 $nova-action;
+        }
+
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 2px 0 $nova-action;
+        }
+    }
+
+    .oi {
+        color: $nova-ink-muted;
+    }
+}
+
+.o_command_palette_listbox {
+    padding: 6px;
+}
+
+// Rows: 8px, calm hover, blue-soft + semibold focus.
+.o_command_palette_listbox .o_command {
+    border-radius: $o-border-radius;
+    padding: 8px 12px;
+    transition: background $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+
+    &.focused {
+        background: $nova-action-soft;
+        box-shadow: inset 2px 0 0 $nova-action;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+
+    .o_command_focus {
+        color: $nova-action-active;
+        font-weight: 600;
+    }
+
+    .o_app_icon {
+        height: 28px;
+        width: 28px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .text-ellipsis {
+        font-weight: 500;
+    }
+}
+
+.o_command_palette .o_favorite {
+    color: $o-main-favorite-color;
+}
+
+// Hotkey chips inside command rows + footer.
+.o_command_palette kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    border: 1px solid $o-border-color;
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: $o-white;
+    font-size: 11px;
+    font-family: $o-font-family-monospace;
+    color: $nova-ink-muted;
+}

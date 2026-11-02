@@ -1,0 +1,2 @@
+# Nova a11y baseline: outline:none rules without a box-shadow ring, per file.
+# Fix a file, then delete its line here.

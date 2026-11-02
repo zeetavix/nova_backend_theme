@@ -1,0 +1,120 @@
+///
+/// Nova kanban (dark): border-led hover, stronger focus ring.
+///
+/// NOTE: the light quick-create ships lazy and wins ties; focus fills
+/// carry an extra scope, and $o-white (pinned #FFF even in dark) is
+/// never used as a dark surface.
+///
+
+.o_web_client .o_kanban_renderer .o_kanban_quick_create {
+    .o_input,
+    input.o_input,
+    textarea.o_input {
+        &:focus, &:focus-within {
+            background-color: $nova-paper-deep;
+        }
+    }
+
+    .o_field_many2many_tags,
+    .o_field_many2many_tags_avatar {
+        &:focus-within {
+            background-color: $nova-paper-deep;
+        }
+    }
+}
+
+.o_kanban_renderer {
+    .o_kanban_group {
+        background: $o-view-background-color;
+    }
+
+    .o_kanban_record {
+        &:focus-within {
+            box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+        }
+    }
+
+    .o_kanban_counter .progress, .o_kanban_header .progress {
+        background: $o-gray-200;
+        border-color: $nova-border-strong;
+    }
+
+    .o_kanban_quick_create {
+        background: $nova-paper;
+
+        &:focus-within {
+            border-color: $nova-action;
+            box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+        }
+
+        .o_input,
+        input.o_input,
+        textarea.o_input {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            background-color: $nova-paper-deep;
+
+            &:focus, &:focus-within {
+                border: 1px solid $nova-action;
+                box-shadow: 0 0 0 3px rgba($nova-action, 0.22);
+                outline: none;
+            }
+        }
+
+        // Composite assignee/tag fields (dark): one frame, borderless inners.
+        .o_field_many2many_tags,
+        .o_field_many2many_tags_avatar {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            background-color: $nova-paper-deep;
+
+            &:focus-within {
+                border: 1px solid $nova-action;
+                box-shadow: 0 0 0 3px rgba($nova-action, 0.22);
+                outline: none;
+            }
+        }
+
+        .o_field_many2many_tags .o_field_many2many_selection,
+        .o_field_many2many_tags_avatar .o_field_many2many_selection,
+        .o_field_many2many_tags .o_tags_input,
+        .o_field_many2many_tags_avatar .o_tags_input,
+        .o_field_many2many_tags .o_field_many2many_selection .o_input,
+        .o_field_many2many_tags_avatar .o_field_many2many_selection .o_input {
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            background-color: transparent;
+            padding: 0;
+            box-shadow: none;
+
+            &:hover, &:focus, &:focus-within {
+                border: 0;
+                background: transparent;
+                background-color: transparent;
+                box-shadow: none;
+                outline: none;
+            }
+        }
+
+        // Monetary overlay span (dark): transparent or digits hide under it.
+        .o_field_monetary span.o_input {
+            background: transparent;
+            background-color: transparent;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+        }
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .o_kanban_renderer {
+        padding: 8px;
+    }
+
+    .o_kanban_group {
+        min-width: 260px;
+    }
+}

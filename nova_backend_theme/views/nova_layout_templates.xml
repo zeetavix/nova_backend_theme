@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Nova document chrome: company brand name, tab icon and address-bar
+         tint. All three are configurable (Settings > Appearance > Branding)
+         and fall back to the theme defaults when unset.
+         Loud failure if web.layout ever moves (install aborts). -->
+    <template id="nova_layout_title" inherit_id="web.layout" name="Nova Document Title">
+        <xpath expr="//head/title" position="replace">
+            <title t-out="title or request.env.company._nova_branding()['name']"/>
+        </xpath>
+    </template>
+
+    <template id="nova_layout_favicon" inherit_id="web.layout" name="Nova Favicon">
+        <xpath expr="//head/link[@rel='shortcut icon']" position="replace">
+            <t t-set="nova_chrome" t-value="request.env.company._nova_branding()"/>
+            <!-- Every icon slot points at the company asset: browsers pick
+                 the best fit instead of falling back to the stock Odoo icon. -->
+            <link rel="icon" type="image/png"
+                  t-att-href="nova_chrome['favicon_url']"/>
+            <link rel="shortcut icon" type="image/x-icon"
+                  t-att-href="nova_chrome['favicon_url']"/>
+            <link rel="apple-touch-icon"
+                  t-att-href="nova_chrome['favicon_url']"/>
+            <meta name="theme-color"
+                  t-att-content="nova_chrome['accent']['accent']"/>
+            <meta name="msapplication-TileColor"
+                  t-att-content="nova_chrome['accent']['accent']"/>
+        </xpath>
+    </template>
+</odoo>

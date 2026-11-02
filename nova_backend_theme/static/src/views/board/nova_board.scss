@@ -1,0 +1,65 @@
+///
+/// Nova board (dashboard) — stock cards become Nova cards.
+/// Verified hooks: o_dashboard, o-dashboard-layout-*, o-dashboard-column,
+/// o-dashboard-action (.bg-view.border), o-dashboard-action-header,
+/// o-dashboard-header, board.NoContent (.o_view_nocontent).
+///
+
+.o_dashboard {
+    background: transparent;
+}
+
+.o-dashboard-layout {
+    gap: 12px;
+    padding: 4px 8px 16px;
+}
+
+.o-dashboard-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.o-dashboard-action.bg-view.border {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: 10px;
+    box-shadow: $nova-shadow-sm;
+    margin: 0;
+    overflow: hidden;
+}
+
+.o-dashboard-action-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: $nova-ink;
+    border-bottom: 1px solid $o-border-color;
+
+    .btn {
+        border-radius: $o-border-radius-sm;
+        min-width: 28px;
+        min-height: 28px;
+    }
+}
+
+.o-dashboard-header .btn-secondary {
+    border-radius: $o-border-radius;
+    font-weight: 500;
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.o-dashboard-action-header {
+    .btn:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.o_dashboard .o_view_nocontent .o_nocontent_help {
+    color: $nova-ink-muted;
+}

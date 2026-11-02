@@ -1,0 +1,28 @@
+///
+/// Nova base (dark): surfaces elevate by lightening, not shadow (HIG dark-mode).
+///
+.o_web_client, .o_action_manager {
+    background-color: $o-webclient-background-color;
+}
+
+.o_web_client *::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.22);
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::selection {
+    background: rgba(58, 175, 169, 0.35);
+}
+
+// Same honest-motion guard as the light bundle (which does not load in
+// dark sessions): brief, cancellable, off when the user asks.
+@media (prefers-reduced-motion: reduce) {
+    .o_web_client *, .o_web_client *::before, .o_web_client *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        transform: none !important;
+        scroll-behavior: auto !important;
+    }
+}

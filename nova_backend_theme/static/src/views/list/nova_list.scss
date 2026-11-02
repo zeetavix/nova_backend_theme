@@ -1,0 +1,376 @@
+///
+/// Nova list — card table. Sticky blurred header, blue-soft hover,
+/// checkbox accent, right-aligned numerics. Public .o_list_renderer DOM.
+///
+
+// Card container around the table. Flat bordered card (shadow reserved for float).
+.o_list_renderer {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    overflow: auto;
+
+    .o_list_table {
+        margin-bottom: 0;
+
+        thead th {
+            // Surface token (not $o-white) so dark thead never flashes white.
+            // Opaque + inset hairline (no backdrop blur over scrolled rows).
+            background: $o-view-background-color;
+            border-bottom: 1px solid $o-border-color;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            text-transform: none;
+            color: $nova-ink-muted;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            box-shadow: inset 0 -1px 0 $o-border-color;
+        }
+
+    // Cells carry no fill of their own: the row wash (hover, edition,
+    // focus, checked) reads as one surface instead of being tiled over
+    // by opaque stock cell backgrounds.
+    tbody tr > td,
+    tbody tr > th {
+        background-color: transparent;
+    }
+
+    // Stock repaints focused cells opaque (keyboard nav + edition row),
+    // punching a white hole in the tinted row. Match its specificity and
+    // keep the cell transparent — the inset focus ring carries affordance.
+    tbody.o_keyboard_navigation tr:focus-within > td:focus-within,
+    tbody.o_keyboard_navigation tr:focus-within > th:focus-within,
+    tbody tr.o_selected_row > td.o_data_cell:focus-within,
+    tbody tr.o_selected_row > th:focus-within {
+        background-color: transparent;
+    }
+
+    tbody tr {
+        transition: background $nova-dur-fast $o-easing-enter;
+
+            &:hover {
+                background: $nova-action-soft;
+            }
+
+            // Wash on hover/focus; the inset bar only for edition rows and
+            // keyboard navigation (stock gates it on o_keyboard_navigation).
+            &:focus-within {
+                background: $nova-action-soft;
+            }
+
+            &.o_selected_row {
+                background: $nova-action-soft;
+                box-shadow: inset 2px 0 0 $nova-action;
+            }
+
+            // Checked (mass-edit) rows: teal-tinged tint, distinct from edition.
+            &.o_data_row_selected {
+                background: rgba($o-info, 0.10);
+            }
+
+            td {
+                border-top: 1px solid $o-border-color;
+                vertical-align: middle;
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+
+            &:first-child td {
+                border-top: 0;
+            }
+
+            // First column anchors the scan in semibold.
+            td:first-child {
+                font-weight: 500;
+            }
+        }
+
+    // Editable selected row: inputs go borderless and fill the cell so
+    // edit mode reads as one calm surface, not a box in a box. No focus
+    // frame at all — no outline, no ring: the tinted row, the caret/
+    // chevron and live typing carry "you are here" on their own, and
+    // any box (even a hairline) reads as cheap chrome here.
+    tbody tr.o_selected_row > td.o_data_cell {
+        input:not([type="checkbox"]):not([type="radio"]),
+        select, textarea {
+            border: 0;
+            padding: 0;
+            width: 100%;
+            background-color: transparent;
+            border-radius: 0;
+
+            &:focus,
+            &:focus-visible {
+                outline: none;
+                box-shadow: none;
+                background-color: transparent;
+            }
+        }
+
+        .o_required_modifier input,
+        .o_required_modifier select {
+            border-bottom: 2px solid $nova-ink;
+        }
+
+        .o_field_invalid input,
+        .o_field_invalid select {
+            border-bottom: 2px solid $o-danger;
+            background: rgba($o-danger, 0.06);
+
+            &:focus,
+            &:focus-visible {
+                outline: none;
+                box-shadow: none;
+            }
+        }
+    }
+
+        // Numeric cells breathe right; first col keeps row identity.
+        td.o_list_number, th.o_list_number {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        // Card edges: air on the outer columns so rows never touch chrome.
+        // Consumes the stock padding var (falls back to 16px without it).
+        th:first-child, td:first-child {
+            padding-left: var(--ListRenderer-table-padding-x, 16px);
+        }
+
+        th:last-child, td:last-child {
+            padding-right: var(--ListRenderer-table-padding-x, 16px);
+        }
+
+        // Sortable columns: calm pointer, no text selection, blue-soft hover.
+        .o_column_sortable {
+            cursor: pointer;
+            user-select: none;
+            transition: background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+
+            &:hover {
+                background: $nova-action-soft;
+                color: $nova-ink;
+            }
+
+            &:focus-visible {
+                outline: 2px solid $nova-action;
+                outline-offset: -2px;
+            }
+        }
+
+        // Keyboard navigation earns the inset bar (stock-gated, not on click).
+        tbody.o_keyboard_navigation tr:focus-within {
+            box-shadow: inset 2px 0 0 $nova-action;
+        }
+
+        // Group headers: 40px rhythm, grouped wash, semibold name.
+        tbody > tr.o_group_header {
+            height: 40px;
+            background: var(--ListRendererGrouped__th-bg-color, transparent);
+
+            .o_group_name {
+                font-weight: 600;
+                color: $nova-ink;
+            }
+
+            .o_group_caret {
+                margin-inline-start: calc(var(--o-list-group-level, 0) * 12px);
+            }
+
+            // Group pager: bordered ghost arrows so prev/next stay findable
+            // against the translucent group wash (stock fill has no edge).
+            .o_group_header .o_pager .btn,
+            .o_group_header .o_pager_previous,
+            .o_group_header .o_pager_next {
+                min-width: 28px;
+                min-height: 28px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid $o-border-color;
+                border-radius: $o-border-radius-sm;
+                background: $o-view-background-color;
+                color: $nova-ink-muted;
+                transition: background $nova-dur-fast $o-easing-enter,
+                    border-color $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+
+                &:hover {
+                    background: $nova-action-soft;
+                    border-color: $nova-border-strong;
+                    color: $nova-action-active;
+                }
+
+                &:focus-visible {
+                    outline: 2px solid $nova-action;
+                    outline-offset: 1px;
+                }
+            }
+        }
+
+        // Column spotlight (opt-in via html[data-nova-colspot="1"]): hovering a
+        // header lights its column for read-down comparison. Header-driven
+        // only; column 1 (selector/handle) skipped; weaker than row hover so
+        // selection and edition washes stay loudest. Plain :has() selectors
+        // (no @supports wrapper: libsass cannot parse @supports selector(),
+        // and browsers without :has() simply ignore these rules).
+        // @at-root because this file nests under the renderer.
+        @for $i from 2 through 24 {
+            @at-root html[data-nova-colspot="1"] .o_list_renderer .o_list_table:has(
+                thead th:nth-child(#{$i}):hover
+            ) tbody tr:not(.o_selected_row):not(.o_data_row_selected):not(.o_group_header) > :nth-child(#{$i}) {
+                background: rgba($nova-action, 0.04);
+            }
+        }
+
+        // Resize handles: 3px brand bar on header hover.
+        thead th:hover .o_resize, thead th:focus-within .o_resize {
+            background: $nova-action;
+        }
+
+        .o_resize {
+            width: 3px;
+            cursor: col-resize;
+        }
+
+        // Active sort arrow sits on the flat header, not a stock gradient strip.
+        thead .o_list_sortable_icon {
+            background: $o-view-background-color;
+        }
+
+        // Multi-group tooltip: stock forces white-on-black, invisible in dark.
+        .o_group_header.o_multi_group_expand_available .o_multi_group_expand_tooltip {
+            background: $o-view-background-color;
+            color: $nova-ink;
+        }
+
+        // Row action buttons (open form / delete line): sized, quiet, danger on delete.
+        .o_list_table .o_list_record_open_form_view button,
+        .o_list_table .o_list_record_remove button {
+            min-width: 28px;
+            min-height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            border-radius: $o-border-radius-sm;
+            background: transparent;
+            color: $nova-ink-muted;
+            transition: background $nova-dur-fast $o-easing-enter,
+                color $nova-dur-fast $o-easing-enter;
+
+            &:hover {
+                background: $nova-action-soft;
+                color: $nova-action-active;
+            }
+
+            &:focus-visible {
+                outline: 2px solid $nova-action;
+                outline-offset: 1px;
+            }
+        }
+
+        .o_list_table .o_list_record_remove button:hover {
+            background: rgba($o-danger, 0.10);
+            color: map-get($o-theme-text-colors, "danger");
+        }
+
+        @include media-breakpoint-down(md) {
+            .o_list_table .o_list_record_open_form_view button,
+            .o_list_table .o_list_record_remove button {
+                min-width: 44px;
+                min-height: 44px;
+            }
+        }
+
+        // Decorated rows keep their signal on hover (wash, don't flatten).
+        tbody tr.text-danger:hover {
+            background: rgba($o-danger, 0.06);
+        }
+
+        // Optional-columns invalid state reads danger-soft.
+        .o_optional_columns .o_invalid_optional_columns_button {
+            background: rgba($o-danger, 0.10);
+            border-color: rgba($o-danger, 0.35);
+            border-radius: $o-border-radius;
+        }
+
+        .o_optional_columns_dropdown .o_invalid_dropdown_item {
+            background: rgba($o-danger, 0.08);
+        }
+
+        // Drag handles keep their affordance.
+        .o_row_draggable {
+            cursor: grab;
+        }
+
+        // Row handles are drag affordances, not body text: 5.9:1 muted ink so
+        // they still meet 1.4.11 (3:1) against the row (WCAG).
+        .o_row_handle, .o_row_handle i, .o_row_handle .oi {
+            color: $nova-ink-muted;
+        }
+
+        // Checkboxes in brand blue, 16px grid comfort.
+        input[type="checkbox"].form-check-input {
+            width: 16px;
+            height: 16px;
+            border-radius: 6px;
+            border-color: $nova-border-strong;
+            cursor: pointer;
+
+            &:checked {
+                background-color: $nova-action;
+                border-color: $nova-action;
+            }
+
+            &:focus {
+                box-shadow: 0 0 0 3px rgba($nova-action, 0.2);
+            }
+        }
+    }
+
+    // Footer totals read as totals: sticky, tabular, semibold ink on app gray.
+    tfoot {
+        position: sticky;
+        bottom: 0;
+        z-index: 2;
+        box-shadow: 0 -1px 0 $o-border-color;
+    }
+
+    tfoot td, .o_list_footer {
+        background: $o-gray-100;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        color: $nova-ink;
+        border-top: 1px solid $o-border-color;
+    }
+
+    tfoot:not(:has(td:not(:empty))) {
+        display: none;
+    }
+
+    tfoot td:not(:empty) {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    // Collapsed empty footer cells contribute no height.
+    tfoot td:empty {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+// Touch: roomier checkboxes for thumbs.
+.o_touch_device .o_list_table input[type="checkbox"].form-check-input {
+    width: 24px;
+    height: 24px;
+}
+
+@media print {
+    .o_list_table .o_list_record_selector {
+        display: none;
+    }
+}

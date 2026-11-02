@@ -1,0 +1,139 @@
+///
+/// Nova control panel (dark).
+///
+.o_control_panel {
+    background: rgba(36, 37, 38, 0.86);
+    border-bottom-color: $o-border-color;
+
+    .breadcrumb-item, .o_last_breadcrumb_item {
+        color: $o-main-headings-color;
+    }
+
+    .o_cp_searchview .o_searchview {
+        background: $o-gray-200;
+        border-color: $o-border-color;
+
+        &:focus-within {
+            background: $o-gray-200;
+            border-color: $nova-action;
+        }
+
+        .o_searchview_input {
+            color: $nova-ink;
+            caret-color: $nova-action-hover;
+
+            &::placeholder {
+                color: $nova-ink-muted;
+            }
+
+            &:focus,
+            &:focus-visible {
+                outline: none;
+                box-shadow: none;
+            }
+        }
+    }
+
+    .o_cp_switch_buttons .btn.active {
+        background: $nova-action-soft;
+        border-color: transparent;
+    }
+
+    .o_pager_counter {
+        color: $nova-ink-muted;
+    }
+
+    .o_pager_counter .o_pager_value {
+        color: $nova-ink;
+    }
+
+    .o_cp_searchview > .o_searchview_dropdown_toggler {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        background: transparent;
+    }
+
+    .o_searchview_dropdown_toggler.show {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+    }
+
+    .o_searchview_facet {
+        background: $o-gray-200;
+        border-color: $o-border-color;
+    }
+
+    .o_searchview_autocomplete {
+        background: #2E2F30;
+        border-color: $o-border-color;
+    }
+}
+
+// Ancestry is body.o_web_client > .o_control_panel: scope from the
+// outside, not from inside the panel block.
+.o_web_client .o_control_panel .o_searchview_facet_label {
+    background-color: transparent;
+    // Bootstrap's .text-primary carries !important; match it or
+    // the label stays base-teal on the tint.
+    color: $nova-action-hover !important;
+}
+
+.o_web_client .o_control_panel .o_facet_value {
+    color: $nova-ink;
+}
+
+.o_search_panel {
+    background: $o-view-background-color;
+    border-right-color: $o-border-color;
+}
+
+.o_search_panel_section .o_search_panel_section_header {
+    color: $nova-ink-muted;
+}
+
+.o_search_panel_filter_value, .o_search_panel_category_value {
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    &.active {
+        background: $nova-action-soft;
+    }
+
+    .o_search_panel_counter {
+        color: $nova-ink-muted;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .o_bottom_sheet .o_cp_switch_buttons .btn.selected {
+        background: $nova-action-soft;
+        font-weight: 600;
+    }
+}
+// Sale dashboard stat cards (To Deliver / To Invoice / ...). Odoo exposes
+// them as CSS variables, so re-pointing the variables is enough: the pastel
+// fills become deep tints and the ink stays readable on a dark canvas.
+.o_dashboard_card {
+    --DashboardCard__purple-bg-color: rgba(155, 122, 212, 0.20);
+    --DashboardCard__purple-bg-color--active: rgba(155, 122, 212, 0.34);
+    --DashboardCard__purple-color: #D8C9F3;
+    --DashboardCard__purple-color--active: #EADFFB;
+
+    --DashboardCard__cyan-bg-color: rgba(58, 175, 169, 0.20);
+    --DashboardCard__cyan-bg-color--active: rgba(58, 175, 169, 0.34);
+    --DashboardCard__cyan-color: #A9E5E1;
+    --DashboardCard__cyan-color--active: #CFF3F0;
+
+    --DashboardCard__orange-bg-color: rgba(214, 143, 58, 0.20);
+    --DashboardCard__orange-bg-color--active: rgba(214, 143, 58, 0.34);
+    --DashboardCard__orange-color: #F0C48E;
+    --DashboardCard__orange-color--active: #FADCB6;
+
+    --DashboardCard__red-bg-color: rgba(198, 90, 90, 0.20);
+    --DashboardCard__red-bg-color--active: rgba(198, 90, 90, 0.34);
+    --DashboardCard__red-color: #F0B4B4;
+    --DashboardCard__red-color--active: #FBD2D2;
+}

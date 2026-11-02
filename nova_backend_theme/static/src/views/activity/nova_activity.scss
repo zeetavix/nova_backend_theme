@@ -1,0 +1,66 @@
+///
+/// Nova activity view — CRM/Sales daily driver as a calm card table.
+/// Verified hooks: o_activity_view, summary cells, records, counters.
+///
+
+.o_activity_view {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    box-shadow: $nova-shadow-sm;
+    overflow: auto;
+}
+
+.o_activity_view table thead th {
+    background: $o-view-background-color;
+    border-bottom: 1px solid $o-border-color;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: $nova-ink-muted;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.o_activity_summary_cell {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+
+    &.planned {
+        color: $nova-ink-muted;
+    }
+
+    &.today {
+        color: map-get($o-theme-text-colors, "warning");
+    }
+
+    &.overdue {
+        color: map-get($o-theme-text-colors, "danger");
+    }
+
+    &.done {
+        color: map-get($o-theme-text-colors, "success");
+    }
+}
+
+.o_activity_record > div {
+    border-radius: $o-border-radius-sm;
+    transition: background $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+}
+
+.o-mail-ActivityCell-counter {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_activity_record > div {
+        transition: none;
+    }
+}

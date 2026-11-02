@@ -1,0 +1,47 @@
+///
+/// Nova command palette (dark).
+///
+
+.o_command_palette {
+    background: #242526;
+    border-color: $o-border-color;
+}
+
+.o_command_palette_search {
+    border-bottom-color: $o-border-color;
+
+    input {
+        color: $nova-ink;
+
+        &::placeholder {
+            color: $nova-ink-muted;
+        }
+    }
+}
+
+.o_command_palette_listbox .o_command {
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    &.focused {
+        background: $nova-action-soft;
+    }
+
+    .o_command_focus {
+        color: $nova-action-hover;
+    }
+}
+
+.o_command_palette kbd {
+    background: $o-gray-200;
+    border-color: $o-border-color;
+    color: $nova-ink-muted;
+}
+
+// The light palette ships lazy and wins the tie: scoped duplicate.
+.o_web_client .o_command_palette kbd {
+    background: $o-gray-200;
+    border-color: $o-border-color;
+    color: $nova-ink-muted;
+}

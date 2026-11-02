@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Nova company defaults (General Settings) + per-user overrides. -->
+    <record id="nova_res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.nova</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Appearance" string="Appearance" name="nova_theme" logo="/nova_backend_theme/static/description/icon.png">
+                    <block title="Nova Theme" name="nova_theme_block">
+                        <setting id="nova_theme_setting">
+                            <field name="company_id" invisible="1"/>
+                            <div class="d-flex gap-3 flex-wrap">
+                                <div>
+                                    <label for="nova_accent" string="Accent color"/>
+                                    <field name="nova_accent" widget="selection"/>
+                                </div>
+                                <div>
+                                    <label for="nova_accent_hex" string="or custom hex"/>
+                                    <field name="nova_accent_hex" placeholder="#0E7C8A"/>
+                                </div>
+                                <div>
+                                    <label for="nova_density" string="Density"/>
+                                    <field name="nova_density" widget="selection"/>
+                                </div>
+                                <div>
+                                    <label for="nova_radius" string="Corners"/>
+                                    <field name="nova_radius" widget="selection"/>
+                                </div>
+                                <div>
+                                    <label for="nova_colspot" string="Column spotlight"/>
+                                    <field name="nova_colspot"/>
+                                </div>
+                            </div>
+                            <div class="text-muted small mt-2">
+                                The custom hex wins when set. Hover, active and
+                                text tones are derived automatically, so a dark
+                                brand colour still gets readable button text.
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Branding" name="nova_branding_block">
+                        <setting id="nova_branding_setting"
+                                 string="White-label the login page, browser tab and document title with your own identity.">
+                            <field name="company_id" invisible="1"/>
+                            <div class="d-flex gap-3 flex-wrap align-items-start">
+                                <div>
+                                    <label for="nova_brand_name" string="Brand name"/>
+                                    <field name="nova_brand_name" placeholder="Zeetavix"/>
+                                </div>
+                                <div>
+                                    <label for="nova_brand_email" string="Contact email"/>
+                                    <field name="nova_brand_email" placeholder="hello@example.com"/>
+                                </div>
+                                <div>
+                                    <label for="nova_brand_logo" string="Login logo"/>
+                                    <field name="nova_brand_logo" widget="image"
+                                           options="{'size': [0, 96]}"/>
+                                </div>
+                                <div>
+                                    <label for="nova_brand_favicon" string="Favicon"/>
+                                    <field name="nova_brand_favicon" widget="image"
+                                           options="{'size': [0, 64]}"/>
+                                </div>
+                            </div>
+                            <div class="text-muted small mt-2">
+                                Leave a field empty to keep the default. Any image
+                                is accepted: oversized logos are downscaled, wide
+                                wordmarks are laid out without squashing, dark
+                                logos get a light plate, and the favicon is
+                                squared to 256&#215;256 automatically. Changes
+                                apply on the next page load.
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="nova_users_form_view" model="ir.ui.view">
+        <field name="name">res.users.view.form.inherit.nova</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Nova Theme" name="nova_theme_group">
+                    <field name="nova_accent" widget="selection" help="Empty means: use the company default."/>
+                    <field name="nova_density" widget="selection" help="Empty means: use the company default."/>
+                    <field name="nova_radius" widget="selection" help="Empty means: use the company default."/>
+                    <field name="nova_colspot" widget="selection" help="Inherit means: use the company default."/>
+                    <field name="nova_dnd_sticky_only" help="Only sticky notifications pop up; the rest wait in the Nova bell."/>
+                    <field name="nova_dnd_bypass_danger" help="Danger toasts always pop, even in Do Not Disturb or quiet hours."/>
+                    <field name="nova_dnd_bypass_warning" help="Warning toasts always pop, even in Do Not Disturb or quiet hours."/>
+                    <field name="nova_quiet_start" help="Hour (0-23) from which non-sticky toasts wait silently. Leave 0 to disable."/>
+                    <field name="nova_quiet_end" help="Hour (0-23) until which quiet hours apply."/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="nova_users_preferences_view" model="ir.ui.view">
+        <field name="name">res.users.preferences.view.form.inherit.nova</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences_page']" position="inside">
+                <group string="Nova Theme" name="nova_theme_prefs">
+                    <field name="nova_accent" widget="selection" help="Empty means: use the company default."/>
+                    <field name="nova_density" widget="selection" help="Empty means: use the company default."/>
+                    <field name="nova_radius" widget="selection" help="Empty means: use the company default."/>
+                    <field name="nova_colspot" widget="selection" help="Inherit means: use the company default."/>
+                    <field name="nova_dnd_sticky_only" help="Only sticky notifications pop up; the rest wait in the Nova bell."/>
+                    <field name="nova_dnd_bypass_danger" help="Danger toasts always pop, even in Do Not Disturb or quiet hours."/>
+                    <field name="nova_dnd_bypass_warning" help="Warning toasts always pop, even in Do Not Disturb or quiet hours."/>
+                    <field name="nova_quiet_start" help="Hour (0-23) from which non-sticky toasts wait silently. Leave 0 to disable."/>
+                    <field name="nova_quiet_end" help="Hour (0-23) until which quiet hours apply."/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

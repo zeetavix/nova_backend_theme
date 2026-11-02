@@ -1,0 +1,18 @@
+///
+/// Nova board (dark).
+///
+
+.o-dashboard-action.bg-view.border {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    box-shadow: none;
+}
+
+.o-dashboard-action-header {
+    color: $nova-ink;
+    border-bottom-color: $o-border-color;
+}
+
+.o_dashboard .o_view_nocontent .o_nocontent_help {
+    color: $nova-ink-muted;
+}

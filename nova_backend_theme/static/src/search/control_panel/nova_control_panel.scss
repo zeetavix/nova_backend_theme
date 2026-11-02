@@ -1,0 +1,356 @@
+///
+/// Nova control panel — sticky blurred action bar + pill search.
+/// Public .o_control_panel / .o_cp_searchview / .o_cp_* DOM only.
+/// Visual-hierarchy: title > actions > search; one primary action per view.
+///
+
+.o_control_panel {
+    background: rgba($o-white, 0.92);
+    @supports not (backdrop-filter: blur(1px)) {
+        background: $o-white;
+    }
+    border-bottom: 1px solid $o-border-color;
+    padding: 8px $o-horizontal-padding;
+    gap: $nova-control-panel-gap;
+
+    @if $o-enable-backdrop-blur {
+        backdrop-filter: $nova-blur-bar;
+        -webkit-backdrop-filter: $nova-blur-bar;
+    }
+
+    .o_breadcrumb {
+        .o_control_panel_breadcrumbs_actions .btn {
+            border-radius: $o-border-radius;
+        }
+    }
+
+    // Title reads as title: 16px semibold, tight tracking (type scale).
+    .breadcrumb-item, .o_last_breadcrumb_item {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: $nova-ink;
+    }
+
+    // Breadcrumb extras: quiet more-button, muted unnamed, pill back.
+    .breadcrumb-item .btn-light {
+        border-radius: $o-border-radius;
+    }
+
+    // Form save-state slot: the indicator reserves ~32px for save/discard
+    // buttons even on a clean record (Bootstrap `invisible` keeps layout,
+    // and `d-flex !important` needs beating). Collapse the reserved box so
+    // a saved record's header has no dead strip; the buttons still pop the
+    // row open the moment the record is edited (Owl drops `invisible`).
+    .o_form_status_indicator .o_form_status_indicator_buttons.invisible {
+        display: none !important;
+    }
+
+    .breadcrumb-item em.text-warning {
+        color: $nova-ink-muted;
+        font-style: italic;
+    }
+
+    .o_back_button.btn-link {
+        color: $nova-ink;
+        border-radius: 999px;
+    }
+
+    // Search as 12px rounded field (matches dropdown language); chips stay pills.
+    .o_cp_searchview {
+        border-radius: 12px;
+    }
+    .o_cp_searchview .o_searchview {
+        border-radius: 12px;
+        border-color: $nova-border-strong;
+        background: $o-gray-100;
+        padding: 2px 8px;
+
+        &:focus-within {
+            background: $o-white;
+            border-color: $nova-action;
+            box-shadow: 0 0 0 3px rgba($nova-action, 0.16);
+        }
+
+        .o_searchview_input {
+            background: transparent;
+
+            // The ring lives on the container (:focus-within above). A
+            // second outline on the inner input draws square corners that
+            // poke past the pill — the top-right notch.
+            &:focus,
+            &:focus-visible {
+                outline: none;
+                box-shadow: none;
+            }
+        }
+    }
+
+    // Joined pill group: square the seam so outer 12px never doubles.
+    .o_cp_searchview.input-group.rounded-pill {
+        border-radius: 12px;
+    }
+
+    .o_cp_searchview > .o_searchview:not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .o_cp_searchview > .o_searchview_dropdown_toggler {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        // Blend into the pill: a white box here reads as a seam.
+        background: transparent;
+
+        &:hover {
+            background: $o-gray-100;
+        }
+    }
+
+    // Filter/favorite chips: pill, hover gray, active blue-soft.
+    .o_searchview_facet {
+        border-radius: 999px;
+        background: $o-white;
+        border: 1px solid $o-border-color;
+        transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter;
+
+        &:hover {
+            border-color: $nova-border-strong;
+        }
+    }
+
+    .o_searchview_facet_label {
+        color: $nova-ink-muted;
+        font-weight: 500;
+    }
+
+    .o_facet_value {
+        color: $nova-ink;
+        font-weight: 600;
+    }
+
+    // Facet × : quiet circle, red-soft hover, never shouts at rest.
+    .o_facet_remove {
+        border-radius: 999px;
+        padding: 2px 6px;
+        min-width: 24px;
+        min-height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background $nova-dur-fast $o-easing-enter;
+
+        &:hover {
+            background: rgba($o-danger, 0.1);
+        }
+
+        &:focus-visible {
+            outline: 2px solid $nova-action;
+            outline-offset: 1px;
+        }
+    }
+
+    // Autocomplete panel: calm menu card. The 4px stand-off keeps its top
+    // edge from merging with the search field's own border/focus ring.
+    .o_searchview_autocomplete {
+        border-radius: 12px;
+        border: 1px solid $o-border-color;
+        box-shadow: $nova-shadow-lg;
+        padding: 6px;
+        margin-top: 4px;
+
+        .o-dropdown-item {
+            border-radius: 8px;
+            padding-left: 24px;
+        }
+
+        .o-dropdown-item[aria-selected="true"], .o-dropdown-item:hover {
+            background: $nova-action-soft;
+        }
+
+        .o_indent {
+            padding-left: 48px;
+        }
+
+        .o_expand {
+            min-width: 32px;
+            min-height: 32px;
+        }
+    }
+
+    // Group-by / favorite facets share the chip language.
+    .o_searchview .o_facet_groupby, .o_searchview .o_facet_favorite {
+        border-radius: 999px;
+        background: $nova-action-soft;
+        color: $nova-ink;
+    }
+
+    // Action buttons in CP keep 10px radius; primary is the single blue.
+    // Main CP uses .o_control_panel_main_buttons (not .o_cp_buttons).
+    .o_cp_buttons .btn, .o_control_panel_main_buttons .btn {
+        border-radius: $o-border-radius;
+        font-weight: 600;
+    }
+
+    // Icon-only chrome holds the 24px target floor: the kebab (22px) and
+    // both search toggles (22px, 17px) measured under it. The column
+    // picker lives in the list header, outside this panel — see below.
+    .o_cp_action_menus .o_btn_circle,
+    .o_searchview .btn,
+    .o_cp_searchview > .btn {
+        min-width: 24px;
+    }
+
+    // Inactive view tabs stay quiet rectangles; active goes blue-soft.
+    .o_cp_switch_buttons .btn:not(.active) {
+        background: transparent;
+        border-color: $o-border-color;
+    }
+
+    // Action/cog menus stay quiet rectangles with a soft hover lift.
+    .o_cp_action_menus .btn {
+        border-radius: $o-border-radius;
+
+        &:hover {
+            box-shadow: $nova-shadow-sm;
+        }
+    }
+
+    // Pager + view switcher quieter so content leads.
+    .o_cp_pager, .o_switch_view {
+        .btn {
+            border-radius: $o-border-radius;
+        }
+
+        .btn:disabled {
+            opacity: 0.45;
+        }
+    }
+
+    .o_pager_counter input.o_pager_value {
+        border-radius: $o-border-radius-sm;
+        cursor: text;
+
+        &:hover {
+            border-bottom-color: $nova-border-strong;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $nova-action;
+            outline-offset: 1px;
+        }
+    }
+
+    // Click-to-fetch total looks like static text stock — add a pointer cue.
+    .o_pager_counter .o_pager_limit_fetch {
+        cursor: pointer;
+        border-radius: $o-border-radius-sm;
+        padding: 0 2px;
+        transition: color $nova-dur-fast $o-easing-enter;
+
+        &:hover {
+            color: $nova-action-active;
+            text-decoration: underline;
+        }
+
+        &.disabled {
+            pointer-events: none;
+            opacity: 0.5;
+            cursor: default;
+        }
+    }
+
+    // Active view-tab reads blue-soft; pager count stays tabular + muted.
+    .o_cp_switch_buttons .btn.active {
+        background: $nova-action-soft;
+        border-color: transparent;
+        font-weight: 600;
+    }
+
+    .o_pager_counter {
+        font-variant-numeric: tabular-nums;
+        color: $nova-ink-muted;
+    }
+
+    .o_pager_counter .o_pager_value {
+        color: $nova-ink;
+    }
+
+    // Search dropdown toggler matches the 12px field + blue ring.
+    .o_searchview_dropdown_toggler {
+        border-radius: 12px;
+
+        &.show {
+            border-color: $nova-action;
+            box-shadow: 0 0 0 3px rgba($nova-action, 0.16);
+        }
+    }
+
+    // Mobile back affordance: full 44px tap target — phones only. Left
+    // unwrapped it inflates the desktop breadcrumb row to 44px and opens
+    // a dead strip above the record title.
+    @include media-breakpoint-down(md) {
+        .o_back_button {
+            min-height: 44px;
+        }
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .o_bottom_sheet .o_cp_switch_buttons .btn.selected {
+        background: $nova-action-soft;
+        font-weight: 600;
+    }
+}
+
+// Filter sidebar: calm sections, tabular counters, blue-soft actives.
+.o_search_panel {
+    background: $o-view-background-color;
+    border-right: 1px solid $o-border-color;
+}
+
+.o_search_panel_section {
+    .o_search_panel_section_header {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $nova-ink-muted;
+    }
+}
+
+.o_search_panel_filter_value, .o_search_panel_category_value {
+    border-radius: $o-border-radius-sm;
+    transition: background $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+
+    &.active {
+        background: $nova-action-soft;
+        font-weight: 600;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: -2px;
+    }
+
+    .o_search_panel_counter {
+        font-variant-numeric: tabular-nums;
+        color: $nova-ink-muted;
+    }
+}
+
+.o_search_panel_category_value_header {
+    font-weight: 600;
+}
+
+// The column picker sits in the list header (outside the control panel),
+// so it gets its own top-level rule: 20px measured under the 24px floor.
+.o_list_renderer .o_optional_columns .btn {
+    min-width: 24px;
+}

@@ -1,0 +1,87 @@
+///
+/// Nova Discuss — sidebar calm, active rows blue, unread that reads.
+/// Verified hooks: DiscussApp sidebar/menu, NotificationItem states,
+/// tab/filter actives, DiscussContent header, call/invite buttons.
+/// Composer itself reuses the chatter card automatically.
+///
+
+.o-mail-DiscussApp-sidebar, .o-mail-DiscussApp-sidebarBgColor {
+    background: $o-view-background-color;
+    border-right: 1px solid $o-border-color;
+}
+
+.o-mail-MessagingMenu {
+    background: $o-view-background-color;
+}
+
+// Channel rows: calm hover, blue-soft + inset bar when active (no weight shift).
+.o-mail-NotificationItem {
+    border-radius: $o-border-radius;
+    transition: background $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+
+    &.o-active {
+        background: $nova-action-soft;
+        box-shadow: inset 2px 0 0 $nova-action;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: -2px;
+    }
+}
+
+// Unread badges: blue when important, quiet gray otherwise, tabular counts.
+.o-discuss-badge {
+    font-variant-numeric: tabular-nums;
+}
+
+.o-discuss-badge.o-muted {
+    background: $o-gray-200;
+    color: $nova-ink-muted;
+}
+
+.o-mail-NotificationItem-badge.o-important,
+.o-mail-NotificationItem-counter.o-important {
+    background: $nova-action;
+    color: $o-white;
+}
+
+.o-mail-MessagingMenu-tab.active,
+.o-mail-MessagingMenu-filter.o-active {
+    color: $nova-action-active;
+}
+
+.o-mail-MessagingMenu-tab .o-mail-MessagingMenu-tabCounter {
+    font-variant-numeric: tabular-nums;
+}
+
+// Header + composer shell follow the card language.
+.o-mail-DiscussContent-headerBox, .o-mail-DiscussContent-panelContainer {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+}
+
+// Call + invite actions: pill joins, visible focus.
+.o-mail-Discuss .o-discuss-CallMenu-buttonContent,
+#o-discuss-ChannelInvitation-search {
+    border-radius: 999px;
+}
+
+.o-mail-Discuss button:focus-visible {
+    outline: 2px solid $nova-action;
+    outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+    // Unread signal must not be fill-only: border survives WHCM.
+    .o-discuss-badge,
+    .o-mail-NotificationItem-badge,
+    .o-mail-NotificationItem-counter {
+        border: 1px solid CanvasText;
+    }
+}

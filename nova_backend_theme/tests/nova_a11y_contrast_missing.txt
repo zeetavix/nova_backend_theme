@@ -1,0 +1,5 @@
+# Nova a11y baseline: files painting severity without a forced-colors block yet.
+# Fix a file, then delete its line here.
+core/nova_components.scss
+scss/nova_base.scss
+scss/nova_bridge.scss

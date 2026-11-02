@@ -1,0 +1,201 @@
+///
+/// Nova form (dark): flat sheet, quiet statusbar hover.
+///
+
+.o_form_sheet {
+    box-shadow: none;
+}
+
+.o_statusbar_status .o_arrow_button_current, .o_statusbar_status .btn-primary {
+    background: $nova-action;
+    border-color: $nova-action;
+    color: $nova-on-action;
+}
+
+.o_statusbar_status .o_arrow_button {
+    &:hover:not(.o_arrow_button_current):not(.btn-primary) {
+        background: rgba(255, 255, 255, 0.06);
+    }
+}
+
+.o_field_statusbar.o_field_statusbar > .o_statusbar_status {
+    @include media-breakpoint-up(md) {
+        background: transparent;
+        border: 0;
+
+        .o_arrow_button:not(.d-none) {
+            border-color: $o-border-color;
+            margin-inline-start: 0;
+            margin-inline-end: 4px;
+            clip-path: none;
+            border-radius: 999px;
+        }
+    }
+}
+
+.o_notebook .nav-tabs .nav-link:hover {
+    color: #FFFFFF;
+}
+
+// Invalid badge: white-on-pink is 2.49:1 in dark — dark ink hits 7.07:1.
+.nova-invalid-badge {
+    background: map-get($o-theme-text-colors, "danger");
+    color: #18191A;
+}
+
+// Warm paper records (warm charcoal, not inversion).
+.o_web_client .o_form_view .o_form_sheet {
+    background: $nova-paper;
+    border-color: $nova-paper-border;
+    box-shadow: none;
+}
+
+.o_web_client .o_form_view .o_form_sheet .o_input,
+.o_web_client .o_form_view .o_form_sheet .o_field_widget input.o_input,
+.o_web_client .o_form_view .o_form_sheet .o_field_widget select.o_input,
+.o_web_client .o_form_view .o_form_sheet .o_field_widget textarea.o_input {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: $nova-paper-deep;
+    padding: 6px 10px;
+
+    &:hover {
+        border-color: $nova-paper-border;
+        background-color: $nova-paper-deep;
+    }
+
+    &:focus, &:focus-within {
+        border: 1px solid $nova-action;
+        background-color: $nova-paper-deep;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.22);
+        outline: none;
+    }
+}
+
+// Monetary overlay (dark): transparent or typed digits hide under it.
+.o_web_client .o_form_view .o_form_sheet .o_field_monetary span.o_input,
+.modal .o_form_view .o_field_monetary span.o_input {
+    background: transparent;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+// Affix rows (dark): same centered baseline as light; editors excluded
+// (column flex children must stretch — see light file).
+.o_web_client .o_form_view .o_form_sheet .o_field_widget .d-flex:not(.o-wysiwyg),
+.modal .o_form_view .o_field_widget .d-flex:not(.o-wysiwyg) {
+    align-items: center;
+}
+
+.o_web_client .o_form_view .o_form_sheet .o_field_monetary span.o_input,
+.modal .o_form_view .o_field_monetary span.o_input {
+    height: 100%;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.o_web_client .o_form_view .o_form_sheet .o_field_widget.o_required_modifier .o_input,
+.o_web_client .o_form_view .o_form_sheet .o_required_modifier {
+    border-bottom: 1px solid transparent;
+}
+
+// Dialog parity (dark): same boxed inputs as sheets, charcoal paper.
+.modal .o_form_view {
+    background: $nova-paper;
+}
+
+// Composite tag/chip fields (dark): container frame + charcoal, input transparent.
+.o_web_client .o_form_view .o_form_sheet .o_field_many2many_tags,
+.modal .o_form_view .o_field_many2many_tags {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: $nova-paper-deep;
+
+    &:hover {
+        border-color: $nova-paper-border;
+    }
+
+    &:focus-within {
+        border: 1px solid $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.22);
+        outline: none;
+    }
+}
+
+.o_web_client .o_form_view .o_form_sheet .o_field_many2many_tags .o_field_many2many_selection .o_input,
+.modal .o_form_view .o_field_many2many_tags .o_field_many2many_selection .o_input,
+.o_web_client .o_form_view .o_form_sheet .o_field_many2many_tags .o_field_many2many_selection,
+.modal .o_form_view .o_field_many2many_tags .o_field_many2many_selection,
+.o_web_client .o_form_view .o_form_sheet .o_field_many2many_tags .o_tags_input,
+.modal .o_form_view .o_field_many2many_tags .o_tags_input {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    background-color: transparent;
+    padding: 0;
+    box-shadow: none;
+
+    &:hover, &:focus, &:focus-within {
+        border: 0;
+        background: transparent;
+        background-color: transparent;
+        box-shadow: none;
+        outline: none;
+    }
+}
+
+.modal .o_form_view .o_input,
+.modal .o_form_view .o_field_widget input.o_input,
+.modal .o_form_view .o_field_widget select.o_input,
+.modal .o_form_view .o_field_widget textarea.o_input {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: $nova-paper-deep;
+
+    &:hover {
+        border-color: $nova-paper-border;
+    }
+
+    &:focus, &:focus-within {
+        border: 1px solid $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.22);
+        outline: none;
+    }
+}
+
+// Field visibility floor (dark): same contract as light — the fill is the
+// floor, borders may be zeroed by stock or by us, the field stays visible.
+.o_web_client .o_form_view .o_field_html .note-editable,
+.modal .o_form_view .o_field_html .note-editable,
+.o_form_view .o_field_html .note-editable,
+.o_form_view .o_activity_details .note-editable,
+.o_web_client .o_form_view .o_form_nosheet .o_input,
+.o_web_client .o_form_view .o_form_nosheet .o_field_widget input.o_input,
+.o_web_client .o_form_view .o_form_nosheet .o_field_widget select.o_input,
+.o_web_client .o_form_view .o_form_nosheet .o_field_widget textarea.o_input {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: $nova-paper-deep;
+
+    &:hover {
+        border-color: $nova-paper-border;
+    }
+
+    &:focus, &:focus-within {
+        border: 1px solid $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.22);
+        outline: none;
+    }
+}
+
+.o_form_view .o_activity_details .note-editable {
+    padding: 6px 10px !important;
+}
+
+.modal .o_form_view .o_field_widget.o_required_modifier .o_input,
+.modal .o_form_view .o_required_modifier {
+    border-bottom: 1px solid transparent;
+}

@@ -1,0 +1,229 @@
+///
+/// Nova Backend Theme — primary design tokens (light).
+/// Clean-room original. Loaded BEFORE web/primary_variables.scss so
+/// first-wins (!default) values apply. No Enterprise code copied.
+///
+/// Design language: "Meta calm" + Apple HIG craft.
+/// One action blue, soft neutral surfaces, friendly radii, honest motion.
+///
+
+// --- Nova brand (own names, avoid collisions) ---
+$nova-action: #0E7C8A !default;
+$nova-action-hover: #0B6B77 !default;
+$nova-action-active: #095C66 !default;
+$nova-action-soft: #E2F3F5 !default;
+// Text/icon color that sits ON an action fill (light: white on teal).
+$nova-on-action: #FFFFFF !default;
+
+$nova-ink: #1C1E21 !default;
+$nova-ink-muted: #606770 !default;
+$nova-surface-app: #F0F2F5 !default;
+$nova-surface-view: #FFFFFF !default;
+$nova-border: #DADDE1 !default;
+// Interactive borders meet 3:1 UI (a11y fix: was #CCD0D5 at 1.55:1).
+$nova-border-strong: #767D87 !default;
+$nova-border-decorative: #DADDE1 !default;
+$nova-favorite-fill: #F5B400 !default;
+
+// --- Options ---
+$o-enable-backdrop-blur: true !default;
+
+// Backdrop-blur scale. Community references these behind the flag above but
+// only Enterprise defines them — Nova provides its own (stronger) values so
+// every bundle (backend, web, print) compiles with the flag on.
+$o-backdrop-blur: blur(16px) saturate(1.4) !default;
+$o-backdrop-blur-sm: blur(8px) !default;
+$o-backdrop-blur-lg: blur(24px) saturate(1.4) !default;
+
+// --- Grays tuned to Meta neutrals (still $o-* names so Community picks them up) ---
+$o-white: #FFFFFF !default;
+$o-black: #000000 !default;
+
+$o-gray-100: #F0F2F5 !default;
+$o-gray-200: #E4E6EB !default;
+$o-gray-300: #DADDE1 !default;
+$o-gray-400: #CCD0D5 !default;
+$o-gray-500: #A8B0B8 !default;
+$o-gray-600: #6D747E !default;
+$o-gray-700: #4E5660 !default;
+$o-gray-800: #2F353D !default;
+$o-gray-900: #1C1E21 !default;
+
+// --- Brand / action: single blue, no purple/teal split ---
+$o-community-color: $nova-action !default;
+$o-enterprise-color: $nova-action !default;
+$o-enterprise-action-color: $nova-action !default;
+
+$o-brand-odoo: $nova-action !default;
+$o-brand-primary: $nova-action !default;
+$o-brand-secondary: #606770 !default;
+$o-brand-lightsecondary: $o-gray-100 !default;
+
+$o-action: $nova-action !default;
+$o-main-link-color: $nova-action-active !default;
+
+$o-success: #0A7D2C !default;
+// Distinct from action blue (was #0866FF = action): teal-info keeps semantics apart.
+$o-info: #0E7C8A !default;
+$o-warning: #8A5700 !default;
+$o-danger: #C81E1E !default;
+
+$o-theme-text-colors: (
+    "success": #0A5C22,
+    "info": #0549C6,
+    "warning": #7A4E00,
+    "danger": #B42323,
+) !default;
+
+// --- Surfaces ---
+$o-webclient-background-color: $nova-surface-app !default;
+$o-view-background-color: $nova-surface-view !default;
+$o-shadow-color: #1C1E21 !default;
+
+$o-main-text-color: $nova-ink !default;
+$o-main-color-muted: $nova-ink-muted !default;
+$o-main-headings-color: $nova-ink !default;
+// Favorite text/stroke must pass 3:1 UI (was #F5B400 at 1.84:1). Fill kept in $nova-favorite-fill.
+$o-main-favorite-color: #7A4E00 !default;
+$o-main-code-color: #C2257A !default;
+
+$o-border-color: $nova-border !default;
+$o-form-lightsecondary: $o-gray-200 !default;
+
+// --- Active / selection: soft blue wash, Apple-like ---
+$o-component-active-color: $nova-ink !default;
+$o-component-active-bg: $nova-action-soft !default;
+$o-component-active-border: $nova-action !default;
+
+// --- Radii: friendly, one step larger than stock Community ---
+$o-border-radius: o-to-rem(10px) !default;
+$o-border-radius-sm: o-to-rem(8px) !default;
+$o-border-radius-lg: o-to-rem(12px) !default;
+$o-border-radius-xl: o-to-rem(16px) !default;
+
+// --- Type: system-first (Apple HIG), Inter as progressive enhancement ---
+$o-system-fonts: ("Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Ubuntu, "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji") !default;
+$o-font-family-sans-serif: o-add-unicode-support-font($o-system-fonts) !default;
+$o-headings-font-family: o-add-unicode-support-font(("SF Pro Display", $o-system-fonts)) !default;
+
+$o-font-weight-normal: 400 !default;
+$o-font-weight-medium: 500 !default;
+$o-font-weight-bold: 600 !default;
+
+// --- Gradients off: Meta surfaces are flat, depth comes from shadow ---
+$o-gradient: null !default;
+$o-gradient-sm: null !default;
+$o-gradient-lg: null !default;
+$o-gradient-btn: null !default;
+
+// --- Nova elevation (own tokens) ---
+$nova-shadow-sm: 0 1px 2px rgba(28, 30, 33, 0.08) !default;
+$nova-shadow-md: 0 1px 2px rgba(28, 30, 33, 0.06), 0 4px 12px -2px rgba(28, 30, 33, 0.10) !default;
+$nova-shadow-lg: 0 8px 28px -6px rgba(28, 30, 33, 0.18), 0 2px 6px rgba(28, 30, 33, 0.08) !default;
+$nova-blur-bar: blur(16px) saturate(1.4) !default;
+
+// --- Motion: Apple-like, brief, cancellable ---
+// Durations: press 80 / fast 100 / base 120 / emphasis 150 / drag 400.
+// Easing: enter (decelerate) for arrivals, exit (accelerate) for departures.
+// NOTE: enter curve is deliberately briefer than stock Community
+// (0.32,0.72,0,1 vs 0.05,0.7,0.1,1.0) — calmer, less bouncy.
+$o-easing-enter: cubic-bezier(0.32, 0.72, 0, 1) !default;
+$o-easing-exit: cubic-bezier(0.3, 0, 0.8, 0.15) !default;
+
+$nova-dur-press: 80ms !default;
+$nova-dur-fast: 100ms !default;
+$nova-dur-base: 120ms !default;
+$nova-dur-em: 150ms !default;
+$nova-dur-drag: 400ms !default;
+
+$nova-lift: -2px !default;
+$nova-press: scale(0.98) !default;
+$nova-grow: scale(1.15) !default;
+
+// --- Inputs ---
+$o-input-padding-y: 4px !default;
+$o-input-padding-x: 12px !default;
+$o-input-bg: $o-white !default;
+$o-input-border-required: $nova-ink !default;
+
+// --- Buttons: map consumed by Community bootstrap review ---
+$o-btns-bs-override: () !default;
+$o-btns-bs-override: map-merge((
+    "primary": (
+        background: $nova-action,
+        border: $nova-action,
+        color: $o-white,
+        hover-background: $nova-action-hover,
+        hover-border: $nova-action-hover,
+        hover-color: $o-white,
+        active-background: $nova-action-active,
+        active-border: $nova-action-active,
+        active-color: $o-white,
+        disabled-background: $o-gray-300,
+        disabled-border: $o-gray-300,
+        disabled-color: $o-gray-700,
+    ),
+    "secondary": (
+        background: $o-white,
+        border: $nova-border-strong,
+        color: $nova-ink,
+        hover-background: $o-gray-100,
+        hover-border: $nova-border-strong,
+        hover-color: $o-black,
+        active-background: $nova-action-soft,
+        active-border: $nova-action,
+        active-color: $nova-ink,
+        disabled-background: $o-white,
+        disabled-border: $o-gray-200,
+        disabled-color: $o-gray-700,
+    ),
+    "light": (
+        background: transparent,
+        border: transparent,
+        color: $nova-ink,
+        hover-background: $o-gray-200,
+        hover-border: $o-gray-200,
+        hover-color: $o-black,
+        active-background: $nova-action-soft,
+        active-border: $nova-action,
+        active-color: $nova-ink,
+        disabled-background: transparent,
+        disabled-border: transparent,
+        disabled-color: $o-gray-600,
+    ),
+), $o-btns-bs-override);
+
+$o-btns-bs-outline-override: () !default;
+$o-btns-bs-outline-override: map-merge((
+    "secondary": (
+        background: transparent,
+        border: $nova-border-strong,
+        color: $nova-ink,
+        hover-background: $o-gray-100,
+        hover-border: $nova-border-strong,
+        hover-color: $o-black,
+        active-background: $nova-action-soft,
+        active-border: $nova-action,
+        active-color: $nova-ink,
+        disabled-background: transparent,
+        disabled-border: $o-gray-200,
+        disabled-color: $o-gray-700,
+    ),
+), $o-btns-bs-outline-override);
+
+// --- Layout rhythm: 8pt grid ---
+$o-spacer: 16px !default;
+$o-horizontal-padding: $o-spacer !default;
+$o-dropdown-hpadding: 12px !default;
+$o-dropdown-vpadding: 8px !default;
+
+$o-list-group-active-color: $nova-ink !default;
+$o-badge-min-width: 2.5ch !default;
+
+// Sheet cancel padding lives in Community PRIMARY (not secondary): define here so !default wins.
+$o-sheet-cancel-tpadding: $o-horizontal-padding !default;
+
+// --- Warm paper records (fintech calm; teal strictly for actions) ---
+$nova-paper: #FCFAF5 !default;
+$nova-paper-deep: #F4EFE6 !default;
+$nova-paper-border: #E7DFD2 !default;

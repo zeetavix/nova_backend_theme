@@ -1,0 +1,45 @@
+///
+/// Nova buttons (dark): full state mirror of the light system.
+///
+
+.btn {
+    &:active {
+        transform: $nova-press;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.btn-primary {
+    &:hover {
+        box-shadow: 0 1px 2px rgba(58, 175, 169, 0.5);
+    }
+
+    &:disabled, &.disabled {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.btn-secondary, .btn-outline-secondary {
+    &:hover {
+        box-shadow: none;
+    }
+}
+
+.btn-link {
+    color: $nova-action-hover;
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.btn-outline-primary:focus-visible {
+    outline: 2px solid $nova-action;
+    outline-offset: 2px;
+}

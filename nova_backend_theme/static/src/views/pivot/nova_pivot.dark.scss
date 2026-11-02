@@ -1,0 +1,58 @@
+///
+/// Nova pivot + graph (dark, lazy).
+///
+/// NOTE: the light pivot/graph shells ship in web.assets_backend_lazy,
+/// which loads after the dark bundle and wins every specificity tie.
+/// Every rule below therefore carries an extra .o_web_client scope.
+///
+
+.o_web_client .o_pivot_view {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    box-shadow: none;
+}
+
+.o_web_client .o_pivot_view table {
+    border-color: $o-border-color;
+}
+
+.o_web_client .o_pivot_view .o_pivot_measure_row,
+.o_web_client .o_pivot_view .o_pivot_origin_row,
+.o_web_client .o_pivot_view .o_pivot_header_cell_closed,
+.o_web_client .o_pivot_view .o_pivot_header_cell_opened,
+.o_web_client .o_pivot_view .o_pivot_cell_value,
+.o_web_client .o_pivot_view th {
+    color: $nova-ink;
+}
+
+.o_web_client .o_pivot_view .o_pivot_measure_row:hover,
+.o_web_client .o_pivot_view .o_pivot_origin_row:hover,
+.o_web_client .o_pivot_view .o_pivot_header_cell_closed:hover,
+.o_web_client .o_pivot_view .o_pivot_header_cell_opened:hover {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.o_web_client .o_pivot_view .o_pivot_cell_value.o_cell_hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+// Linked value cells: core inks them body-ink with 4 classes; beat it.
+.o_web_client .o_pivot_view table.o_enable_linking .o_pivot_cell_value:not(.o_empty) {
+    color: $nova-ink;
+
+    &:hover, &:focus {
+        color: $nova-action-hover;
+    }
+}
+
+.o_web_client .o_graph_renderer {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    box-shadow: none;
+}
+
+.o_web_client .o_graph_renderer .o_graph_custom_tooltip {
+    background: #2E2F30;
+    border-color: $o-border-color;
+    color: $nova-ink;
+}

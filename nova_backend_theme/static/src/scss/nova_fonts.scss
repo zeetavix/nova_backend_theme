@@ -1,0 +1,14 @@
+///
+/// Nova fonts: self-hosted Inter (variable, latin). Local file = offline
+/// safe; if it ever 404s the stack falls back to system fonts silently.
+/// Loaded first in backend + frontend so every font-family built from
+/// $o-system-fonts resolves to Inter.
+///
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/nova_backend_theme/static/src/fonts/inter-latin-wght.woff2") format("woff2");
+}

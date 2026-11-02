@@ -1,0 +1,298 @@
+///
+/// Nova Launcher (dark): charcoal canvas, restrained glow, bordered icons.
+///
+
+.nova_launcher {
+    background-image:
+        radial-gradient(720px 420px at 18% 8%, rgba(58, 175, 169, 0.10), transparent 60%),
+        radial-gradient(760px 480px at 85% 18%, rgba(58, 175, 169, 0.07), transparent 62%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 35%),
+        radial-gradient(900px 600px at 50% 110%, rgba(0, 0, 0, 0.35), transparent 60%);
+    background-color: $o-webclient-background-color;
+}
+
+.nova_title {
+    color: $o-main-headings-color;
+}
+
+// The Ask Nova pill keeps its white surface on the teal banner in
+// both themes - but the dark action ink is too light for white, so
+// the label gets an explicitly dark teal ink here.
+.nova_assistant_open {
+    color: #07505b;
+
+    &:focus-visible {
+        outline-color: $o-white;
+    }
+}
+
+.nova_search {
+    background: $o-gray-200;
+    border-color: $o-border-color;
+    color: $nova-ink;
+    box-shadow: none;
+
+    &:focus-visible {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+    }
+
+    &::placeholder {
+        color: $nova-ink-muted;
+    }
+}
+
+.nova_search_clear {
+    background: rgba(255, 255, 255, 0.12);
+    color: $nova-ink;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.nova_app {
+    @media (hover: hover) {
+        &:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: $o-border-color;
+        }
+    }
+
+    &:focus-visible, &.nova_focused {
+        background: rgba(58, 175, 169, 0.18);
+    }
+}
+
+.nova_app_icon {
+    background-color: $o-home-menu-app-icon-background-color;
+    border: 1px solid $o-border-color;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+.nova_app_initial {
+    color: $nova-action-hover;
+}
+
+.nova_launcher .nova_app .nova_caption {
+    color: $o-home-menu-caption-color;
+    text-shadow: $o-home-menu-caption-shadow;
+}
+
+.nova_no_result_title {
+    color: $o-main-headings-color;
+}
+
+.nova_banner {
+    border-color: rgba(58, 175, 169, 0.4);
+    // Deepen the vivid tokens for dark canvas: a black wash over the
+    // same gradient keeps hue identity without the glow.
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.28)),
+        radial-gradient(420px 160px at 10% 0%, rgba(255, 255, 255, 0.16), transparent 60%),
+        linear-gradient(135deg, $nova-action 0%, $nova-action-hover 55%, $nova-action-active 100%);
+}
+
+.nova_tab {
+    &:hover {
+        color: $o-main-headings-color;
+    }
+}
+
+.nova_fav {
+    background: rgba(36, 37, 38, 0.9);
+    border-color: $o-border-color;
+    color: $o-gray-500;
+}
+
+.nova_fav_on {
+    color: $nova-action-hover;
+    border-color: rgba(58, 175, 169, 0.5);
+}
+
+.nova_hint_card {
+    border-color: $nova-border-strong;
+}
+
+.nova_hint_title {
+    color: $o-main-headings-color;
+}
+
+.nova_kpi {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    box-shadow: none;
+
+    @media (hover: hover) {
+        &:hover {
+            border-color: $nova-border-strong;
+        }
+    }
+}
+
+.nova_kpi_overdue {
+    border-inline-start-color: map-get($o-theme-text-colors, "danger");
+}
+
+.nova_kpi_value {
+    color: $o-main-headings-color;
+}
+
+.nova_kpi_due {
+    color: map-get($o-theme-text-colors, "danger");
+}
+
+.nova_kpi_delta,
+.nova_fresh {
+    color: $nova-ink-muted;
+}
+
+.nova_caughtup {
+    color: $nova-ink-muted;
+}
+
+.nova_caughtup_tick {
+    background: $nova-action-soft;
+    color: $nova-action-hover;
+}
+
+.nova_create_btn {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    color: $nova-ink;
+    box-shadow: none;
+
+    &:hover {
+        border-color: $nova-border-strong;
+    }
+}
+
+.nova_create_plus {
+    background: $nova-action;
+    color: $o-white;
+}
+
+.nova_kpi.nova_shimmer {
+    background: $o-gray-200;
+    border-color: $o-border-color;
+}
+
+.nova_msg_assistant {
+    background: $o-gray-200;
+    color: $nova-ink;
+}
+
+.nova_msg_user {
+    background: $nova-action;
+    color: $nova-on-action;
+}
+
+.nova_chip {
+    background: transparent;
+    border-color: rgba(58, 175, 169, 0.5);
+    color: $nova-action-hover;
+
+    &:hover {
+        background: $nova-action-soft;
+    }
+}
+
+.nova_assistant {
+    background: $o-view-background-color;
+    border-left-color: $o-border-color;
+}
+
+.nova_assistant_title, .nova_assistant_close {
+    color: $o-main-headings-color;
+}
+
+.nova_assistant_close:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.nova_assistant_input {
+    background: $o-gray-200;
+    border-color: $o-border-color;
+    color: $nova-ink;
+}
+
+.nova_section_title {
+    color: $nova-ink-muted;
+}
+
+.nova_result {
+    background: rgba(255, 255, 255, 0.04);
+
+    @media (hover: hover) {
+        &:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: $o-border-color;
+            box-shadow: none;
+        }
+    }
+
+    &:focus-visible {
+        background: rgba(58, 175, 169, 0.18);
+    }
+
+    &.nova_focused {
+        background: rgba(58, 175, 169, 0.18);
+        border-color: $nova-action;
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.nova_hints kbd {
+    background: $o-gray-200;
+    border-color: $o-border-color;
+    color: $nova-ink;
+}
+
+.nova_result_icon {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.nova_result_initial {
+    color: $nova-action-hover;
+}
+
+.nova_result_name {
+    color: $o-main-headings-color;
+}
+
+.nova_result_path, .nova_hints, .nova_counts {
+    color: $nova-ink-muted;
+}
+
+.nova_pin:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: $nova-ink;
+}
+
+.nova_pin_on {
+    color: $nova-action-hover;
+}
+
+// Light-bundle pill inks would ride the charcoal canvas â€” re-pin to dark.
+.nova_due_overdue {
+    background: rgba($o-danger, 0.18);
+    color: map-get($o-theme-text-colors, "danger");
+}
+
+.nova_due_today {
+    background: rgba($o-warning, 0.2);
+    color: map-get($o-theme-text-colors, "warning");
+}
+
+.nova_att_btn {
+    background: $o-view-background-color;
+    border-color: $nova-border-strong;
+    color: $nova-ink-muted;
+
+    &:hover {
+        background: $nova-action-soft;
+        border-color: $nova-border-strong;
+        color: $nova-ink;
+    }
+}

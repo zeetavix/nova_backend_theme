@@ -1,0 +1,323 @@
+///
+/// Nova components — badges, dropdowns, modals, toasts, chatter, calendar.
+/// Small consistent upgrades on public Community classes. Original rules.
+///
+
+// Badges / pills: soft fills, tabular counts, never color-alone (HIG).
+// Every severity speaks the same soft-fill dialect.
+.badge, .o_badge, .o_tag {
+    border-radius: 999px;
+    font-weight: 500;
+    padding: 4px 12px;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+
+    &.text-bg-primary, &.bg-primary {
+        background: $nova-action-soft;
+        color: $nova-action-active;
+        border: 1px solid rgba($nova-action, 0.3);
+    }
+    &.text-bg-success, &.bg-success {
+        background: rgba($o-success, 0.12);
+        color: map-get($o-theme-text-colors, "success");
+        border: 1px solid rgba($o-success, 0.3);
+    }
+    &.text-bg-warning, &.bg-warning {
+        background: rgba($o-warning, 0.14);
+        color: map-get($o-theme-text-colors, "warning");
+        border: 1px solid rgba($o-warning, 0.35);
+    }
+    &.text-bg-danger, &.bg-danger {
+        background: rgba($o-danger, 0.1);
+        color: map-get($o-theme-text-colors, "danger");
+        border: 1px solid rgba($o-danger, 0.3);
+    }
+    &.text-bg-info, &.bg-info {
+        background: rgba($o-info, 0.12);
+        color: map-get($o-theme-text-colors, "info");
+        border: 1px solid rgba($o-info, 0.3);
+    }
+    &.text-bg-secondary, &.bg-secondary {
+        background: $o-gray-200;
+        color: $nova-ink;
+        border: 1px solid $o-border-color;
+    }
+    &.text-bg-light, &.bg-light {
+        background: $o-gray-100;
+        color: $nova-ink;
+        border: 1px solid $o-border-color;
+    }
+    &.text-bg-dark, &.bg-dark {
+        background: $o-gray-800;
+        color: $o-white;
+    }
+}
+
+// Dropdown menus: calm menu — 12px, layered shadow, soft active.
+.dropdown-menu {
+    border: 1px solid $o-border-color;
+    border-radius: 12px;
+    box-shadow: $nova-shadow-lg;
+    padding: 8px;
+    font-size: 14px;
+    .dropdown-item {
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-weight: 500;
+
+        &:hover, &:focus, &.focus, &.selected {
+            background: $o-gray-100;
+        }
+
+        &.active, &:active {
+            background: $nova-action-soft;
+            color: $nova-ink;
+        }
+
+        // Selected check inherits the row ink (never invisible).
+        &::before {
+            color: inherit;
+        }
+    }
+
+    .dropdown-header {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $nova-ink-muted;
+    }
+}
+
+// Many2one / tag autocomplete: teleported to <body>, so no ancestor
+// scoping is possible — style the card directly. Calm white surface,
+// hairline, soft hover, teal-washed keyboard- and mouse-active rows.
+.o-autocomplete--dropdown-menu {
+    background-color: $o-view-background-color;
+
+    .o-autocomplete--dropdown-item > a.ui-menu-item-wrapper {
+        border-radius: $o-border-radius-sm;
+
+        &:hover {
+            background-color: $o-gray-100;
+        }
+    }
+
+    .o-autocomplete--dropdown-item > a.ui-state-active {
+        background-color: $nova-action-soft;
+        color: $nova-ink;
+
+        .o-autocomplete--mark {
+            color: $nova-action-active;
+        }
+    }
+
+    .o_m2o_dropdown_option > a {
+        color: $nova-action-active;
+        font-weight: 600;
+    }
+}
+
+// Modals: 16px sheet, soft backdrop, clear title hierarchy.
+// Body/header share form paper so dialogs feel like forms, not popups.
+.modal-content {
+    border-radius: $o-border-radius-xl;
+    border: 1px solid $o-border-color;
+    box-shadow: $nova-shadow-lg;
+    overflow: hidden;
+
+    .modal-header {
+        border-bottom: 1px solid $o-border-color;
+        background: $nova-paper;
+        padding: 16px 24px;
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: $nova-ink;
+        }
+    }
+
+    .modal-body {
+        background: $nova-paper;
+        padding: 20px 24px;
+    }
+
+    .modal-footer {
+        border-top: 1px solid $o-border-color;
+        background: $nova-paper;
+        padding: 12px 24px;
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+
+        @include media-breakpoint-down(sm) {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+}
+
+// Select-menu (long many2one lists): breathing search + roomy frame.
+.o_select_menu_menu {
+    border-radius: 12px;
+    border: 1px solid $o-border-color;
+}
+
+.o_select_menu_searchbox input {
+    padding-left: 20px;
+}
+
+// Toasts / notifications: friendly, actionable. Severity rides the stock
+// `.o_notification_bar.bg-{type}` rail — never color alone.
+.o_notification_manager {
+    z-index: 1080;
+    // libsass-safe responsive cap: fluid width + hard ceiling.
+    width: calc(100vw - 32px);
+    max-width: 360px;
+}
+
+.toast, .o_notification {
+    border-radius: 12px;
+    box-shadow: $nova-shadow-md;
+
+    .o_notification_bar {
+        width: 4px;
+        border-radius: 12px 0 0 12px;
+    }
+
+    > .d-flex.border {
+        border-radius: 0 12px 12px 0;
+    }
+
+    .o_notification_content {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        line-clamp: 3;
+        overflow: hidden;
+        line-height: 1.45;
+    }
+
+    .o_notification_buttons {
+        .btn {
+            min-height: 32px;
+        }
+
+        .btn-link {
+            font-weight: 600;
+        }
+    }
+
+    .o_notification_close {
+        padding: 8px;
+        margin: -4px;
+    }
+
+    .o_notification_progress {
+        border-radius: 0 0 12px 12px;
+        opacity: 0.5;
+        inset-inline: 12px;
+        bottom: 0;
+        width: auto;
+    }
+}
+
+// Tooltips: dark pills, generous padding, calm type.
+.tooltip-inner {
+    background: $nova-ink;
+    color: $o-white;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: $font-size-sm;
+    box-shadow: $nova-shadow-md;
+    max-width: 400px;
+}
+
+// Alerts: 12px calm cards with severity edges, never sharp.
+.alert {
+    border-radius: $o-border-radius-lg;
+}
+
+.alert-success {
+    border-left: 3px solid $o-success;
+}
+
+.alert-warning {
+    border-left: 3px solid $o-warning;
+}
+
+.alert-danger {
+    border-left: 3px solid $o-danger;
+}
+
+.alert-info {
+    border-left: 3px solid $o-info;
+}
+
+// Popovers: quiet header, roomy body.
+.popover-header {
+    background: transparent;
+    border-bottom: 1px solid $o-border-color;
+    font-weight: 600;
+}
+
+.o_popover .popover-body {
+    padding: 12px;
+}
+
+// Progress everywhere: 6px pill track, blue fill. Contextual fills
+// (success/danger/striped) and field heights keep stock control.
+.progress {
+    height: var(--ProgressBarField-height, var(--progress-height, 6px));
+    border-radius: 999px;
+    background: $o-gray-200;
+}
+
+.progress-bar:not([class*="bg-"]):not(.progress-bar-animated) {
+    background: $nova-action;
+    border-radius: 999px;
+}
+
+// Inputs: 1px calm underline at rest (never harsh black), 2px blue on focus.
+// Smooth 120ms transitions on every state change.
+.o_web_client .o_form_view .o_input,
+.o_web_client .o_field_widget input.o_input,
+.o_web_client .o_field_widget select.o_input {
+    border-bottom: 1px solid $nova-border-strong;
+    transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter, background-color $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        border-bottom-color: $nova-ink-muted;
+    }
+
+    &:focus, &:focus-within {
+        border-bottom: 1px solid $nova-action;
+        box-shadow: inset 0 -2px 0 $nova-action;
+        outline: none;
+    }
+}
+
+.o_input, input.form-control, select.form-select, textarea.form-control {
+    border-radius: $o-border-radius;
+}
+
+.o_field_widget input, .o_field_widget select {
+    &:hover {
+        border-color: $nova-border-strong;
+    }
+}
+
+// Dropdown items glide (smoothness), not snap.
+.dropdown-menu .dropdown-item {
+    transition: background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+}
+
+// Calendar container only here (pivot/graph live in lazy bundle: see views/pivot).
+.o_calendar_renderer {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+}

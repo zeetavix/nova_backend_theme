@@ -1,0 +1,14 @@
+///
+/// Nova — secondary tokens (dark).
+///
+$nova-control-panel-gap: 8px !default;
+$nova-appbar-height: 48px !default;
+$nova-card-padding: 16px !default;
+
+// Home API dark parity: surfaces + captions follow charcoal, glows restrained.
+$o-home-menu-app-icon-background-color: #3A3B3C !default;
+$o-home-menu-caption-color: #E4E6EB !default;
+$o-home-menu-caption-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !default;
+$o-home-menu-custom-caption-color: #FFFFFF !default;
+$o-home-menu-custom-caption-shadow: 0 1px 2px rgba(0, 0, 0, 0.75), 0 2px 8px rgba(0, 0, 0, 0.3) !default;
+$o-home-menu-input-border: $nova-border-strong !default;

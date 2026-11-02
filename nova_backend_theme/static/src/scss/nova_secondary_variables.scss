@@ -1,0 +1,25 @@
+///
+/// Nova — secondary tokens (light). Loaded before web/secondary_variables.scss.
+/// Note: $o-sheet-cancel-tpadding lives in Community PRIMARY, so it is set in
+/// nova_primary_variables.scss (setting it here would lose to !default first-wins).
+///
+
+// Nova control-panel rhythm: 8pt grid, consumed by our own SCSS.
+$nova-control-panel-gap: 8px !default;
+$nova-appbar-height: 48px !default;
+$nova-card-padding: 16px !default;
+
+// Nova home API (same names Enterprise admins/Studio expect; !default keeps
+// stock behavior where Enterprise rules also load, theme values otherwise).
+$o-home-menu-container-size: 1040px !default;
+$o-home-menu-app-icon-max-width: 68px !default;
+$o-home-menu-app-icon-padding: 8px !default;
+$o-home-menu-app-icon-background-color: #FFFFFF !default;
+$o-home-menu-app-icon-radius: 14px !default;
+$o-home-menu-app-icon-radius-sm: 12px !default;
+$o-home-menu-caption-color: $nova-ink !default;
+$o-home-menu-caption-shadow: none !default;
+$o-home-menu-custom-caption-color: #FFFFFF !default;
+$o-home-menu-custom-caption-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !default;
+// Interactive border (3:1+ UI) so the search/inputs read on white.
+$o-home-menu-input-border: $nova-border-strong !default;

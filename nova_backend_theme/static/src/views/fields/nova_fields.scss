@@ -1,0 +1,228 @@
+///
+/// Nova fields — the micro-typography and control system. Every input,
+/// label, check, switch, tag, star and bar follows one language.
+///
+/// Labels: 13px semibold muted (SaaS eyebrow, sentence case — never shouty).
+/// Controls: 17px targets, strong borders, blue checks, 100–150ms motion.
+///
+
+// Field labels across form views.
+.o_form_view .o_form_label {
+    font-size: $font-size-sm;
+    font-weight: 600;
+    color: $o-gray-700;
+    letter-spacing: 0.01em;
+}
+
+// Checkboxes + radios: generous, rounded, honest motion.
+.form-check-input {
+    width: 16px;
+    height: 16px;
+    border: 1px solid $nova-border-strong;
+    cursor: pointer;
+    transition: background-color $nova-dur-fast $o-easing-enter, border-color $nova-dur-fast $o-easing-enter, box-shadow $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-ink-muted;
+    }
+
+    &:focus {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.2);
+    }
+
+    &:checked {
+        background-color: $nova-action;
+        border-color: $nova-action;
+    }
+
+    &:disabled {
+        cursor: default;
+        opacity: $o-opacity-disabled;
+    }
+}
+
+.form-check-input[type="checkbox"] {
+    border-radius: 6px;
+}
+
+.form-check-input[type="radio"] {
+    border-radius: 50%;
+}
+
+.form-check-label {
+    cursor: pointer;
+}
+
+// Toggle switches: 40px iOS-calm track, white knob, blue on-state.
+.form-switch .form-check-input {
+    width: 40px;
+    height: 22px;
+    border-radius: 999px;
+    background-color: $o-gray-300;
+    border-color: transparent;
+    transition: background-color $nova-dur-em $o-easing-enter, box-shadow $nova-dur-em $o-easing-enter;
+
+    &:hover {
+        background-color: $o-gray-400;
+    }
+
+    &:checked {
+        background-color: $nova-action;
+        border-color: transparent;
+    }
+
+    &:focus {
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.2);
+    }
+}
+
+// Selects: boxed, calm, blue-ringed on focus.
+.form-select {
+    border-radius: $o-border-radius;
+    border-color: $nova-border-strong;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-ink-muted;
+    }
+
+    &:focus {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.18);
+    }
+}
+
+// Priority stars: calm gray when empty, readable amber when lit.
+.o_field_widget .o_priority .o_priority_star {
+    font-size: 18px;
+    color: $nova-border-strong;
+    transition: transform $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        transform: $nova-grow;
+    }
+
+    &.oi-filled {
+        color: $o-main-favorite-color;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+// Tags: soft pills with a border that firms on hover. Colored tags
+// (o_tag_color_*) keep their loop fills; only uncolored tags restyle.
+.o_tag:not([class*="o_tag_color_"]) {
+    background: $o-gray-100;
+    border: 1px solid $o-border-color;
+    color: $nova-ink;
+    transition: border-color $nova-dur-fast $o-easing-enter, box-shadow $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-border-strong;
+        box-shadow: $nova-shadow-sm;
+    }
+}
+
+// Tag × : full 24px target, visible on hover/focus, red-soft hover.
+.o_tag .o_delete {
+    min-width: 24px;
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    transition: background $nova-dur-fast $o-easing-enter, opacity $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: rgba($o-danger, 0.12);
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+        opacity: 1;
+    }
+}
+
+.o_tag:hover .o_delete, .o_tag:focus-within .o_delete {
+    opacity: 1;
+}
+
+// Progress bars: 6px pill track, blue fill, tabular value.
+.o_progressbar .progress {
+    height: var(--ProgressBarField-height, 6px);
+    border-radius: 999px;
+    background: $o-gray-200;
+}
+
+.o_progressbar .progress-bar:not([class*="bg-"]) {
+    background: $nova-action;
+    border-radius: 999px;
+}
+
+// Radio groups breathe on the 8pt grid.
+.o_field_radio .form-check {
+    min-height: 32px;
+}
+
+// Ribbon keeps the system stack (stock hardcodes Lato).
+.ribbon > span {
+    font-family: $o-system-fonts;
+}
+
+// many2one helper buttons get a real keyboard ring (stock ships none).
+.o_field_many2one_selection .o_external_button,
+.o_field_many2one_selection .o_dropdown_button {
+    border-radius: 6px;
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+// Monetary affixes stay muted so the number leads, not the currency mark.
+.o_field_widget.o_field_monetary .o_monetary_ghost_value {
+    color: $nova-ink-muted;
+}
+
+// Phone field: the deep link keeps Nova's action ink, not stock blue.
+.o_field_phone .o_phone_form_link {
+    color: $nova-action-active;
+}
+
+// Percent-pie ring uses the theme token in light; dark bundle gets the twin.
+.o_field_percent_pie .o_pie {
+    --PercentPieField-color-active: #{$nova-action};
+}
+
+// Field images get the squircle (faces stay round — see note in form file).
+.o_field_image img {
+    border-radius: 12px;
+}
+
+// Date picker today cell: accent fill, not stock danger red — the one
+// today color Odoo assigns unguarded, so Nova's variable remaps cannot
+// reach it. Covers every picker: forms, search filters, calendar panel.
+.o_datetime_picker .o_today > div {
+    background-color: $nova-action;
+    color: $nova-on-action;
+}
+
+@media (forced-colors: active) {
+    .form-check-input,
+    .o_field_widget .o_priority .o_priority_star,
+    .o_progressbar .progress-bar {
+        forced-color-adjust: auto;
+    }
+
+    .o_tag {
+        border: 1px solid CanvasText;
+    }
+}

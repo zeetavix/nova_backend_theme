@@ -1,0 +1,253 @@
+///
+/// Nova components (dark): menu/modal/toast surfaces elevate via lighter fills.
+///
+
+.dropdown-menu {
+    background: #2E2F30;
+    border-color: $o-border-color;
+
+    .dropdown-item {
+        &:hover, &:focus, &.focus, &.selected {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        &.active, &:active {
+            background: rgba(58, 175, 169, 0.20);
+            color: $o-main-headings-color;
+        }
+    }
+
+    .dropdown-header {
+        color: $nova-ink-muted;
+    }
+}
+
+// m2o/e-mail autocomplete matches the dropdown language in dark.
+.o-autocomplete--dropdown-menu {
+    background-color: #2E2F30;
+
+    .o-autocomplete--dropdown-item > a.ui-menu-item-wrapper {
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+    }
+
+    .o-autocomplete--dropdown-item > a.ui-state-active {
+        background-color: rgba(58, 175, 169, 0.20);
+        color: $o-main-headings-color;
+    }
+
+    .o_m2o_dropdown_option > a {
+        color: $nova-action-hover;
+    }
+}
+
+.modal-content {
+    --bs-modal-bg: #{$o-view-background-color};
+    --bs-modal-color: #{$nova-ink};
+    --bs-modal-border-color: #{$o-border-color};
+    --bs-modal-header-border-color: #{$o-border-color};
+    --bs-modal-footer-border-color: #{$o-border-color};
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        background: $nova-paper;
+    }
+}
+
+.badge, .o_badge, .o_tag {
+    &.text-bg-primary, &.bg-primary {
+        background: rgba(58, 175, 169, 0.18);
+        color: #4FD1C5;
+        border-color: rgba(58, 175, 169, 0.4);
+    }
+    &.text-bg-success, &.bg-success {
+        background: rgba($o-success, 0.18);
+        color: map-get($o-theme-text-colors, "success");
+        border: 1px solid rgba($o-success, 0.4);
+    }
+    &.text-bg-warning, &.bg-warning {
+        background: rgba($o-warning, 0.2);
+        color: map-get($o-theme-text-colors, "warning");
+        border: 1px solid rgba($o-warning, 0.4);
+    }
+    &.text-bg-danger, &.bg-danger {
+        background: rgba($o-danger, 0.16);
+        color: map-get($o-theme-text-colors, "danger");
+        border: 1px solid rgba($o-danger, 0.4);
+    }
+    &.text-bg-info, &.bg-info {
+        background: rgba($o-info, 0.18);
+        color: map-get($o-theme-text-colors, "info");
+        border: 1px solid rgba($o-info, 0.4);
+    }
+    &.text-bg-secondary, &.bg-secondary {
+        background: $o-gray-200;
+        color: $nova-ink;
+        border: 1px solid $o-border-color;
+    }
+    &.text-bg-light, &.bg-light {
+        background: $o-gray-100;
+        color: $nova-ink;
+        border: 1px solid $o-border-color;
+    }
+    &.text-bg-dark, &.bg-dark {
+        background: $o-black;
+        color: $o-white;
+    }
+}
+
+.tooltip-inner {
+    background: #1E1F20;
+    color: #F5F6F7;
+    border: 1px solid $o-border-color;
+}
+
+.o_list_renderer thead th {
+    background: rgba(36, 37, 38, 0.92);
+    color: $nova-ink-muted;
+}
+
+.o_list_renderer tbody tr td {
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+.o_list_renderer tfoot td, .o_list_renderer .o_list_footer {
+    background: $o-gray-100;
+    color: $nova-ink;
+}
+
+.o_form_sheet_bg {
+    background: $o-webclient-background-color;
+}
+
+.o_form_sheet {
+    background: $o-view-background-color;
+}
+
+.o_kanban_renderer .o_kanban_group {
+    background: #1E1F20;
+}
+
+.o_kanban_renderer .o_kanban_record {
+    background: #242526;
+}
+
+.o_web_client .o_form_view .o_input:focus, .o_web_client .o_form_view .o_input:focus-within,
+.o_web_client .o_field_widget input.o_input:focus, .o_web_client .o_field_widget select.o_input:focus {
+    border-bottom-color: $nova-action;
+    box-shadow: inset 0 -2px 0 $nova-action, 0 0 0 3px rgba(58, 175, 169, 0.28);
+}
+
+.o_select_menu_menu {
+    border: 1px solid $o-border-color;
+}
+
+.o_notification .o_notification_close {
+    filter: invert(1);
+}
+
+// Alerts: Bootstrap's light tints stay cream in dark, so re-tint all four
+// severities (notably .alert-warning in wizards like Launch Plan, where
+// dialog ink otherwise leaks in and text dies white-on-cream).
+.alert-info {
+    background-color: rgba($o-info, 0.14);
+    border-color: rgba($o-info, 0.45);
+    color: map-get($o-theme-text-colors, "info");
+}
+
+.alert-success {
+    background-color: rgba($o-success, 0.14);
+    border-color: rgba($o-success, 0.45);
+    color: map-get($o-theme-text-colors, "success");
+}
+
+.alert-warning {
+    background-color: rgba($o-warning, 0.16);
+    border-color: rgba($o-warning, 0.45);
+    color: map-get($o-theme-text-colors, "warning");
+}
+
+.alert-danger {
+    background-color: rgba($o-danger, 0.14);
+    border-color: rgba($o-danger, 0.45);
+    color: map-get($o-theme-text-colors, "danger");
+}
+
+// Wizard/modal sheets re-assert the severity ink above dialog text rules.
+.modal-content .alert-info, .modal-body .alert-info {
+    color: map-get($o-theme-text-colors, "info");
+}
+
+.modal-content .alert-success, .modal-body .alert-success {
+    color: map-get($o-theme-text-colors, "success");
+}
+
+.modal-content .alert-warning, .modal-body .alert-warning {
+    background-color: rgba($o-warning, 0.16);
+    border-color: rgba($o-warning, 0.45);
+    color: map-get($o-theme-text-colors, "warning");
+}
+
+.modal-content .alert-danger, .modal-body .alert-danger {
+    color: map-get($o-theme-text-colors, "danger");
+}
+
+// Highlight marks (navbar DB name, search matches): Bootstrap's pale yellow
+// keeps its cream fill in dark while the ink inherits light - unreadable.
+mark, .mark {
+    background-color: rgba($o-warning, 0.22);
+    color: map-get($o-theme-text-colors, "warning");
+}
+
+// Popovers (date/datetime picker popup included): Bootstrap's shell
+// vars stay light in dark — re-point the whole shell, arrow included.
+.o_web_client .popover {
+    --bs-popover-bg: #{$o-view-background-color};
+    --bs-popover-border-color: #{$o-border-color};
+    --bs-popover-header-bg: transparent;
+    --bs-popover-header-color: #{$nova-ink};
+    --bs-popover-body-color: #{$nova-ink};
+    --bs-popover-arrow-border: #{$o-border-color};
+    background-color: $o-view-background-color;
+    border-color: $o-border-color;
+    color: $nova-ink;
+}
+
+.o_web_client .popover .popover-header {
+    border-bottom-color: $o-border-color;
+}
+
+// Bootstrap's subtle fills are light tints pinned !important (facet
+// labels, badges, switcher rows): re-tint them for dark.
+.o_web_client .bg-primary-subtle {
+    background-color: rgba(58, 175, 169, 0.16) !important;
+}
+
+.o_web_client .bg-secondary-subtle {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.o_web_client .bg-success-subtle {
+    background-color: rgba($o-success, 0.16) !important;
+}
+
+.o_web_client .bg-warning-subtle {
+    background-color: rgba($o-warning, 0.16) !important;
+}
+
+.o_web_client .bg-danger-subtle {
+    background-color: rgba($o-danger, 0.16) !important;
+}
+
+.o_web_client .bg-info-subtle {
+    background-color: rgba($o-info, 0.16) !important;
+}
+
+// Dialog close (X): Bootstrap's glyph is dark-on-transparent; invert it.
+.btn-close {
+    filter: invert(1);
+}

@@ -1,0 +1,81 @@
+///
+/// Nova pivot + graph (lazy bundle) — real Community hooks:
+/// .o_pivot_view > .o_pivot table, header/cell classes, toolbar buttons;
+/// .o_graph_renderer frame, canvas container, custom tooltip.
+/// Card chrome + calm grid, no double frames.
+///
+
+.o_pivot_view {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    box-shadow: $nova-shadow-sm;
+    overflow: hidden;
+    padding: 8px 0;
+
+    .o_pivot {
+        margin: 0 12px;
+    }
+
+    table {
+        border-color: $o-border-color;
+    }
+
+    .o_pivot_cell_value {
+        font-variant-numeric: tabular-nums;
+        transition: background $nova-dur-fast $o-easing-enter;
+
+        &:hover {
+            background: $nova-action-soft;
+        }
+    }
+
+    .o_pivot_measure_row, .o_pivot_origin_row {
+        font-weight: 600;
+        color: $nova-ink;
+    }
+
+    .o_pivot_header_cell_closed, .o_pivot_header_cell_opened {
+        color: $nova-ink-muted;
+        font-weight: 600;
+    }
+}
+
+// Toolbar row reads as a card header.
+.o_pivot_buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+}
+
+// Graph: single frame (merge stock inner border-top), rounded canvas.
+.o_graph_renderer {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    box-shadow: $nova-shadow-sm;
+    overflow: hidden;
+
+    .o_graph_canvas_container {
+        border-top: 0;
+        padding: 12px;
+    }
+
+    .o_graph_custom_tooltip {
+        background: $o-view-background-color;
+        border: 1px solid $o-border-color;
+        border-radius: 8px;
+        box-shadow: $nova-shadow-md;
+        padding: 6px 10px;
+        font-size: $font-size-sm;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    // Stacked group-by flyouts stay inside small screens.
+    .o_group_by_menu .dropdown-menu {
+        position: static;
+        transform: none;
+    }
+}

@@ -1,0 +1,165 @@
+///
+/// Nova base — app-wide calm. Original rules on public Community classes.
+/// Apple HIG: visible focus, 44px touch comfort, reduced-motion respect.
+///
+
+// App background + type smoothing.
+.o_web_client, .o_action_manager {
+    background-color: $o-webclient-background-color;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+::selection {
+    background: rgba($nova-action, 0.22);
+}
+
+// Visible keyboard focus everywhere (HIG Lens 1, Critical if missing).
+// Radius stays off table cells + switches so outlines hug their shape.
+.o_web_client :focus-visible:not(td):not(.o_data_cell):not(.form-check-input) {
+    outline: 2px solid $nova-action;
+    outline-offset: 2px;
+    border-radius: $o-border-radius-sm;
+}
+
+// Calm scrollbars with hoverable thumbs; thin + tinted in Firefox.
+.o_web_client *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+.o_web_client *::-webkit-scrollbar-thumb {
+    background: rgba($o-gray-500, 0.55);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+
+    &:hover {
+        background: rgba($o-gray-500, 0.8);
+        background-clip: content-box;
+        border: 2px solid transparent;
+    }
+}
+.o_web_client *::-webkit-scrollbar-track {
+    background: transparent;
+}
+.o_web_client * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba($o-gray-500, 0.55) transparent;
+}
+
+// View containers keep stock gutters; breathing comes from the views
+// themselves (sheets, cards, panels), never from overriding the manager.
+
+
+// Motion vocabulary (tokens live in primary variables):
+// dropdowns settle down 4px, modals rise 8px with a breath of scale,
+// toasts slide up. All 120–150ms, all cancellable, all guarded below.
+@keyframes nova-drop {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes nova-pop {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+}
+
+@keyframes nova-rise {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+.dropdown-menu.show {
+    animation: nova-drop $nova-dur-base $o-easing-enter;
+}
+
+// Full-screen mobile modals slide in natively; the pop is for sheets.
+.modal.show .modal-dialog {
+    animation: nova-pop $nova-dur-em $o-easing-enter;
+}
+
+.o_modal_full .modal-dialog {
+    animation: none;
+}
+
+.toast.show, .o_notification {
+    animation: nova-rise $nova-dur-em $o-easing-enter;
+}
+
+// Cards / sheets share one radius language. Shadows only float (dropdown/modal/sheet);
+// inline bordered cards (list, kanban) stay flat to avoid border+shadow doubling.
+.o_form_sheet_bg, .o_list_table, .o_kanban_renderer, .card {
+    border-radius: $o-border-radius-lg;
+}
+
+// Honest motion: brief, cancellable, off when user asks.
+// transform:none matters: without it lifts still snap to end-state under reduce.
+@media (prefers-reduced-motion: reduce) {
+    .o_web_client *, .o_web_client *::before, .o_web_client *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        transform: none !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+// Reduced transparency: blur washes become opaque (HIG).
+@media (prefers-reduced-transparency: reduce) {
+    .o_main_navbar, .o_control_panel, .o_list_renderer thead th {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    .o_main_navbar, .o_control_panel {
+        background: $o-view-background-color !important;
+    }
+}
+
+// Touch comfort: buttons + nav entries keep presence without breaking dense
+// widgets (dropdown cells manage their own padding).
+.o_web_client .btn, .o_web_client .o_nav_entry {
+    min-height: 32px;
+}
+.o_web_client .o_list_table input[type="checkbox"] {
+    padding: 5px;
+    background-clip: content-box;
+}
+@include media-breakpoint-down(md) {
+    .o_web_client .btn {
+        min-height: 40px;
+    }
+
+    // Thumb-first: nav, menus, facets and pager all clear 44px on phones.
+    .o_web_client .o_nav_entry,
+    .o_web_client .dropdown-item,
+    .o_web_client .o_facet_remove,
+    .o_web_client .o_cp_pager .btn,
+    .o_web_client .o_switch_view .btn {
+        min-height: 44px;
+    }
+
+    // Bottom sheets get thumb type, roomy rows and home-indicator air.
+    .o_bottom_sheet {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .o_bottom_sheet .btn {
+        min-height: 48px;
+    }
+}
+
+// Print: flatten everything to ink on paper. Theme depth stays on screen.
+@media print {
+    .o_web_client, .o_action_manager, .o_form_sheet, .o_list_renderer,
+    .o_kanban_record, .modal-content {
+        background: #FFFFFF;
+        box-shadow: none;
+        text-shadow: none;
+    }
+}

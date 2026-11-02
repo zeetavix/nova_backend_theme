@@ -1,0 +1,140 @@
+///
+/// Nova — dark tokens. Loaded via web.assets_web_dark (before light tokens
+/// in dark bundle). Same names, dark values. Original palette.
+/// Desaturated blues, elevated surfaces (Apple dark-mode HIG): lighter = higher.
+///
+
+$nova-action: #3AAFA9 !default;
+$nova-action-hover: #4FD1C5 !default;
+$nova-action-active: #7FE3DC !default;
+$nova-action-soft: rgba(58, 175, 169, 0.16) !default;
+
+$nova-ink: #E4E6EB !default;
+$nova-ink-muted: #B0B3B8 !default;
+$nova-surface-app: #18191A !default;
+$nova-surface-view: #242526 !default;
+$nova-border: #3E4042 !default;
+// Interactive borders meet 3:1 on dark view (was #4E4F50 at 1.87:1).
+$nova-border-strong: #8A8B8C !default;
+$nova-favorite-fill: #FBBF24 !default;
+// Ink on the action blue in dark (5.32:1 on #2D88FF).
+$nova-on-action: #0A1230 !default;
+
+$o-white: #FFFFFF !default;
+$o-black: #000000 !default;
+
+$o-gray-100: #303031 !default;
+$o-gray-200: #3A3B3C !default;
+$o-gray-300: #4E4F50 !default;
+$o-gray-400: #5A5B5C !default;
+$o-gray-500: #7A7B7C !default;
+$o-gray-600: #B0B3B8 !default;
+$o-gray-700: #C9CCD1 !default;
+$o-gray-800: #E4E6EB !default;
+$o-gray-900: #F5F6F7 !default;
+
+$o-community-color: $nova-action !default;
+$o-enterprise-color: $nova-action !default;
+$o-enterprise-action-color: $nova-action !default;
+
+$o-brand-odoo: $nova-action !default;
+$o-brand-primary: $nova-action !default;
+$o-brand-secondary: #B0B3B8 !default;
+$o-brand-lightsecondary: #3A3B3C !default;
+
+$o-action: $nova-action !default;
+$o-main-link-color: $nova-action-hover !default;
+
+$o-success: #31A24C !default;
+$o-info: #4AB3C4 !default;
+$o-warning: #E5A100 !default;
+// Borders/icons only. Body text uses theme-text danger #FF7A90 (6.17:1).
+$o-danger: #F02849 !default;
+
+$o-theme-text-colors: (
+    "success": #4ADE80,
+    "info": #7FB3FF,
+    "warning": #FBBF24,
+    "danger": #FF7A90,
+) !default;
+
+$o-webclient-background-color: $nova-surface-app !default;
+$o-view-background-color: $nova-surface-view !default;
+$o-shadow-color: #000000 !default;
+
+$o-main-text-color: $nova-ink !default;
+$o-main-color-muted: $nova-ink-muted !default;
+$o-main-headings-color: #FFFFFF !default;
+$o-main-favorite-color: #FBBF24 !default;
+
+$o-border-color: $nova-border !default;
+$o-form-lightsecondary: #3A3B3C !default;
+
+$o-component-active-color: #FFFFFF !default;
+$o-component-active-bg: $nova-action-soft !default;
+$o-component-active-border: $nova-action !default;
+
+// Dark depth comes from borders + elevation fills, not shadows
+// (Community dark pattern). Surfaces using these tokens go flat + bordered.
+$nova-shadow-sm: none !default;
+$nova-shadow-md: none !default;
+$nova-shadow-lg: none !default;
+// Same blur scale in dark (blur carries no color; utilities compile per bundle).
+$o-backdrop-blur: blur(16px) saturate(1.4) !default;
+$o-backdrop-blur-sm: blur(8px) !default;
+$o-backdrop-blur-lg: blur(24px) saturate(1.4) !default;
+
+$o-input-bg: #3A3B3C !default;
+$o-input-border-required: #E4E6EB !default;
+
+// Buttons in dark keep same map shape; fills use dark blue.
+$o-btns-bs-override: () !default;
+$o-btns-bs-override: map-merge((
+    "primary": (
+        background: $nova-action,
+        border: $nova-action,
+        color: $nova-on-action,
+        hover-background: $nova-action-hover,
+        hover-border: $nova-action-hover,
+        hover-color: $nova-on-action,
+        active-background: $nova-action-active,
+        active-border: $nova-action-active,
+        active-color: $nova-on-action,
+        disabled-background: $o-gray-200,
+        disabled-border: $o-gray-200,
+        disabled-color: $o-gray-600,
+    ),
+    "secondary": (
+        background: #3A3B3C,
+        border: $nova-border-strong,
+        color: $nova-ink,
+        hover-background: #4E4F50,
+        hover-border: $nova-border-strong,
+        hover-color: #FFFFFF,
+        active-background: $nova-action-soft,
+        active-border: $nova-action,
+        active-color: #FFFFFF,
+        disabled-background: #3A3B3C,
+        disabled-border: $nova-border,
+        disabled-color: $o-gray-600,
+    ),
+    "light": (
+        background: transparent,
+        border: transparent,
+        color: $nova-ink,
+        hover-background: rgba(255, 255, 255, 0.08),
+        hover-border: transparent,
+        hover-color: #FFFFFF,
+        active-background: $nova-action-soft,
+        active-border: $nova-action,
+        active-color: #FFFFFF,
+        disabled-background: transparent,
+        disabled-border: transparent,
+        disabled-color: $o-gray-600,
+    ),
+), $o-btns-bs-override);
+
+// --- Warm paper records (warm charcoal, not inversion) ---
+$nova-paper: #221F1B !default;
+$nova-paper-deep: #2C2823 !default;
+$nova-paper-border: #3A352E !default;

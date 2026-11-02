@@ -1,0 +1,71 @@
+///
+/// Nova portal (frontend) — customer portal in the Nova dialect.
+/// Bundle: web.assets_frontend, which does not carry Nova's backend
+/// variables, so this file is self-contained literals (Nova light tokens).
+/// Verified hooks: portal_templates.xml (o_portal_wrap/cards/index_card/
+/// docs/my_home/my_doc_table/pager) + portal.scss (navbar, chatter, search).
+///
+
+.o_portal_wrap {
+    .o_portal_navbar {
+        border-radius: 12px;
+    }
+
+    .o_portal_cards .o_portal_index_card {
+        border-radius: 10px;
+        transition: background 120ms ease, border-color 120ms ease;
+
+        &:hover {
+            background: #F0F2F5;
+            border-color: #B0B3B8;
+            text-decoration: none;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--nova-accent, #0E7C8A);
+            outline-offset: 2px;
+        }
+    }
+
+    .o_portal_my_doc_table {
+        thead th {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: #606770;
+            border-bottom: 1px solid #DADDE1;
+        }
+
+        tbody td {
+            border-top: 1px solid #DADDE1;
+            font-variant-numeric: tabular-nums;
+        }
+    }
+
+    .o_portal_pager .page-link {
+        border-radius: 6px;
+        color: #1C1E21;
+
+        &:focus-visible {
+            outline: 2px solid var(--nova-accent, #0E7C8A);
+            outline-offset: 1px;
+        }
+    }
+
+    .o_portal_search_panel .form-control {
+        border-radius: 999px;
+
+        &:focus {
+            border-color: var(--nova-accent, #0E7C8A);
+            box-shadow: 0 0 0 3px var(--nova-accent-soft, rgba(14, 124, 138, 0.18));
+        }
+    }
+
+    .o_portal_chatter_composer {
+        border-radius: 10px;
+    }
+
+    .o_portal_chatter_attachment {
+        border-radius: 6px;
+    }
+}

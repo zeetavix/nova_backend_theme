@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Nova accent sync: expose the company accent as a root CSS variable on
+         the portal frontend so portal and spreadsheet chrome follow Settings,
+         Appearance without a rebuild. The value is Selection-constrained to
+         six hexes server-side; the t-if whitelist below is belt-and-braces
+         so arbitrary strings can never reach a style block. -->
+    <template id="nova_portal_layout_accent" inherit_id="portal.frontend_layout" name="Nova Portal Accent">
+        <xpath expr="//head" position="inside">
+            <t t-set="nova_accent" t-value="request.env.company.nova_accent or '#0E7C8A'"/>
+            <style t-if="nova_accent in ['#0E7C8A', '#7C3AED', '#0E7C8A', '#0A7D2C', '#B42323', '#8A5700']">
+                :root {
+                    --nova-accent: <t t-out="nova_accent"/>;
+                    --nova-accent-soft: color-mix(in srgb, <t t-out="nova_accent"/> 18%, transparent);
+                }
+            </style>
+        </xpath>
+    </template>
+</odoo>

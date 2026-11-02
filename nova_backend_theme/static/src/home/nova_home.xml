@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="nova_backend_theme.NovaHome" owl="1">
+        <div class="nova_launcher" t-ref="this.rootRef" t-on-keydown="this.onGridKeydown" t-att-class="{ 'nova_onboarding': this.showOnboarding }">
+            <div class="nova_launcher_inner">
+                <div class="nova_banner">
+                    <div class="nova_banner_text">
+                        <p class="nova_date"><t t-out="this.todayLabel"/></p>
+                        <h1 class="nova_title"><t t-out="this.daypart"/>, <t t-out="this.firstName"/>.</h1>
+                    </div>
+                    <button
+                        type="button"
+                        class="nova_assistant_open"
+                        t-on-click="() => this.toggleAssistant()"
+                        aria-label="Ask Nova"
+                    >
+                        <span class="nova_spark" aria-hidden="true"><svg class="nova_ai_glyph" width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c.7 4.6 3 6.9 7.6 7.6-4.6.7-6.9 3-7.6 7.6-.7-4.6-3-6.9-7.6-7.6 4.6-.7 6.9-3 7.6-7.6Z" fill="currentColor"/><circle cx="19" cy="5.5" r="1.7" fill="currentColor"/><circle cx="5" cy="18.5" r="1.7" fill="currentColor"/></svg></span>
+                        <span>Ask Nova</span>
+                    </button>
+                </div>
+                <div t-if="this.showOnboarding" class="nova_onboard">
+                    <div class="nova_onboard_head">
+                        <p class="nova_onboard_title">
+                            Get set up in a minute
+                            <span class="nova_onboard_count"><t t-out="this.onboardProgress.done"/>/5</span>
+                        </p>
+                        <button
+                            type="button"
+                            class="nova_onboard_dismiss"
+                            aria-label="Dismiss setup guide"
+                            t-on-click="() => this.dismissOnboarding()"
+                        >×</button>
+                    </div>
+                    <ul class="nova_onboard_list">
+                        <t t-foreach="this.onboardProgress.items" t-as="item" t-key="item.key">
+                            <li class="nova_onboard_item" t-att-class="{ 'nova_onboard_done': item.done }">
+                                <span class="nova_onboard_box" aria-hidden="true"></span>
+                                <span><t t-out="item.label"/></span>
+                            </li>
+                        </t>
+                    </ul>
+                </div>
+                <div class="nova_search_wrap" t-att-class="{ 'nova_search_closed': !this.showSearch }">
+                    <input
+                        type="text"
+                        class="nova_search"
+                        placeholder="Search apps and menu items…"
+                        aria-label="Search apps and menu items"
+                        t-ref="this.searchRef"
+                        t-att-value="this.searchText"
+                        t-att-tabindex="this.showSearch ? '0' : '-1'"
+                        t-on-input="this.onSearchInput"
+                        t-on-keydown="this.onSearchKeydown"
+                    />
+                    <button
+                        t-if="this.searchText"
+                        type="button"
+                        class="nova_search_clear"
+                        aria-label="Clear search"
+                        t-on-click="this.clearSearch"
+                    >×</button>
+                </div>
+                <p t-if="this.searchText" class="nova_counts">
+                    <t t-out="this.appCount"/> apps · <t t-out="this.menuCount"/> menus · <t t-out="this.recordCount"/> records
+                </p>
+                <div t-if="this.searchText" class="nova_section">
+                    <h2 class="nova_section_title">Apps</h2>
+                    <div class="nova_apps" role="listbox" aria-label="Applications" t-att-aria-activedescendant="this.selectedDescId">
+                    <t t-foreach="this.apps" t-as="app" t-key="app.id">
+                        <div class="nova_tile">
+                            <button
+                                type="button"
+                                class="nova_app"
+                                role="option"
+                                t-att-aria-label="app.name"
+                                t-att-aria-selected="this.isSelected(app.id) ? 'true' : 'false'"
+                                t-att-data-menu-id="app.id"
+                                t-att-id="'nova-tile-' + app.id"
+                                t-att-class="{ 'nova_focused': this.isSelected(app.id) }"
+                                t-on-click="() => this.openApp(app)"
+                            >
+                                <t t-set="icon" t-value="this.appIcon(app)"/>
+                                <span class="nova_app_icon">
+                                    <img
+                                        t-if="icon.kind === 'img'"
+                                        t-att-src="icon.src"
+                                        t-att-alt="app.name"
+                                    />
+                                    <i
+                                        t-elif="icon.kind === 'font'"
+                                        class="oi"
+                                        t-att-data-icon="icon.icon"
+                                        t-att-style="'color:' + icon.color"
+                                    />
+                                    <span t-else="" class="nova_app_initial"><t t-out="icon.initial"/></span>
+                                </span>
+                                <span class="nova_caption"><t t-out="app.name"/></span>
+                            </button>
+                            <button
+                                type="button"
+                                class="nova_fav"
+                                t-att-aria-pressed="this.isFavorite(app.id) ? 'true' : 'false'"
+                                t-att-aria-label="'Star ' + app.name"
+                                t-att-class="{ 'nova_fav_on oi-filled': this.isFavorite(app.id) }"
+                                t-on-click="(ev) => this.toggleFavorite(app, ev)"
+                            ><i class="oi oi-fw" data-icon="star" aria-hidden="true"></i></button>
+                        </div>
+                    </t>
+                    </div>
+                </div>
+                <div t-if="this.searchText &amp;&amp; this.menuCount" class="nova_section">
+                    <h2 class="nova_section_title">Menu items</h2>
+                    <div class="nova_menu_rows" role="listbox" aria-label="Menu items" t-att-aria-activedescendant="this.selectedDescId">
+                        <t t-foreach="this.matchedMenus" t-as="entry" t-key="entry.menu.id">
+                            <button
+                                type="button"
+                                class="nova_result"
+                                role="option"
+                                t-att-aria-label="entry.path"
+                                t-att-aria-selected="this.isSelected(entry.menu.id) ? 'true' : 'false'"
+                                t-att-data-menu-id="entry.menu.id"
+                                t-att-id="'nova-tile-' + entry.menu.id"
+                                t-att-class="{ 'nova_focused': this.isSelected(entry.menu.id) }"
+                                t-on-click="() => this.openMenu(entry)"
+                            >
+                                <t t-set="ricon" t-value="this.appIcon(entry.app)"/>
+                                <span class="nova_result_icon">
+                                    <img
+                                        t-if="ricon.kind === 'img'"
+                                        t-att-src="ricon.src"
+                                        t-att-alt="entry.app.name"
+                                    />
+                                    <span t-else="" class="nova_result_initial"><t t-out="entry.app.name.slice(0, 1)"/></span>
+                                </span>
+                                <span class="nova_result_text">
+                                    <span class="nova_result_name"><t t-out="entry.menu.name"/></span>
+                                    <span class="nova_result_path"><t t-out="entry.path"/></span>
+                                </span>
+                            </button>
+                        </t>
+                    </div>
+                </div>
+                <div t-if="this.searchText &amp;&amp; this.recordCount" class="nova_section">
+                    <h2 class="nova_section_title">Records</h2>
+                    <div class="nova_menu_rows" role="listbox" aria-label="Records" t-att-aria-activedescendant="this.selectedDescId">
+                        <t t-foreach="this.recordResults" t-as="rec" t-key="rec.model + rec.res_id">
+                            <div class="nova_result_wrap">
+                                <button
+                                    type="button"
+                                    class="nova_result"
+                                    role="option"
+                                    t-att-aria-label="rec.display_name"
+                                    t-att-data-menu-id="'record:' + rec.model + ':' + rec.res_id"
+                                    t-att-data-model="rec.model"
+                                    t-att-id="this.domId('nova-rec', rec.model, rec.res_id)"
+                                    t-att-data-res-id="rec.res_id"
+                                    t-on-click="() => this.openRecord(rec)"
+                                >
+                                    <span class="nova_result_icon" aria-hidden="true">
+                                        <span class="nova_result_initial"><t t-out="rec.display_name.slice(0, 1)"/></span>
+                                    </span>
+                                    <span class="nova_result_text">
+                                        <span class="nova_result_name"><t t-out="rec.display_name"/></span>
+                                        <span class="nova_result_path"><t t-out="rec.model_label"/></span>
+                                    </span>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="nova_pin"
+                                    t-att-aria-pressed="this.isPinned(rec) ? 'true' : 'false'"
+                                    t-att-aria-label="'Pin ' + rec.display_name"
+                                    t-att-class="{ 'nova_pin_on': this.isPinned(rec) }"
+                                    t-on-click="(ev) => this.togglePin(rec, ev)"
+                                >★</button>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <div t-if="this.searchText &amp;&amp; !this.hasResults" class="nova_no_result">
+                    <p class="nova_no_result_title">Nothing found</p>
+                    <p class="nova_no_result_hint">Try a different search, or ask your admin for access.</p>
+                    <button type="button" class="btn btn-secondary" t-on-click="this.clearSearch">Clear search</button>
+                </div>
+                <div t-if="this.showAttention" class="nova_section">
+                    <div class="nova_section_head">
+                        <h2 class="nova_section_title">
+                            Today<t t-if="this.digestOverdue"> · <t t-out="this.digestOverdue"/> overdue</t><t t-if="!this.digestOverdue &amp;&amp; this.digestToday"> · <t t-out="this.digestToday"/> due</t>
+                        </h2>
+                        <button
+                            t-if="this.digestOverdue"
+                            type="button"
+                            class="nova_digest_cta"
+                            t-on-click="() => this.startDayQueue()"
+                            t-att-aria-label="'Start triage: ' + this.digestOverdue + ' overdue activities'"
+                        >Start day</button>
+                    </div>
+                    <div class="nova_menu_rows" role="listbox" aria-label="Due activities">
+                        <t t-foreach="this.attentionItems" t-as="todo" t-key="todo.id">
+                            <div class="nova_att_row">
+                                <button
+                                    type="button"
+                                    class="nova_result"
+                                    role="option"
+                                    t-att-aria-label="todo.summary"
+                                    t-att-data-menu-id="'attention:' + todo.id"
+                                    t-att-id="'nova-att-' + todo.id"
+                                    t-on-click="() => this.openAttention(todo)"
+                                >
+                                    <span class="nova_result_icon" aria-hidden="true">
+                                        <span class="nova_result_initial"><t t-out="todo.summary.slice(0, 1)"/></span>
+                                    </span>
+                                    <span class="nova_result_text">
+                                        <span class="nova_result_name"><t t-out="todo.summary"/></span>
+                                        <span class="nova_result_path"><t t-out="todo.res_name"/></span>
+                                    </span>
+                                    <span class="nova_due" t-att-class="'nova_due_' + todo.bucket"><t t-out="todo.date_deadline"/></span>
+                                </button>
+                                <span class="nova_att_actions">
+                                    <button
+                                        type="button"
+                                        class="nova_att_btn"
+                                        t-on-click="(ev) => this.snoozeAttention(todo, ev)"
+                                        t-att-aria-label="'Snooze to tomorrow: ' + todo.summary"
+                                        title="Snooze to tomorrow"
+                                    >Tomorrow</button>
+                                    <button
+                                        type="button"
+                                        class="nova_att_btn"
+                                        t-on-click="(ev) => this.doneAttention(todo, ev)"
+                                        t-att-aria-label="'Mark done: ' + todo.summary"
+                                        title="Mark done"
+                                    >Done</button>
+                                </span>
+                            </div>
+                        </t>
+                    </div>
+                    <button
+                        t-if="this.attentionMore"
+                        type="button"
+                        class="nova_att_more"
+                        t-att-aria-expanded="this.attentionExpanded ? 'true' : 'false'"
+                        t-on-click="this.toggleAttention"
+                    >
+                        <span t-if="this.attentionExpanded">Show less</span>
+                        <span t-else="">
+                            Show <t t-out="this.attentionMore"/> more due
+                        </span>
+                    </button>
+                </div>
+                <div t-if="this.showCaughtUp" class="nova_section">
+                    <p class="nova_caughtup"><span class="nova_caughtup_tick" aria-hidden="true">✓</span> All caught up — nothing due.</p>
+                </div>
+                <div t-if="this.showDock" class="nova_section">
+                    <h2 class="nova_section_title">Watch dock</h2>
+                    <div class="nova_menu_rows" role="listbox" aria-label="Watched records" t-att-aria-activedescendant="this.selectedDescId">
+                        <t t-foreach="this.dockRows" t-as="row" t-key="row.res_model + row.res_id">
+                            <div class="nova_result_wrap">
+                            <button
+                                type="button"
+                                class="nova_result nova_dock_row"
+                                role="option"
+                                t-att-aria-label="row.display_name"
+                                t-att-data-menu-id="'dock:' + row.res_model + ':' + row.res_id"
+                                t-att-id="this.domId('nova-rec', row.res_model, row.res_id)"
+                                t-att-data-model="row.res_model"
+                                t-att-data-res-id="row.res_id"
+                                t-att-class="{ 'nova_focused': this.isSelected('dock:' + row.res_model + ':' + row.res_id) }"
+                                t-on-click="() => this.openRecord(row)"
+                            >
+                                <span class="nova_result_icon" aria-hidden="true">
+                                    <span class="nova_result_initial"><t t-out="row.display_name.slice(0, 1)"/></span>
+                                </span>
+                                <span class="nova_result_text">
+                                    <span class="nova_result_name"><t t-out="row.display_name"/></span>
+                                    <span class="nova_result_path"><t t-out="row.stale_label"/><span class="nova_stale" t-att-class="'nova_stale_' + row.stale" aria-hidden="true"></span></span>
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                class="nova_pin nova_pin_on"
+                                aria-pressed="true"
+                                t-att-aria-label="'Unpin ' + row.display_name"
+                                t-on-click="(ev) => this.toggleDockPin(row, ev)"
+                            >★</button>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <div t-if="!this.searchText &amp;&amp; this.quickCreate.length" class="nova_section">
+                    <h2 class="nova_section_title">Quick create</h2>
+                    <div class="nova_create_row">
+                        <t t-foreach="this.quickCreate" t-as="act" t-key="act.key">
+                            <button
+                                type="button"
+                                class="nova_create_btn"
+                                t-att-aria-label="act.label"
+                                t-on-click="() => this.openCreate(act)"
+                            ><span class="nova_create_plus" aria-hidden="true">+</span><span><t t-out="act.label"/></span></button>
+                        </t>
+                    </div>
+                </div>
+                <div class="nova_apps_head">
+                    <h2 class="nova_section_title">Apps</h2>
+                </div>
+                <div t-if="!this.searchText" class="nova_apps" role="listbox" aria-label="Applications" t-att-aria-activedescendant="this.selectedDescId">
+                    <t t-foreach="this.limitedTiles" t-as="app" t-key="app.id">
+                        <div class="nova_tile">
+                            <button
+                                type="button"
+                                class="nova_app"
+                                role="option"
+                                t-att-aria-label="app.name"
+                                t-att-aria-selected="this.isSelected(app.id) ? 'true' : 'false'"
+                                t-att-data-menu-id="app.id"
+                                t-att-id="'nova-tile-' + app.id"
+                                t-att-class="{ 'nova_focused': this.isSelected(app.id) }"
+                                t-on-click="() => this.openApp(app)"
+                            >
+                                <t t-set="icon" t-value="this.appIcon(app)"/>
+                                <span class="nova_app_icon">
+                                    <img
+                                        t-if="icon.kind === 'img'"
+                                        t-att-src="icon.src"
+                                        t-att-alt="app.name"
+                                    />
+                                    <i
+                                        t-elif="icon.kind === 'font'"
+                                        class="oi"
+                                        t-att-data-icon="icon.icon"
+                                        t-att-style="'color:' + icon.color"
+                                    />
+                                    <span t-else="" class="nova_app_initial"><t t-out="icon.initial"/></span>
+                                </span>
+                                <span class="nova_caption"><t t-out="app.name"/></span>
+                            </button>
+                            <button
+                                type="button"
+                                class="nova_fav"
+                                t-att-aria-pressed="this.isFavorite(app.id) ? 'true' : 'false'"
+                                t-att-aria-label="'Star ' + app.name"
+                                t-att-class="{ 'nova_fav_on oi-filled': this.isFavorite(app.id) }"
+                                t-on-click="(ev) => this.toggleFavorite(app, ev)"
+                            ><i class="oi oi-fw" data-icon="star" aria-hidden="true"></i></button>
+                        </div>
+                    </t>
+                </div>
+                <div t-if="!this.searchText &amp;&amp; (this.hasMoreTiles || this.showAllTiles())" class="nova_apps_toggle">
+                    <button
+                        type="button"
+                        class="nova_digest_cta"
+                        t-on-click="() => this.toggleShowAll()"
+                        t-att-aria-expanded="this.showAllTiles() ? 'true' : 'false'"
+                    ><t t-if="this.showAllTiles()">Show less</t><t t-else="">Show all <t t-out="this.totalTiles"/> apps</t></button>
+                </div>
+                <div t-if="!this.searchText &amp;&amp; this.emptyTiles" class="nova_hint_card">
+                    <p class="nova_hint_title"><t t-out="this.emptyTiles.title"/></p>
+                    <p class="nova_hint_text"><t t-out="this.emptyTiles.text"/></p>
+                </div>
+                <div t-if="this.insightsPending" class="nova_section" aria-hidden="true">
+                    <h2 class="nova_section_title">Insights</h2>
+                    <div class="nova_insights">
+                        <div class="nova_kpi nova_shimmer"></div>
+                        <div class="nova_kpi nova_shimmer"></div>
+                        <div class="nova_kpi nova_shimmer"></div>
+                        <div class="nova_kpi nova_shimmer"></div>
+                    </div>
+                </div>
+                <div t-if="this.showInsights" class="nova_section">
+                    <h2 class="nova_section_title">Insights<t t-if="this.insightsFresh"> · </t><span t-if="this.insightsFresh" class="nova_fresh"><t t-out="this.insightsFresh"/></span></h2>
+                    <div class="nova_insights">
+                        <t t-foreach="this.insightTiles" t-as="tile" t-key="tile.id">
+                            <button
+                                type="button"
+                                class="nova_kpi"
+                                t-att-class="{ 'nova_kpi_overdue': tile.overdue }"
+                                t-att-aria-label="tile.title + ': ' + tile.value + (tile.overdue ? ', ' + tile.overdue + ' overdue' : '')"
+                                t-on-click="() => this.openInsight(tile)"
+                            >
+                                <span class="nova_kpi_title"><t t-out="tile.title"/><span t-if="tile.overdue" class="nova_kpi_dot" aria-hidden="true"></span></span>
+                                <span class="nova_kpi_value"><t t-out="tile.value"/></span>
+                                <span t-if="tile.overdue" class="nova_kpi_due"><t t-out="tile.overdue"/> overdue</span>
+                                <span t-if="this.deltaCaption(tile)" class="nova_kpi_delta"><t t-out="this.deltaCaption(tile)"/></span>
+                            </button>
+                        </t>
+                    </div>
+                </div>
+                <p class="nova_hints"><kbd>↑</kbd><kbd>↓</kbd> navigate · <kbd>Enter</kbd> opens · <kbd>Esc</kbd> clears · <kbd>Ctrl K</kbd> command palette</p>
+            </div>
+            <button
+                type="button"
+                class="nova_fab"
+                aria-label="Open Nova assistant"
+                t-on-click="() => this.toggleAssistant()"
+            >
+                <span aria-hidden="true"><svg class="nova_ai_glyph" width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c.7 4.6 3 6.9 7.6 7.6-4.6.7-6.9 3-7.6 7.6-.7-4.6-3-6.9-7.6-7.6 4.6-.7 6.9-3 7.6-7.6Z" fill="currentColor"/><circle cx="19" cy="5.5" r="1.7" fill="currentColor"/><circle cx="5" cy="18.5" r="1.7" fill="currentColor"/></svg></span>
+            </button>
+            <div t-if="this.assistantIsOpen" class="nova_assistant" role="dialog" aria-label="Nova assistant">
+                <div class="nova_assistant_head">
+                    <p class="nova_assistant_title"><span aria-hidden="true"><svg class="nova_ai_glyph" width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c.7 4.6 3 6.9 7.6 7.6-4.6.7-6.9 3-7.6 7.6-.7-4.6-3-6.9-7.6-7.6 4.6-.7 6.9-3 7.6-7.6Z" fill="currentColor"/><circle cx="19" cy="5.5" r="1.7" fill="currentColor"/><circle cx="5" cy="18.5" r="1.7" fill="currentColor"/></svg></span> Nova</p>
+                    <button
+                        type="button"
+                        class="nova_assistant_close"
+                        aria-label="Close assistant"
+                        t-on-click="() => this.toggleAssistant()"
+                    >×</button>
+                </div>
+                <div class="nova_assistant_messages">
+                    <t t-foreach="this.assistantMessages" t-as="msg" t-key="msg.id">
+                        <div class="nova_msg" t-att-class="'nova_msg_' + msg.role">
+                            <p class="nova_msg_text"><t t-out="msg.text"/></p>
+                            <div t-if="msg.buttons &amp;&amp; msg.buttons.length" class="nova_msg_buttons">
+                                <t t-foreach="msg.buttons" t-as="btn" t-key="btn.label + btn.menuId">
+                                    <button
+                                        type="button"
+                                        class="nova_chip"
+                                        t-on-click="() => this.openAssistantButton(btn)"
+                                    ><t t-out="btn.label"/></button>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                <div class="nova_assistant_inputbar">
+                    <input
+                        type="text"
+                        class="nova_assistant_input"
+                        placeholder="Ask Nova… e.g. open invoices"
+                        aria-label="Ask Nova"
+                        t-ref="this.assistantInputRef"
+                        t-on-keydown="this.onAssistantKeydown"
+                    />
+                    <button
+                        type="button"
+                        class="nova_assistant_send"
+                        aria-label="Send"
+                        t-on-click="() => this.sendAssistant()"
+                    >↑</button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

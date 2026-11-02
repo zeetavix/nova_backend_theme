@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Nova Launcher action. Opened from the navbar grid button and used as
+         the default landing page; it intentionally has no app menu of its own
+         (leaving an app always returns to the launcher). -->
+    <record id="action_nova_home" model="ir.actions.client">
+        <field name="name">Home</field>
+        <field name="tag">nova_home</field>
+    </record>
+</odoo>

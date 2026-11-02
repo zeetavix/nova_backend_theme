@@ -1,0 +1,46 @@
+///
+/// Nova onboarding strip — every app's getting-started card, calm.
+/// Verified hooks: container/main/wrap/steps/done/just-done/completed.
+///
+
+.o_onboarding_container {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    box-shadow: $nova-shadow-sm;
+    padding: 20px 24px;
+}
+
+.o_onboarding_step {
+    border-radius: $o-border-radius;
+    padding: 8px 12px;
+    transition: background $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+}
+
+.o_onboarding_step.o_onboarding_step__todo .o_onboarding_step_content {
+    color: $nova-ink;
+}
+
+.o_onboarding_step .o_onboarding_step_action__done {
+    color: map-get($o-theme-text-colors, "success");
+    font-weight: 600;
+}
+
+.o_onboarding_completed_message {
+    font-weight: 600;
+    color: map-get($o-theme-text-colors, "success");
+}
+
+.o_onboarding_btn_close {
+    border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_onboarding_step {
+        transition: none;
+    }
+}

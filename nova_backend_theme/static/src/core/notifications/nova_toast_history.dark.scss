@@ -1,0 +1,19 @@
+///
+/// Nova toast history (dark).
+///
+
+.nova_bell_panel {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    box-shadow: none;
+}
+
+.nova_bell_head {
+    background: $o-view-background-color;
+    border-bottom-color: $o-border-color;
+    color: $nova-ink;
+}
+
+.nova_bell_item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}

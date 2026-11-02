@@ -1,0 +1,854 @@
+///
+/// Nova login — first impression.
+///
+/// Today's DOM (stock, untouched): #wrapwrap > main > .container.py-5
+///   > .card.o_database_list > .card-body > form.oe_login_form
+///
+/// nova_login_templates.xml turns that container into a two-panel shell
+/// and injects the brand aside. This file carries the whole visual
+/// system: split layout, teal brand panel, calm 46px fields, and a dark
+/// theme that is a real second design, not an inversion.
+///
+/// Ships in web.assets_frontend (assets_web_dark never reaches /web/login).
+/// Every value is self-contained: the frontend bundle carries no Nova
+/// variables, and portal.frontend_layout pins .btn-primary inline —
+/// hence the !important on the action colour only.
+///
+
+$nv-teal-500: #3AAFA9;
+$nv-teal-600: #0E7C8A;
+$nv-teal-700: #0B6B77;
+$nv-teal-800: #07525C;
+$nv-ink: #1C2430;
+$nv-body: #4E5660;
+$nv-muted: #8A929C;
+$nv-line: #E3E6EA;
+$nv-field: #D7DBE0;
+
+// ---------------------------------------------------------------- shell
+html:has(.o_database_list),
+body:has(.o_database_list) {
+    min-height: 100%;
+}
+
+body:has(.o_database_list) {
+    margin: 0;
+    // !important: the layout tags the body with Bootstrap's bg-100
+    // utility, which is generated with !important.
+    background:
+        radial-gradient(900px 620px at 92% 6%, rgba(14, 124, 138, 0.075), transparent 62%),
+        radial-gradient(760px 520px at 68% 104%, rgba(14, 124, 138, 0.05), transparent 64%),
+        #ECEEF1 !important;
+    color: $nv-ink;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+main > .container:has(> .o_database_list) {
+    width: 100%;
+    max-width: none !important;
+    min-height: 100vh;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: grid;
+    grid-template-columns: minmax(360px, 46%) minmax(0, 1fr);
+    align-items: stretch;
+}
+
+// ----------------------------------------------------------- brand panel
+.nova_login_brand {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 72px 64px;
+    color: #ffffff;
+    background:
+        radial-gradient(115% 85% at 8% 0%, rgba(91, 211, 203, 0.30), transparent 56%),
+        radial-gradient(90% 80% at 100% 100%, rgba(3, 26, 31, 0.55), transparent 62%),
+        linear-gradient(148deg, #12727F 0%, #0A5F6B 46%, #05323A 100%);
+
+    // Hairline grid, faded toward the edge: structure without noise.
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background-image:
+            linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+        background-size: 56px 56px;
+        -webkit-mask-image: radial-gradient(120% 100% at 18% 0%, #000 22%, transparent 80%);
+        mask-image: radial-gradient(120% 100% at 18% 0%, #000 22%, transparent 80%);
+    }
+
+    // One soft glow, low and right: depth without a gradient smear.
+    &::after {
+        content: "";
+        position: absolute;
+        right: -160px;
+        bottom: -180px;
+        z-index: -1;
+        width: 440px;
+        height: 440px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(91, 211, 203, 0.24), transparent 68%);
+    }
+}
+
+.nova_login_brand_inner {
+    max-width: 400px;
+}
+
+.nova_login_lockup {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 54px;
+}
+
+// A square mark keeps its 54px plate. A wordmark gets the room it needs:
+// never squashed, never stretched, capped so a 4000px export still fits.
+.nova_login_mark {
+    flex: 0 0 auto;
+    width: 54px;
+    height: 54px;
+    display: block;
+    object-fit: contain;
+    object-position: center;
+    filter: drop-shadow(0 6px 16px rgba(4, 32, 38, 0.35));
+}
+
+img.nova_login_mark {
+    // Uploaded assets are transparent PNGs; the shadow belongs to the mark,
+    // not to a rectangle around it.
+    filter: drop-shadow(0 6px 16px rgba(4, 32, 38, 0.28));
+}
+
+img.nova_login_mark.is_wordmark {
+    width: auto;
+    height: auto;
+    max-width: 300px;
+    max-height: 64px;
+}
+
+// A dark logo on the dark teal panel disappears. Give it a quiet plate
+// instead of recolouring someone's artwork.
+.nova_login_mark.is_dark:not(.is_wordmark) {
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: 0 8px 20px rgba(3, 26, 31, 0.28);
+}
+
+.nova_login_mark.is_dark.is_wordmark {
+    // content-box so max-width/max-height describe the artwork, not the
+    // plate: padding must never eat into the logo's own proportions.
+    box-sizing: content-box;
+    background: rgba(255, 255, 255, 0.94);
+    border-radius: 12px;
+    padding: 8px 14px;
+    box-shadow: 0 8px 20px rgba(3, 26, 31, 0.28);
+}
+
+.nova_login_wordmark {
+    font-size: 21px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+}
+
+.nova_login_headline {
+    margin: 44px 0 12px;
+    font-size: 36px;
+    font-weight: 650;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+}
+
+.nova_login_sub {
+    margin: 0;
+    max-width: 34ch;
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.76);
+}
+
+.nova_login_points {
+    margin: 34px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 14px;
+
+    li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        font-size: 14px;
+        line-height: 1.45;
+        color: rgba(255, 255, 255, 0.88);
+    }
+}
+
+.nova_login_tick {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    margin-top: 1px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    line-height: 1;
+    color: #B8F0EC;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.nova_login_foot {
+    margin: 56px 0 0;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.52);
+
+    .nova_login_sep {
+        margin: 0 6px;
+        opacity: 0.7;
+    }
+
+    // The contact address is an action inside a quiet line: keep the size,
+    // lift the contrast, underline only on hover.
+    a {
+        color: rgba(255, 255, 255, 0.82) !important;
+        font-weight: 500;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+
+        &:hover {
+            color: #ffffff !important;
+            border-bottom-color: rgba(255, 255, 255, 0.65);
+        }
+    }
+}
+
+// ------------------------------------------------------------ sign-in card
+main > .container:has(> .o_database_list) > .o_database_list {
+    place-self: center;
+    width: 100%;
+    max-width: 420px !important;
+    margin: 40px 24px !important;
+    padding: 0 !important;
+    // !important: the card also carries Bootstrap's bg-100 utility.
+    background: #ffffff !important;
+    border: 1px solid $nv-line;
+    border-radius: 20px;
+    box-shadow:
+        0 1px 2px rgba(16, 24, 40, 0.04),
+        0 18px 40px -12px rgba(16, 24, 40, 0.16);
+}
+
+main > .container:has(> .o_database_list) .card-body {
+    // The stock frontend paints .card-body white-ish; let the card colour
+    // (light or dark) show through instead of a second surface.
+    background: transparent !important;
+    padding: 34px 34px 22px;
+}
+
+// Stock company logo block keeps its place, just calmer spacing.
+.o_database_list .card-body > .text-center.pb-3.border-bottom {
+    padding-bottom: 18px !important;
+    margin-bottom: 22px !important;
+    border-bottom-color: $nv-line !important;
+}
+
+// ------------------------------------------------------------- typography
+.o_database_list .form-label,
+.o_database_list .col-form-label,
+.o_database_list label {
+    margin-bottom: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: $nv-body;
+}
+
+.o_database_list .mb-3 {
+    margin-bottom: 16px !important;
+}
+
+// ------------------------------------------------------------------ fields
+.o_database_list .form-control {
+    height: 46px;
+    padding: 0 14px;
+    font-size: 14.5px;
+    color: $nv-ink;
+    background: #ffffff;
+    border: 1px solid $nv-field;
+    border-radius: 12px;
+    box-shadow: none;
+    transition:
+        border-color 120ms ease,
+        box-shadow 120ms ease,
+        background-color 120ms ease;
+
+    &::placeholder {
+        color: #A0A7B1;
+    }
+
+    &:hover {
+        border-color: #C3C9D1;
+    }
+
+    &:focus {
+        background: #ffffff;
+        border-color: $nv-teal-600;
+        box-shadow: 0 0 0 4px rgba(14, 124, 138, 0.13);
+    }
+
+    &[readonly] {
+        background: #F5F7F8;
+    }
+}
+
+// Joined input-groups share one seam (no double radius, one 46px plate).
+.o_database_list .input-group {
+    .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    > .btn {
+        // Odoo paints .btn from --bs-btn-* variables, so set the
+        // variables too or the stock light border wins in dark mode.
+        --bs-btn-bg: #ffffff;
+        --bs-btn-border-color: #{$nv-field};
+        --bs-btn-color: #{$nv-body};
+        --bs-btn-hover-bg: #F3F6F7;
+        --bs-btn-hover-border-color: #{$nv-teal-600};
+        --bs-btn-hover-color: #{$nv-teal-700};
+        --bs-btn-active-bg: #EDF2F3;
+        --bs-btn-active-border-color: #{$nv-teal-700};
+
+        height: 46px;
+        min-width: 46px;
+        padding: 0 12px;
+        border: 1px solid var(--bs-btn-border-color);
+        // !important: the stock markup also carries Bootstrap's .border
+        // utility, which pins border-color with !important.
+        border-color: var(--bs-btn-border-color) !important;
+        border-left: 0;
+        border-radius: 0 12px 12px 0;
+        background: var(--bs-btn-bg);
+        color: var(--bs-btn-color);
+        box-shadow: none;
+        transition: background-color 120ms ease, color 120ms ease;
+
+        &:hover {
+            background: var(--bs-btn-hover-bg);
+            color: var(--bs-btn-hover-color);
+        }
+
+        &:focus-visible {
+            outline: 2px solid $nv-teal-600;
+            outline-offset: 2px;
+            z-index: 3;
+        }
+    }
+}
+
+.o_database_list #db {
+    border-radius: 12px 0 0 12px;
+}
+
+// -------------------------------------------------------------- log in CTA
+.o_database_list .oe_login_buttons .btn-primary {
+    width: 100%;
+    height: 46px;
+    border: 0;
+    border-radius: 12px;
+    font-size: 14.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    // Literal + !important: portal.frontend_layout pins .btn-primary
+    // inline, and the frontend bundle carries no Nova vars.
+    background-color: $nv-teal-600 !important;
+    background-image: linear-gradient(180deg, #118795 0%, #0E7C8A 100%);
+    box-shadow:
+        0 1px 2px rgba(14, 124, 138, 0.26),
+        0 8px 18px -8px rgba(14, 124, 138, 0.48);
+    transition:
+        transform 120ms ease,
+        box-shadow 120ms ease,
+        background-color 120ms ease;
+
+    &:hover {
+        background-color: $nv-teal-700 !important;
+        background-image: linear-gradient(180deg, #0F7683 0%, #0B6B77 100%);
+        box-shadow:
+            0 2px 4px rgba(14, 124, 138, 0.3),
+            0 12px 22px -10px rgba(14, 124, 138, 0.5);
+    }
+
+    &:active {
+        transform: translateY(1px);
+        background-color: $nv-teal-800 !important;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nv-teal-600;
+        outline-offset: 2px;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        box-shadow: none;
+    }
+}
+
+// ------------------------------------------------------------------- links
+// !important: Odoo paints a.btn-link from --bs-btn-color / the stock
+// primary purple, which is later in the cascade than this file.
+.o_database_list a,
+.o_database_list .btn-link {
+    color: $nv-teal-700 !important;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 6px;
+
+    &:hover {
+        color: $nv-teal-800 !important;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nv-teal-600;
+        outline-offset: 2px;
+    }
+}
+
+.o_database_list .oe_login_buttons .btn-link {
+    margin-top: 6px !important;
+    font-size: 12.5px;
+}
+
+.o_database_list .o_user_switch_btn {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+// -------------------------------------------------------- "or" + auth list
+.o_database_list .o_login_auth > em {
+    // !important: the stock markup carries Bootstrap's .d-block, which
+    // pins display: block !important and would hide the rule lines.
+    display: flex !important;
+    align-items: center;
+    gap: 14px;
+    margin: 22px 0 16px !important;
+    font-style: normal;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: $nv-muted;
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1 1 auto;
+        height: 1px;
+        background: $nv-line;
+    }
+}
+
+// An empty card footer (no Manage Databases, no promo) collapses instead
+// of leaving a stray rule under the last button.
+.o_database_list .card-body > .text-center.small:not(:has(a)) {
+    display: none !important;
+}
+
+.o_database_list .o_login_auth .list-group-item,
+.o_database_list .o_user_switch .list-group-item {
+    display: flex;
+    align-items: center;
+    height: 46px;
+    padding: 0 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: $nv-ink;
+    background: #ffffff;
+    border: 1px solid $nv-field;
+    border-radius: 12px !important;
+    transition: border-color 120ms ease, background-color 120ms ease;
+
+    &:hover {
+        color: $nv-teal-800;
+        background: #F6FAFA;
+        border-color: $nv-teal-600;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nv-teal-600;
+        outline-offset: 2px;
+    }
+
+    i,
+    .oi {
+        color: $nv-teal-700;
+        font-size: 16px;
+    }
+}
+
+.o_database_list .o_login_auth .list-group {
+    display: grid;
+    gap: 8px;
+}
+
+// User-switch panel (expanded "Choose a user" list) breathes.
+.o_database_list .o_user_switch {
+    margin: 0 0 20px !important;
+
+    p {
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: $nv-body;
+    }
+
+    .list-group {
+        display: grid;
+        gap: 8px;
+        margin: 0 0 12px !important;
+    }
+
+    .list-group-item {
+        height: auto;
+        padding: 10px 12px;
+        font-weight: 500;
+    }
+
+    .o_avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+    }
+}
+
+// --------------------------------------------------------------- feedback
+.o_database_list p.alert {
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    border-radius: 12px;
+    border: 1px solid transparent;
+}
+
+.o_database_list p.alert-danger {
+    color: #8C2A2A;
+    background: #FDF3F3;
+    border-color: #F3CDCD;
+}
+
+.o_database_list p.alert-success {
+    color: #1E5F4B;
+    background: #F1F9F5;
+    border-color: #C7E6D6;
+}
+
+.o_database_list #totp_token {
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    letter-spacing: 0.2em;
+}
+
+// ------------------------------------------------------------ card footer
+.o_database_list .card-body > .text-center.small {
+    margin-top: 22px !important;
+    padding-top: 16px !important;
+    font-size: 12px;
+    color: $nv-muted;
+    border-top-color: $nv-line !important;
+
+    a {
+        color: $nv-body;
+        font-weight: 500;
+    }
+}
+
+// ------------------------------------------------------------- responsive
+@media (max-width: 991.98px) {
+    main > .container:has(> .o_database_list) {
+        grid-template-columns: minmax(0, 1fr);
+        // Rows size to their content: an auto row would otherwise
+        // stretch to fill 100vh and leave a dead band under the hero.
+        align-content: start;
+    }
+
+    .nova_login_brand {
+        align-items: flex-start;
+        padding: 26px 24px 30px;
+        border-radius: 0 0 24px 24px;
+
+        &::after {
+            width: 260px;
+            height: 260px;
+            right: -90px;
+            bottom: -120px;
+        }
+    }
+
+    .nova_login_brand_inner {
+        max-width: none;
+    }
+
+    .nova_login_mark {
+        width: 40px;
+        height: 40px;
+    }
+
+    img.nova_login_mark.is_wordmark {
+        width: auto;
+        height: auto;
+        max-width: 200px;
+        max-height: 44px;
+    }
+
+    .nova_login_lockup {
+        min-height: 40px;
+    }
+
+    .nova_login_wordmark {
+        font-size: 17px;
+    }
+
+    .nova_login_headline {
+        margin: 18px 0 6px;
+        font-size: 24px;
+    }
+
+    .nova_login_sub {
+        max-width: none;
+        font-size: 13.5px;
+        line-height: 1.5;
+    }
+
+    .nova_login_points,
+    .nova_login_foot {
+        display: none;
+    }
+
+    main > .container:has(> .o_database_list) > .o_database_list {
+        margin: 20px auto 32px !important;
+        border-radius: 18px;
+    }
+
+    main > .container:has(> .o_database_list) .card-body {
+        padding: 28px 24px 18px;
+    }
+}
+
+@media (max-width: 479.98px) {
+    .nova_login_brand {
+        padding: 22px 20px 26px;
+    }
+
+    main > .container:has(> .o_database_list) > .o_database_list {
+        margin: 16px 12px 24px !important;
+        width: auto;
+        border-radius: 16px;
+    }
+
+    main > .container:has(> .o_database_list) .card-body {
+        padding: 24px 20px 16px;
+    }
+}
+
+// Short laptops: the panel must never clip its own story.
+@media (min-width: 992px) and (max-height: 760px) {
+    .nova_login_brand {
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+
+    .nova_login_headline {
+        margin-top: 30px;
+        font-size: 30px;
+    }
+
+    .nova_login_points {
+        margin-top: 24px;
+        gap: 10px;
+    }
+
+    .nova_login_foot {
+        margin-top: 30px;
+    }
+}
+
+// ------------------------------------------------------------------- dark
+// Values mirror the backend dark tokens: charcoal surfaces, teal accent
+// desaturated one step, borders stronger than shadows.
+@media (prefers-color-scheme: dark) {
+    body:has(.o_database_list) {
+        background:
+            radial-gradient(900px 620px at 92% 6%, rgba(58, 175, 169, 0.06), transparent 62%),
+            radial-gradient(760px 520px at 68% 104%, rgba(58, 175, 169, 0.04), transparent 64%),
+            #101214 !important;
+        color: #E8EAED;
+    }
+
+    .nova_login_brand {
+        background:
+            radial-gradient(115% 85% at 8% 0%, rgba(58, 175, 169, 0.20), transparent 56%),
+            radial-gradient(90% 80% at 100% 100%, rgba(0, 0, 0, 0.45), transparent 62%),
+            linear-gradient(148deg, #0C5F6A 0%, #074A54 46%, #04262C 100%);
+    }
+
+    main > .container:has(> .o_database_list) > .o_database_list {
+        background: #1B1D1F !important;
+        border-color: #2E3236;
+        box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.6);
+    }
+
+    .o_database_list .form-label,
+    .o_database_list .col-form-label,
+    .o_database_list label {
+        color: #AEB4BC;
+    }
+
+    .o_database_list .form-control {
+        background: #232629;
+        border-color: #3A3F44;
+        color: #E8EAED;
+
+        &::placeholder {
+            color: #767D87;
+        }
+
+        &:hover {
+            border-color: #4A5057;
+        }
+
+        &:focus {
+            background: #232629;
+            border-color: $nv-teal-500;
+            box-shadow: 0 0 0 4px rgba(58, 175, 169, 0.22);
+        }
+
+        &[readonly] {
+            background: #1E2124;
+        }
+    }
+
+    .o_database_list .input-group > .btn {
+        --bs-btn-bg: #232629;
+        --bs-btn-border-color: #3A3F44;
+        --bs-btn-color: #B8BEC6;
+        --bs-btn-hover-bg: #2B2F33;
+        --bs-btn-hover-border-color: #{$nv-teal-500};
+        --bs-btn-hover-color: #{$nv-teal-500};
+        --bs-btn-active-bg: #2F3438;
+        --bs-btn-active-border-color: #{$nv-teal-500};
+
+        background: var(--bs-btn-bg);
+        border-color: var(--bs-btn-border-color);
+        color: var(--bs-btn-color);
+    }
+
+    .o_database_list .o_login_auth .list-group-item,
+    .o_database_list .o_user_switch .list-group-item {
+        background: #232629;
+        border-color: #3A3F44;
+        color: #E8EAED;
+
+        &:hover {
+            background: #2B2F33;
+            border-color: $nv-teal-500;
+            color: #C8F2EF;
+        }
+
+        i,
+        .oi {
+            color: $nv-teal-500;
+        }
+    }
+
+    .o_database_list .o_login_auth > em {
+        color: #8A929C;
+
+        &::before,
+        &::after {
+            background: #2E3236;
+        }
+    }
+
+    .o_database_list .card-body > .text-center.small {
+        color: #8A929C;
+        border-top-color: #2E3236 !important;
+
+        a {
+            color: #B8BEC6;
+        }
+    }
+
+    .o_database_list .card-body > .text-center.pb-3.border-bottom {
+        border-bottom-color: #2E3236 !important;
+    }
+
+    .o_database_list p.alert-danger {
+        color: #F2B8B8;
+        background: #3A2325;
+        border-color: #5A3336;
+    }
+
+    .o_database_list p.alert-success {
+        color: #A9E3C6;
+        background: #1E3029;
+        border-color: #2F4A3D;
+    }
+
+    .o_database_list a,
+    .o_database_list .btn-link {
+        color: #57C4BE !important;
+
+        &:hover {
+            color: #7FD8D2 !important;
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_database_list .form-control,
+    .o_database_list .btn,
+    .o_database_list .list-group-item,
+    .o_database_list input,
+    .o_database_list a {
+        transition: none !important;
+    }
+
+    .o_database_list .oe_login_buttons .btn-primary:active {
+        transform: none;
+    }
+}
+
+// Forced colours: let the OS win, keep the panel readable.
+@media (forced-colors: active) {
+    .nova_login_brand {
+        background: Canvas !important;
+        color: CanvasText !important;
+        border-right: 1px solid CanvasText;
+    }
+
+    main > .container:has(> .o_database_list) > .o_database_list {
+        border: 1px solid CanvasText;
+        box-shadow: none;
+    }
+}
+
+// Voice: Inter on the login card (frontend builds its own stack).
+.o_database_list,
+.o_database_list input,
+.o_database_list button,
+.nova_login_brand {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}

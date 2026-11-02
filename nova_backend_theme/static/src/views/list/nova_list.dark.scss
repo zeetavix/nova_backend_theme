@@ -1,0 +1,165 @@
+///
+/// Nova list (dark): flat card, quiet hover, readable footer.
+///
+
+.o_list_renderer {
+    box-shadow: none;
+}
+
+// The light list shell is lazy-loaded after the dark bundle and wins
+// every tie: the rules below carry an extra scope, and re-declare the
+// header vars instead of only the background they derive from.
+.o_web_client .o_list_renderer .o_list_table {
+    thead th {
+        --ListRenderer-thead-bg-color: #{$o-gray-200};
+        --table-bg: #{$o-gray-200};
+        background: $o-gray-200;
+        color: $nova-ink;
+    }
+
+    thead .o_list_sortable_icon {
+        background: $o-gray-200;
+    }
+
+    // Stock repaints focused cells opaque (keyboard nav + edition row):
+    // white holes in the tinted row. Mirror of the light rule, which
+    // does not load in dark sessions.
+    tbody.o_keyboard_navigation tr:focus-within > td:focus-within,
+    tbody.o_keyboard_navigation tr:focus-within > th:focus-within,
+    tbody tr.o_selected_row > td.o_data_cell:focus-within,
+    tbody tr.o_selected_row > th:focus-within {
+        background-color: transparent;
+    }
+
+    tbody tr {
+        &:hover {
+            background: rgba(58, 175, 169, 0.10);
+        }
+
+        &.o_selected_row, &:focus-within {
+            background: $nova-action-soft;
+        }
+
+        &.o_data_row_selected {
+            background: rgba(74, 179, 196, 0.14);
+        }
+
+        &.text-danger:hover {
+            background: rgba($o-danger, 0.12);
+        }
+    }
+
+    tfoot td, .o_list_footer {
+        background: $o-gray-100;
+        color: $nova-ink;
+    }
+}
+
+.o_list_renderer .o_list_table {
+    thead th {
+        background: $o-gray-200;
+    }
+
+    thead .o_list_sortable_icon {
+        background: $o-gray-200;
+    }
+
+    .o_group_header .o_pager .btn,
+    .o_group_header .o_pager_previous,
+    .o_group_header .o_pager_next {
+        background: $o-gray-200;
+        border-color: $o-border-color;
+        color: $nova-ink-muted;
+    }
+
+    .o_group_header.o_multi_group_expand_available .o_multi_group_expand_tooltip {
+        background: $o-gray-200;
+        color: $nova-ink;
+    }
+
+    .o_list_table .o_list_record_remove button:hover {
+        background: rgba($o-danger, 0.18);
+    }
+
+    .o_row_handle, .o_row_handle i, .o_row_handle .oi {
+        color: $nova-ink-muted;
+    }
+
+    // Column spotlight twin: weaker than the dark row-hover wash (0.10).
+    // No @supports wrapper (libsass cannot parse @supports selector()).
+    @for $i from 2 through 24 {
+        @at-root html[data-nova-colspot="1"] .o_list_renderer .o_list_table:has(
+            thead th:nth-child(#{$i}):hover
+        ) tbody tr:not(.o_selected_row):not(.o_data_row_selected):not(.o_group_header) > :nth-child(#{$i}) {
+            background: rgba($nova-action-hover, 0.05);
+        }
+    }
+
+    tbody tr {
+        &:hover {
+            background: rgba(58, 175, 169, 0.10);
+        }
+
+        &.o_selected_row, &:focus-within {
+            background: $nova-action-soft;
+        }
+
+        &.o_data_row_selected {
+            background: rgba(74, 179, 196, 0.14);
+        }
+
+        &.text-danger:hover {
+            background: rgba($o-danger, 0.12);
+        }
+    }
+
+    .o_optional_columns .o_invalid_optional_columns_button {
+        background: rgba($o-danger, 0.14);
+        border-color: rgba($o-danger, 0.4);
+    }
+
+    tfoot td, .o_list_footer {
+        background: $o-gray-100;
+        color: $nova-ink;
+    }
+
+    // Cells carry no fill of their own, and focused cells stay
+    // transparent too (stock paints them opaque, punching white holes
+    // in the tinted row). Matches the light bundle exactly.
+    .o_list_table tbody tr > td,
+    .o_list_table tbody tr > th {
+        background-color: transparent;
+    }
+
+    .o_list_table tbody.o_keyboard_navigation tr:focus-within > td:focus-within,
+    .o_list_table tbody.o_keyboard_navigation tr:focus-within > th:focus-within,
+    .o_list_table tbody tr.o_selected_row > td.o_data_cell:focus-within,
+    .o_list_table tbody tr.o_selected_row > th:focus-within {
+        background-color: transparent;
+    }
+
+    // Editable rows: no focus frame either — same calm rule as light.
+    .o_list_table tbody tr.o_selected_row > td.o_data_cell {
+        input:not([type="checkbox"]):not([type="radio"]),
+        select, textarea {
+            &:focus,
+            &:focus-visible {
+                outline: none;
+                box-shadow: none;
+            }
+        }
+
+        .o_required_modifier input,
+        .o_required_modifier select {
+            border-bottom-color: $nova-ink;
+        }
+
+        .o_field_invalid input:focus,
+        .o_field_invalid select:focus,
+        .o_field_invalid input:focus-visible,
+        .o_field_invalid select:focus-visible {
+            outline: none;
+            box-shadow: none;
+        }
+    }
+}

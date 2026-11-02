@@ -1,0 +1,112 @@
+///
+/// Nova fields (dark): lounging surfaces, same blue signals.
+///
+
+.o_form_view .o_form_label {
+    color: $o-gray-700;
+}
+
+.form-check-input {
+    background-color: $o-input-bg;
+    border-color: $nova-border-strong;
+
+    &:hover {
+        border-color: $nova-ink-muted;
+    }
+
+    &:focus {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+    }
+
+    &:checked {
+        background-color: $nova-action;
+        border-color: $nova-action;
+    }
+
+    &:disabled {
+        opacity: $o-opacity-disabled;
+    }
+}
+
+.form-switch .form-check-input {
+    background-color: $o-gray-300;
+
+    &:hover {
+        background-color: $o-gray-400;
+    }
+
+    &:checked {
+        background-color: $nova-action;
+    }
+
+    &:focus {
+        box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+    }
+}
+
+// Bootstrap's switch knob is a data-uri SVG with a light-theme stroke;
+// without [data-bs-theme] the light knob paints over the dark track.
+.o_web_client .form-switch .form-check-input:not(:checked):not(:focus) {
+    --bs-form-switch-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='rgba(255, 255, 255, 0.55)'/></svg>");
+}
+
+.form-select {
+    background-color: $o-input-bg;
+    border-color: $nova-border-strong;
+    color: $nova-ink;
+}
+
+.o_field_widget .o_priority .o_priority_star {
+    color: $nova-border-strong;
+
+    &.oi-filled {
+        color: $nova-favorite-fill;
+    }
+}
+
+.o_tag:not([class*="o_tag_color_"]) {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: $o-border-color;
+    color: $nova-ink;
+
+    &:hover {
+        border-color: $nova-border-strong;
+    }
+}
+
+.o_tag .o_delete:hover {
+    background: rgba($o-danger, 0.16);
+}
+
+.o_progressbar .progress {
+    background: $o-gray-200;
+}
+
+.o_progressbar .progress-bar:not([class*="bg-"]) {
+    background: $nova-action;
+}
+
+@media (forced-colors: active) {
+    .form-check-input,
+    .o_field_widget .o_priority .o_priority_star,
+    .o_progressbar .progress-bar {
+        forced-color-adjust: auto;
+    }
+
+    .o_tag {
+        border: 1px solid CanvasText;
+    }
+}
+
+// Static pie ring stays visible on the dark canvas (~3:1 vs 1.2:1 stock).
+.o_field_percent_pie .o_pie {
+    --PercentPieField-color-active: #{$nova-action-hover};
+    --PercentPieField-color-static: #{rgba(#fff, .22)};
+}
+
+// Today cell keeps the accent fill on the dark canvas.
+.o_datetime_picker .o_today > div {
+    background-color: $nova-action;
+    color: $nova-on-action;
+}

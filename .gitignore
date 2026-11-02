@@ -1,0 +1,20 @@
+﻿# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Packaging
+*.egg-info/
+dist/
+build/
+*.zip
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local env
+.env
+*.log

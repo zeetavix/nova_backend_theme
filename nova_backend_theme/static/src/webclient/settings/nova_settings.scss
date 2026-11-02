@@ -1,0 +1,111 @@
+///
+/// Nova settings — app blocks as calm cards; left nav pill-active.
+/// Verified hooks: app_settings_block, .o_setting_box, .settings_tab .tab,
+/// h2 app titles, h3 tips, search header, highlight. No card on the page
+/// wrapper (.o_setting_container stays structural).
+///
+
+.o_settings_container {
+    gap: 16px;
+    padding-bottom: 32px;
+}
+
+.app_settings_block, .o_settings_container .o_setting_box {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    box-shadow: $nova-shadow-sm;
+    padding: 20px $nova-card-padding;
+    margin-bottom: 16px;
+}
+
+// Rows drop their inner divider inside cards (no double rules).
+.app_settings_block .o_setting_left_pane + .o_setting_right_pane,
+.o_setting_box .o_setting_left_pane + .o_setting_right_pane {
+    border-left: 0;
+    padding-left: 0;
+}
+
+// App titles + tips share the type hierarchy (no grey strips).
+.app_settings_block h2, .o_setting_box h2 {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: $nova-ink;
+}
+
+h3.o_setting_tip {
+    font-size: 13px;
+    font-weight: 500;
+    color: $nova-ink-muted;
+}
+
+// Documentation links stay quiet until hovered.
+.o_doc_link {
+    color: $nova-ink-muted;
+    transition: color $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        color: $nova-action-active;
+    }
+}
+
+// Upgrade pills go soft (never glare on calm cards).
+.o_enterprise_label {
+    border-radius: 999px;
+    font-weight: 600;
+    background: $nova-action-soft;
+    color: $nova-action-active;
+}
+
+// Search header drops its grey strip; empty search gets air.
+.settingSearchHeader {
+    background: transparent;
+}
+
+.settingSearchHeader input {
+    border-radius: 999px;
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.o_settings_container .o_view_nocontent {
+    padding: 32px 16px;
+}
+
+// Left nav: pill hover, blue-soft selected, red-ink invalid.
+.settings_tab .tab {
+    border-radius: $o-border-radius;
+    transition: background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+
+    &.selected {
+        background: $nova-action-soft;
+        color: $nova-action-active;
+        font-weight: 600;
+    }
+
+    &.o_page_invalid {
+        color: map-get($o-theme-text-colors, "danger");
+    }
+}
+
+// Search-hit highlight: soft amber wash, never glare yellow.
+.o_searchable_setting.o_setting_highlight {
+    background: rgba($o-warning, 0.12);
+    border-radius: $o-border-radius-sm;
+    box-shadow: inset 0 0 0 1px $nova-action;
+}
+
+.highlighter {
+    background: rgba($o-warning, 0.35);
+    color: inherit;
+    border-radius: 3px;
+    padding: 0 2px;
+}

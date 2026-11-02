@@ -1,0 +1,165 @@
+///
+/// Nova navbar — the signature. Meta-like light blurred appbar, not a purple strip.
+/// Original styling on public .o_main_navbar DOM. No Enterprise code copied.
+///
+/// Apple HIG: lightly-tinted toolbar over colourful content, monochrome icons,
+/// key action prominent, 44px targets, blur only on floating functional layer.
+///
+
+// Make bar taller, blurred, bordered — calm over gray app background.
+.o_main_navbar {
+    --NavBar-entry-color: #{$nova-ink};
+    --NavBar-entry-color--hover: #{$o-black};
+    --NavBar-entry-color--active: #{$nova-ink};
+    --NavBar-entry-backgroundColor: transparent;
+    --NavBar-entry-backgroundColor--hover: #{$o-gray-200};
+    --NavBar-entry-backgroundColor--focus: #{$o-gray-200};
+    --NavBar-entry-backgroundColor--active: #{$nova-action-soft};
+    --NavBar-entry-borderColor-active: transparent;
+    // Sections stay rectangular (menu affordance); pills only for icon systray.
+    --NavBar-entry-borderRadius: #{$o-border-radius};
+
+    background: rgba($o-white, 0.86);
+    // Opaque fallback if backdrop-filter unsupported.
+    @supports not (backdrop-filter: blur(1px)) {
+        background: $o-white;
+    }
+    border-bottom: 1px solid $o-border-color;
+    min-height: $nova-appbar-height;
+    padding-top: 6px;
+    padding-bottom: 6px;
+
+    @if $o-enable-backdrop-blur {
+        backdrop-filter: $nova-blur-bar;
+        -webkit-backdrop-filter: $nova-blur-bar;
+    }
+
+    // Brand + menu toggle in ink, not white-on-purple.
+    .o_menu_brand, .o_menu_toggle, .o_navbar_apps_menu .dropdown-toggle {
+        color: $nova-ink;
+        font-weight: 600;
+        border-radius: $o-border-radius;
+    }
+
+    // The app-brand link ("AI", 23px) holds the 24px target floor.
+    > a.o-dropdown-item {
+        min-width: 24px;
+    }
+
+    .o_menu_toggle {
+        color: var(--NavBar-menuToggle-color, $nova-action);
+    }
+
+    // Sections: soft 8px hover, soft-blue active + 600 weight (active ≠ color alone).
+    .o_menu_sections .o_nav_entry,
+    .o_menu_sections .dropdown-toggle:not(:disabled) {
+        border-radius: $o-border-radius;
+        padding-left: 12px;
+        padding-right: 12px;
+        font-weight: 500;
+        transition: background $nova-dur-base $o-easing-enter, color $nova-dur-base $o-easing-enter;
+
+        &:hover {
+            background: $o-gray-200;
+        }
+    }
+
+    .o_menu_sections .dropdown.show .dropdown-toggle:not(.o-dropdown-toggle-custo) {
+        background: $nova-action-soft;
+        color: $nova-action-active;
+        font-weight: 600;
+    }
+
+    // Systray open state persists like sections (stock covers both).
+    .o_menu_systray .dropdown.show .dropdown-toggle:not(.o-dropdown-toggle-custo) {
+        background: $nova-action-soft;
+        color: $nova-action-active;
+    }
+
+    // Systray icons: circular hover, ring badge without layout shift.
+    .o_menu_systray {
+        .o_nav_entry, .dropdown-toggle {
+            border-radius: 999px;
+        }
+        .badge {
+            // Deeper red keeps 11px badge text at 4.5:1+ (WCAG AA)
+            // with white ink, in both bundles.
+            background-color: #C81E1E;
+            color: $o-white;
+            text-shadow: none;
+            font-weight: 600;
+            border: 0;
+            box-shadow: 0 0 0 2px $o-white;
+            padding: 1px 6px;
+            margin-right: -0.5em;
+            transform: translate(-0.2em, -48%);
+        }
+    }
+
+    // Breadcrumb / app name reads as title, not menu item.
+    .o_navbar_breadcrumbs, .o_menu_brand {
+        font-size: 15px;
+        letter-spacing: -0.01em;
+    }
+
+    // User chip: 32px avatar meets the taller bar; name stays ink.
+    .o_user_menu .o_user_avatar {
+        height: 32px;
+        width: 32px;
+    }
+
+    .o_user_menu .oe_topbar_name {
+        color: $nova-ink;
+        font-weight: 500;
+    }
+}
+
+// Company rows: blue-soft current, semibold, visible focus.
+.o_switch_company_menu_dropdown .o_switch_company_item {
+    border-radius: $o-border-radius-sm;
+    transition: background $nova-dur-fast $o-easing-enter;
+
+    &.alert-secondary, &.bg-primary-subtle {
+        background: $nova-action-soft;
+        font-weight: 600;
+        color: $nova-ink;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: -2px;
+    }
+
+    .log_into.btn-link {
+        color: $nova-ink;
+    }
+
+    .form-check-input:checked {
+        background-color: $nova-action;
+        border-color: $nova-action;
+    }
+}
+
+// Superuser hazard stripes defer to a calm inset ring in Nova.
+body.o_is_superuser .o_menu_systray {
+    border-image: none;
+    border-radius: $o-border-radius;
+    box-shadow: inset 0 0 0 2px rgba($o-warning, 0.6);
+}
+
+@media (forced-colors: active) {
+    // Systray badge must not be fill-only in WHCM.
+    .o_menu_systray .badge {
+        border: 1px solid CanvasText;
+    }
+}
+
+// Launcher context: the previous app's menus + brand step aside while the
+// Nova home is open (stock home-menu behaviour). Grid + systray stay.
+// !important: stock .d-flex utility on .o_menu_sections carries it.
+.o_nova_home_open .o_main_navbar {
+    .o_menu_sections,
+    .o_menu_brand {
+        display: none !important;
+    }
+}

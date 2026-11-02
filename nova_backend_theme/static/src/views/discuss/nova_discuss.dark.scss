@@ -1,0 +1,61 @@
+///
+/// Nova Discuss (dark).
+///
+
+.o-mail-DiscussApp-sidebar, .o-mail-DiscussApp-sidebarBgColor {
+    background: $o-view-background-color;
+}
+
+.o-mail-MessagingMenu {
+    background: $o-view-background-color;
+}
+
+.o-mail-NotificationItem {
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    &.o-active {
+        background: $nova-action-soft;
+    }
+}
+
+.o-mail-NotificationItem-badge.o-important,
+.o-mail-NotificationItem-counter.o-important {
+    background: $nova-action;
+    color: $nova-on-action;
+}
+
+.o-mail-MessagingMenu-tab.active,
+.o-mail-MessagingMenu-filter.o-active {
+    color: $nova-action-hover;
+}
+
+.o-mail-DiscussContent-headerBox, .o-mail-DiscussContent-panelContainer {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+}
+
+// Keyboard focus ring, mirrored from light (which does not load in
+// dark sessions).
+.o_web_client .o-mail-DiscussContent-headerBox {
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: -2px;
+    }
+}
+
+.o_web_client .o-mail-Discuss button:focus-visible {
+    outline: 2px solid $nova-action;
+    outline-offset: -2px;
+}
+
+// Call bar, channel invitation search and thread header inputs paint
+// from core light vars: re-point them or they stay white in dark.
+.o_web_client .o-discuss-CallMenu-buttonContent,
+.o_web_client #o-discuss-ChannelInvitation-search,
+.o_web_client .o-mail-DiscussContent-headerBox input {
+    background-color: $o-gray-200;
+    border-color: $o-border-color;
+    color: $nova-ink;
+}

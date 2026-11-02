@@ -1,0 +1,220 @@
+///
+/// Nova toast history — systray bell + recent-notifications panel.
+///
+
+// Bell button sits in the systray row; quiet until something is unread.
+.nova_bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.nova_bell_btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    border-radius: 999px;
+    min-width: 32px;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: $nova-ink-muted;
+    cursor: pointer;
+    transition: background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $nova-action-soft;
+        color: $nova-action-active;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.nova_bell_icon {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.nova_bell_count {
+    position: absolute;
+    top: 0;
+    inset-inline-end: 0;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #C81E1E;
+    color: $o-white;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+// Panel: flat card, severity rail per item, replay on click.
+.nova_bell_panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    inset-inline-end: 0;
+    width: 320px;
+    max-width: calc(100vw - 32px);
+    max-height: 60vh;
+    overflow: auto;
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: 12px;
+    box-shadow: $nova-shadow-md;
+    z-index: 1080;
+}
+
+.nova_bell_head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: $nova-ink;
+    border-bottom: 1px solid $o-border-color;
+    position: sticky;
+    top: 0;
+    background: $o-view-background-color;
+}
+
+.nova_bell_close {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    border-radius: 6px;
+    min-width: 28px;
+    min-height: 28px;
+    font-size: 16px;
+    color: $nova-ink-muted;
+    cursor: pointer;
+
+    &:hover {
+        background: $nova-action-soft;
+        color: $nova-ink;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.nova_bell_empty {
+    margin: 0;
+    padding: 16px 12px;
+    font-size: 13px;
+    color: $nova-ink-muted;
+}
+
+.nova_bell_list {
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.nova_bell_item {
+    appearance: none;
+    border: 0;
+    border-inline-start: 3px solid $o-border-color;
+    background: transparent;
+    border-radius: 0 8px 8px 0;
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    text-align: start;
+    transition: background $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: -2px;
+    }
+}
+
+.nova_bell_success {
+    border-inline-start-color: $o-success;
+}
+
+.nova_bell_danger {
+    border-inline-start-color: $o-danger;
+}
+
+.nova_bell_warning {
+    border-inline-start-color: $o-warning;
+}
+
+.nova_bell_info {
+    border-inline-start-color: $o-info;
+}
+
+.nova_bell_item_text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 13px;
+    color: $nova-ink;
+}
+
+.nova_bell_item_title {
+    font-weight: 600;
+}
+
+.nova_bell_item_msg {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    overflow: hidden;
+    color: $nova-ink-muted;
+}
+
+.nova_bell_item_time {
+    flex-shrink: 0;
+    font-size: 11px;
+    color: $nova-ink-muted;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (forced-colors: active) {
+    .nova_bell_panel {
+        border: 1px solid CanvasText;
+    }
+
+    .nova_bell_item {
+        border-inline-start-color: CanvasText;
+    }
+
+    .nova_bell_count {
+        border: 1px solid CanvasText;
+        background: Canvas;
+        color: CanvasText;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nova_bell_btn,
+    .nova_bell_close,
+    .nova_bell_item {
+        transition: none;
+    }
+}

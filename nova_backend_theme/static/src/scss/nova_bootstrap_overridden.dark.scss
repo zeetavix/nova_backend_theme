@@ -1,0 +1,32 @@
+///
+/// Nova â€” Bootstrap bridge (dark). Loaded before light bridge in dark bundle.
+/// Same knobs, dark surfaces. Elevation via lighter fills, not shadows (HIG).
+///
+$body-bg: $o-webclient-background-color !default;
+$body-color: $o-main-text-color !default;
+$border-color: $o-border-color !default;
+
+$input-bg: $o-input-bg !default;
+$input-focus-bg: $o-gray-200 !default;
+$input-focus-border-color: $nova-action !default;
+$input-focus-box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28) !default;
+$input-border-color: $nova-border-strong !default;
+// Placeholder must pass 4.5:1 in dark (was #7A7B7C at 2.65:1).
+$input-placeholder-color: $nova-ink-muted !default;
+
+$dropdown-link-hover-bg: rgba(255, 255, 255, 0.08) !default;
+$dropdown-link-hover-color: $o-main-headings-color !default;
+$dropdown-link-active-bg: $nova-action-soft !default;
+$dropdown-link-active-color: $o-main-headings-color !default;
+$dropdown-box-shadow: $nova-shadow-lg !default;
+$dropdown-border-color: $o-border-color !default;
+
+$card-bg: $o-view-background-color !default;
+$modal-content-bg: #242526 !default;
+$toast-background-color: rgba(36, 37, 38, 0.94) !default;
+
+$table-hover-bg: rgba(58, 175, 169, 0.12) !default;
+$table-active-bg: rgba(58, 175, 169, 0.16) !default;
+$table-border-color: $o-border-color !default;
+
+$focus-ring-color: rgba($nova-action, 0.4) !default;

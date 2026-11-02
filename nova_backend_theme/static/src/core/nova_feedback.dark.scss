@@ -1,0 +1,57 @@
+///
+/// Nova feedback (dark).
+///
+.o_loading_indicator {
+    background: $nova-action-soft;
+    color: $nova-action-active;
+    border-color: rgba($nova-action, 0.4);
+
+    .spinner-border {
+        color: $nova-action;
+    }
+}
+
+.o_view_nocontent .o_nocontent_help {
+    color: $o-main-headings-color;
+
+    p + p {
+        color: $nova-ink-muted;
+    }
+}
+
+.o_empty_list td {
+    color: $nova-ink-muted;
+}
+
+// System toasts: stock Bootstrap/Odoo shells stay white in dark.
+.o_web_client .toast {
+    --bs-toast-bg: #{$o-gray-200};
+    --bs-toast-color: #{$nova-ink};
+    --bs-toast-border-color: #{$o-border-color};
+    --bs-toast-header-bg: transparent;
+    --bs-toast-header-color: #{$nova-ink};
+    background-color: $o-gray-200;
+    border-color: $o-border-color;
+    color: $nova-ink;
+}
+
+.o_web_client .o_notification {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    color: $nova-ink;
+}
+
+.o_web_client .o_notification .o_notification_title {
+    color: $nova-ink;
+}
+
+.o_error_dialog {
+    .modal-header {
+        background: rgba($o-danger, 0.14);
+        border-bottom-color: rgba($o-danger, 0.4);
+    }
+
+    .modal-title {
+        color: map-get($o-theme-text-colors, "danger");
+    }
+}

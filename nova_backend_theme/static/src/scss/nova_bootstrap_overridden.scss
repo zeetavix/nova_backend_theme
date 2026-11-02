@@ -1,0 +1,129 @@
+///
+/// Nova — Bootstrap bridge (light). Loaded BEFORE web/bootstrap_overridden.scss.
+/// Only touches Bootstrap knobs via our $o-* / $nova-* tokens. Original values.
+///
+
+// Color system points at Nova tokens (defined in nova_primary_variables.scss).
+$white: $o-white !default;
+$gray-100: $o-gray-100 !default;
+$gray-200: $o-gray-200 !default;
+$gray-300: $o-gray-300 !default;
+$gray-400: $o-gray-400 !default;
+$gray-500: $o-gray-500 !default;
+$gray-600: $o-gray-600 !default;
+$gray-700: $o-gray-700 !default;
+$gray-800: $o-gray-800 !default;
+$gray-900: $o-gray-900 !default;
+$black: $o-black !default;
+
+$primary: $o-brand-primary !default;
+$secondary: $o-gray-200 !default;
+$light: $o-gray-100 !default;
+$dark: $o-gray-900 !default;
+
+$success: $o-success !default;
+$info: $o-info !default;
+$warning: $o-warning !default;
+$danger: $o-danger !default;
+
+$min-contrast-ratio: 4.5 !default;
+$enable-smooth-scroll: false !default;
+$enable-negative-margins: true !default;
+$enable-cssgrid: true !default;
+$enable-dark-mode: false !default;
+$enable-shadows: true !default;
+$enable-gradients: false !default;
+
+$spacer: $o-spacer !default;
+$body-bg: $o-webclient-background-color !default;
+$body-color: $o-main-text-color !default;
+
+$link-color: $o-main-link-color !default;
+$link-decoration: none !default;
+$link-hover-decoration: underline !default;
+$text-muted: $o-main-color-muted !default;
+
+$border-color: $o-border-color !default;
+$border-radius: $o-border-radius !default;
+$border-radius-sm: $o-border-radius-sm !default;
+$border-radius-lg: $o-border-radius-lg !default;
+$border-radius-xl: $o-border-radius-xl !default;
+
+$component-active-color: $o-component-active-color !default;
+$component-active-bg: $o-component-active-bg !default;
+
+$font-family-sans-serif: $o-font-family-sans-serif !default;
+$font-size-base: $o-font-size-base !default;
+$font-size-sm: $o-font-size-base-small !default;
+$headings-font-family: $o-headings-font-family !default;
+$headings-color: $o-main-headings-color !default;
+$headings-font-weight: 600 !default;
+
+// Buttons: friendlier, no shadow, visible focus (Apple HIG focus).
+$btn-font-weight: 500 !default;
+$btn-disabled-opacity: 0.55 !default;
+$btn-box-shadow: none !default;
+$btn-focus-box-shadow: none !default;
+$btn-active-box-shadow: none !default;
+$btn-border-radius: $o-border-radius !default;
+$btn-border-radius-lg: $o-border-radius !default;
+$focus-ring-width: 3px !default;
+$focus-ring-opacity: 0.28 !default;
+$focus-ring-color: rgba($nova-action, $focus-ring-opacity) !default;
+
+// Inputs: soft fill in light, clear focus ring.
+$input-bg: $o-input-bg !default;
+$input-border-color: $nova-border-strong !default;
+$input-border-radius: $o-border-radius !default;
+$input-box-shadow: none !default;
+$input-focus-bg: $o-white !default;
+$input-focus-border-color: $nova-action !default;
+$input-focus-box-shadow: 0 0 0 3px rgba($nova-action, 0.18) !default;
+// Placeholder must pass 4.5:1 (was $o-gray-500 at 2.19:1 on white).
+$input-placeholder-color: $nova-ink-muted !default;
+
+// Invalid focus must stay red, not flip to blue (feedback fix).
+$input-focus-border-color-invalid: $o-danger !default;
+
+// Dropdowns / popovers: Meta menu — 12px radius, layered shadow, and a
+// REAL 1px edge. Transparent was tried; edges vanish on light surfaces
+// (autocomplete looked borderless). Shadow alone never defines an edge.
+$dropdown-border-color: $o-border-color !default;
+$dropdown-border-radius: 12px !default;
+$dropdown-box-shadow: $nova-shadow-lg !default;
+$dropdown-padding-x: 8px !default;
+$dropdown-padding-y: 8px !default;
+$dropdown-link-color: $nova-ink !default;
+$dropdown-link-hover-color: $o-black !default;
+$dropdown-link-hover-bg: $o-gray-100 !default;
+$dropdown-link-active-color: $nova-ink !default;
+$dropdown-link-active-bg: $nova-action-soft !default;
+$dropdown-item-padding-y: 8px !default;
+$dropdown-item-padding-x: 12px !default;
+
+$popover-border-color: transparent !default;
+$popover-border-radius: 12px !default;
+$card-bg: $o-view-background-color !default;
+$modal-content-bg: $o-view-background-color !default;
+$modal-content-border-radius: 16px !default;
+$modal-backdrop-opacity: 0.4 !default;
+
+// Tables: calm, hover wash (not stripe-heavy).
+$table-bg: transparent !default;
+$table-border-color: $o-border-color !default;
+$table-cell-padding-x: 0.9rem !default;
+$table-cell-padding-y: 0.65rem !default;
+$table-striped-bg-factor: 0.025 !default;
+$table-hover-bg-factor: 1 !default;
+$table-hover-bg: $nova-action-soft !default;
+$table-active-bg: $nova-action-soft !default;
+
+// Badges / toasts / navs.
+$badge-font-weight: 500 !default;
+$badge-border-radius: 999px !default;
+$toast-max-width: 360px !default;
+$toast-background-color: rgba($o-white, 0.92) !default;
+$nav-tabs-link-active-bg: transparent !default;
+$nav-tabs-link-active-color: $nova-ink !default;
+$breadcrumb-bg: transparent !default;
+$code-color: $o-main-code-color !default;

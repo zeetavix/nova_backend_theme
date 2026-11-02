@@ -1,0 +1,189 @@
+///
+/// Nova kanban — friendly cards with lift on hover, pill progress.
+/// Public .o_kanban_renderer / .o_kanban_record DOM.
+///
+
+.o_kanban_renderer {
+    background: transparent;
+
+    // Groups follow the stock ambient var (filtered columns keep accent
+    // signal); Nova supplies only the fallback.
+    .o_kanban_group {
+        background: var(--KanbanGroup-background, $o-webclient-background-color);
+        border-radius: $o-border-radius-lg;
+        border: 1px solid transparent;
+
+        .o_kanban_header {
+            font-weight: 600;
+            color: $nova-ink;
+
+            .o_kanban_counter {
+                background: $o-view-background-color;
+                border: 1px solid $o-border-color;
+                border-radius: 999px;
+                font-variant-numeric: tabular-nums;
+            }
+        }
+    }
+
+    // Ghosts are empty grid pad divs that also carry .o_kanban_record —
+    // card chrome on a 2px strip reads as a stray line under the last row.
+    .o_kanban_record:not(.o_kanban_ghost) {
+        background: $o-view-background-color;
+        border: 1px solid $o-border-color;
+        border-radius: $o-border-radius-lg;
+        transition: box-shadow $nova-dur-base $o-easing-enter, border-color $nova-dur-base $o-easing-enter;
+
+        // Selected records keep the stock inset ring; lift only the rest.
+        &:not(.o_record_selected):hover {
+            box-shadow: $nova-shadow-md;
+            border-color: $nova-border-strong;
+        }
+
+        &:focus-within {
+            border-color: $nova-action;
+            box-shadow: 0 0 0 3px rgba($nova-action, 0.16);
+        }
+
+        &:focus-visible {
+            outline: 2px solid $nova-action;
+            outline-offset: 2px;
+        }
+    }
+
+    // Quick-create shares the sheet recipe: paper card, paper-deep boxes.
+    .o_kanban_quick_create {
+        background: $nova-paper;
+        border: 1px solid $o-border-color;
+        border-radius: $o-border-radius-lg;
+        padding: 12px;
+
+        &:focus-within {
+            border-color: $nova-action;
+            box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
+        }
+
+        .o_input,
+        input.o_input,
+        textarea.o_input {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            background-color: $nova-paper-deep;
+            padding: 6px 10px;
+
+            &:hover {
+                border-color: $nova-paper-border;
+            }
+
+            &:focus, &:focus-within {
+                border: 1px solid $nova-action;
+                background-color: $o-white;
+                box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
+                outline: none;
+            }
+        }
+
+        // Composite assignee/tag fields: one frame on the container,
+        // borderless inners — same double-border fix as form sheets.
+        .o_field_many2many_tags,
+        .o_field_many2many_tags_avatar {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            background-color: $nova-paper-deep;
+
+            &:hover {
+                border-color: $nova-paper-border;
+            }
+
+            &:focus-within {
+                border: 1px solid $nova-action;
+                background-color: $o-white;
+                box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
+            }
+        }
+
+        .o_field_many2many_tags .o_field_many2many_selection,
+        .o_field_many2many_tags_avatar .o_field_many2many_selection,
+        .o_field_many2many_tags .o_tags_input,
+        .o_field_many2many_tags_avatar .o_tags_input,
+        .o_field_many2many_tags .o_field_many2many_selection .o_input,
+        .o_field_many2many_tags_avatar .o_field_many2many_selection .o_input {
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            background-color: transparent;
+            padding: 0;
+            box-shadow: none;
+
+            &:hover, &:focus, &:focus-within {
+                border: 0;
+                background: transparent;
+                background-color: transparent;
+                box-shadow: none;
+                outline: none;
+            }
+        }
+
+        // Monetary overlay span: transparent or typed digits hide under it.
+        .o_field_monetary span.o_input {
+            background: transparent;
+            background-color: transparent;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .o_form_label {
+            font-weight: 600;
+            color: $nova-ink;
+        }
+    }
+
+    // Load-more follows the counter-pill rhythm, full column width.
+    .o_kanban_load_more {
+        width: 100%;
+        border-radius: 999px;
+        font-weight: 600;
+        transition: background $nova-dur-fast $o-easing-enter;
+
+        &:hover {
+            background: $nova-action-soft;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $nova-action;
+            outline-offset: 1px;
+        }
+    }
+
+    // Column progress lives inside the counter header.
+    .o_kanban_counter .progress, .o_kanban_header .progress {
+        border-radius: 999px;
+        height: 6px;
+        background: $o-gray-200;
+        border: 1px solid $nova-border-strong;
+    }
+
+    // Covers clip to the card language; folded columns keep stock color.
+    .o_kanban_cover_image {
+        border-radius: $o-border-radius-lg $o-border-radius-lg 0 0;
+        overflow: hidden;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .o_kanban_renderer {
+        padding: 8px;
+    }
+
+    .o_kanban_group {
+        min-width: 260px;
+    }
+}
+
+@media (forced-colors: active) {
+    .o_kanban_renderer .o_kanban_record {
+        border: 1px solid CanvasText;
+    }
+}

@@ -1,0 +1,75 @@
+///
+/// Nova buttons — one blue, honest press, visible focus.
+/// Public .btn / .btn-primary / .btn-secondary DOM. No gradients.
+/// Apple motion: press scales to .98, brief; disabled never fades to ghost.
+///
+
+.btn {
+    border-radius: $o-border-radius;
+    font-weight: 500;
+    transition: background $nova-dur-base $o-easing-enter, transform $nova-dur-press $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter;
+
+    &:active {
+        transform: $nova-press;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.btn-primary {
+    &:hover {
+        // Meta glow: the single blue lifts off the surface, gently.
+        box-shadow: 0 1px 2px rgba($nova-action, 0.45), $nova-shadow-sm;
+    }
+
+    &:disabled, &.disabled {
+        // Fill + ink come from the $o-btns-bs-override token maps (per mode).
+        opacity: 1;
+        box-shadow: none;
+        transform: none;
+    }
+}
+
+.btn-secondary, .btn-outline-secondary {
+    box-shadow: none;
+
+    &:hover {
+        box-shadow: $nova-shadow-sm;
+    }
+}
+
+// Link buttons read as links: action blue, underline on hover only.
+.btn-link {
+    color: $nova-action-active;
+    font-weight: 500;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+        border-radius: $o-border-radius-sm;
+    }
+}
+
+// Outline-primary pills (touch/invite) match the secondary treatment.
+.btn-outline-primary {
+    &:hover {
+        box-shadow: $nova-shadow-sm;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+// Small icon buttons stay quiet rectangles (pager, switcher match CP language).
+.btn-sm.btn-light, .o_cp_pager .btn, .o_switch_view .btn {
+    border-radius: $o-border-radius;
+}

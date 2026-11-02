@@ -1,0 +1,94 @@
+///
+/// Nova calendar (dark).
+///
+
+.o_calendar_widget {
+    --o-cw-bg: #{$o-view-background-color};
+    --o-cw-color: #{$nova-action-hover};
+    --o-cw-border-color: #{$o-border-color};
+}
+
+// FullCalendar paints grid, gutters and today from its own vars: point
+// them at the dark tokens or the grid stays light.
+.o_web_client .o_calendar_widget {
+    --fc-page-bg-color: #{$o-view-background-color};
+    --fc-neutral-bg-color: #{$o-gray-200};
+    --fc-neutral-text-color: #{$nova-ink-muted};
+    --fc-border-color: #{$o-border-color};
+    --fc-today-bg-color: #{rgba($nova-action, 0.12)};
+    --fc-event-text-color: #{$nova-ink};
+    --fc-event-border-color: #{$o-border-color};
+}
+
+.o_calendar_renderer {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+}
+
+.o_calendar_widget {
+    .fc-event, .fc-timegrid-event, .fc-daygrid-event {
+        border-color: $o-border-color;
+        box-shadow: none;
+    }
+
+    .fc-dayGridMonth-view .fc-day-today {
+        background: $nova-action-soft;
+    }
+
+    .fc-day-today .o_cw_day_number {
+        background: $nova-action;
+        color: $nova-on-action;
+    }
+
+    .fc-time {
+        color: $nova-ink-muted;
+    }
+
+    .fc-col-header-cell {
+        color: $nova-ink-muted;
+    }
+
+    .fc-timegrid-slot-label-cushion {
+        color: $nova-ink-muted;
+    }
+    .fc-dayGridYear-view .fc-has-event {
+        background: mix($nova-action, $o-view-background-color, 35%);
+    }
+
+}
+
+// Keyboard focus ring on toolbar buttons, mirrored from light (which
+// does not load in dark sessions).
+.o_web_client .o_calendar_widget .fc-toolbar .fc-button {
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+        z-index: 1;
+    }
+}
+
+// Same repoint as light: today number + now indicator take the accent.
+.o_calendar_renderer .o_calendar_widget .fc-timeGridDay-view,
+.o_calendar_renderer .o_calendar_widget .fc-timeGridWeek-view {
+    --o-cw-bg: #{$nova-action};
+    --o-cw-color: #{$nova-on-action};
+}
+
+.o_calendar_renderer .o_calendar_widget .fc-dayGridMonth-view .fc-daygrid-body tr .fc-day.fc-day-today {
+    --o-cw-bg: #{$nova-action};
+    --o-cw-color: #{$nova-on-action};
+}
+
+.o_calendar_filter .o_calendar_filter_item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.o_calendar_sidepanel_container {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+}
+
+.fc-more-popover, .o_cw_popover {
+    background: #2E2F30;
+    border-color: $o-border-color;
+}

@@ -1,0 +1,32 @@
+///
+/// Nova spreadsheet — chrome only, never the canvas.
+/// Remaps the stock --os-* chrome vars to Nova blue inside the embed
+/// container (container scope beats the lib's :root, order-proof).
+/// Verified: --os-* vars in o_spreadsheet.css, .o-spreadsheet-TopBar/
+/// BottomBar/.o-sidePanel in o_spreadsheet xml, .o_spreadsheet_container
+/// in spreadsheet_component.xml.
+///
+
+.o_spreadsheet_container {
+    // Runtime accent first (painted on :root by nova_theme_apply.js),
+    // compiled theme token as fallback.
+    --os-action-color: var(--nova-accent, #{$nova-action});
+    --os-action-color-hover: var(--nova-accent-hover, #{$nova-action-active});
+    --os-link-color: var(--nova-accent-active, #{$nova-action-active});
+    --os-primary-button-bg: var(--nova-accent, #{$nova-action});
+    --os-primary-button-hover-bg: var(--nova-accent-hover, #{$nova-action-active});
+    --os-primary-button-text-color: #{$o-white};
+    --os-button-active-bg: var(--nova-accent-soft, #{$nova-action-soft});
+    --os-border-color: #{$o-border-color};
+    --os-white-bg: #{$o-view-background-color};
+
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+// Sample dashboards hardcode a white figure card.
+.o-sample-dashboard .o-figure-wrapper {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: 10px;
+}

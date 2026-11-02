@@ -1,0 +1,189 @@
+///
+/// Nova chatter (dark): blurred bar, white-wash hover, dark composer card.
+///
+
+// Solid, not sticky (light file pins relative !important) — a translucent
+// bar let message text ghost through mid-scroll. Match its specificity so
+// the dark fill wins the cascade, drop the blur (nothing floats now).
+.o_web_client .o-mail-Chatter-top {
+    background: $o-view-background-color;
+    border-bottom-color: $o-border-color;
+}
+
+.o-mail-Chatter-topbar button.btn-link {
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+}
+
+.o-mail-Message {
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    &.o-selected {
+        background: $nova-action-soft;
+    }
+}
+
+// The light chatter ships lazy and wins ties: scoped duplicates.
+.o_web_client .o-mail-Message {
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    &.o-selected {
+        background: $nova-action-soft;
+    }
+}
+
+.o_web_client .o-mail-Composer:not(.o-extended) .o-mail-Composer-send:not(:disabled):hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.o-mail-Message-author {
+    color: $o-main-headings-color;
+}
+
+.o-mail-Composer {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    box-shadow: none;
+
+    &:focus-within {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+    }
+}
+
+.o-mail-Composer-fake:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+// Same inner-frame kill as light: card is the only frame. Bootstrap
+// utility wins without !important; keep the CSS var inert too.
+.o-mail-Chatter .o-mail-Composer-inputContainer {
+    border: 0 !important;
+    background: transparent;
+    box-shadow: none;
+    --border-color: transparent !important;
+}
+
+.o-mail-Chatter-topbar .o-mail-Chatter-sendMessage,
+.o-mail-Chatter-topbar .o-mail-Chatter-logNote,
+.o-mail-Chatter-topbar .o-mail-Chatter-activity {
+    &.btn-secondary {
+        background: transparent;
+        color: $nova-ink-muted;
+
+        &:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.08);
+            color: $o-main-headings-color;
+        }
+    }
+
+    &.btn-primary,
+    &.active {
+        background: $nova-action;
+        color: $nova-on-action;
+    }
+}
+
+.o-mail-Composer-send {
+    &:not(:disabled) {
+        background: $nova-action;
+        color: $nova-on-action;
+    }
+
+    &:not(:disabled):hover {
+        background: $nova-action-hover;
+        color: $nova-on-action;
+    }
+
+    &:disabled {
+        opacity: 0.55;
+    }
+}
+
+.o-mail-Chatter .o-mail-Followers-dropdown {
+    background: #2E2F30;
+    border-color: $o-border-color;
+}
+
+.o-mail-Chatter .o-mail-Activity-iconContainer:not(.text-bg-success):not(.text-bg-warning):not(.text-bg-danger) {
+    background: $nova-action-soft;
+}
+
+.o-mail-Chatter .o-mail-Activity:has(.text-bg-danger) .o-mail-Activity-info {
+    border-left: 2px solid $o-danger;
+    padding-left: 8px;
+}
+
+.o-mail-Chatter .o-mail-AttachmentCard {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+}
+
+.o-mail-Composer:not(.o-extended) .o-mail-Composer-send:not(:disabled):hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.o-mail-Form-chatter.o-aside .o-mail-Chatter-top {
+    background: transparent;
+    border-bottom: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.o-mail-Chatter .o-mail-Message-avatar img,
+.o-mail-Chatter .o-mail-Message-avatarContainer img {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+// Bubble tints: core mixes 90% severity color, which lands as muddy
+// mid-tones in dark (sage green). Re-mix toward the view surface so
+// bubbles read as dark cards with a colored edge instead.
+.o_web_client .o-mail-Message-bubble {
+    &.o-green {
+        --o-bubble-bg: #{mix($o-view-background-color, $o-success, 70%)};
+        --o-bubble-bg-muted: #{$o-view-background-color};
+        --o-bubble-border-color: #{mix($o-view-background-color, $o-success, 40%)};
+    }
+
+    &.o-blue {
+        --o-bubble-bg: #{mix($o-view-background-color, $o-info, 70%)};
+        --o-bubble-bg-muted: #{$o-view-background-color};
+        --o-bubble-border-color: #{mix($o-view-background-color, $o-info, 40%)};
+    }
+
+    &.o-orange {
+        --o-bubble-bg: #{mix($o-view-background-color, $o-warning, 72%)};
+        --o-bubble-bg-muted: #{$o-view-background-color};
+        --o-bubble-border-color: #{mix($o-view-background-color, $o-warning, 45%)};
+    }
+}
+
+.o-mail-Thread-newMessageLine {
+    border-color: $nova-action;
+}
+
+.o-mail-Chatter .o-mail-MessageReaction.o-selfReacted {
+    background: $nova-action-soft;
+    border-color: $nova-action;
+}
+
+.o-mail-Chatter .o-mail-NotificationMessage {
+    color: $nova-ink-muted;
+}
+
+.o-mail-Chatter .o-mail-LinkPreviewCard, .o-mail-Chatter .o-mail-LinkPreviewVideo {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+}
+
+.o-mail-Chatter .o-mail-Scheduled .o-mail-Message-body {
+    background: $nova-action-soft;
+}

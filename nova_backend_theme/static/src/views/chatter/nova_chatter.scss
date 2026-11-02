@@ -1,0 +1,533 @@
+///
+/// Nova chatter — the form timeline as calm cards + an elevated composer.
+/// Real Odoo 20 hooks (.o-mail-*). Replaces the dead .o_chatter rules.
+///
+/// Rhythm (8pt): 8px message gaps via stock thread margins, 12px card radii,
+/// 16px composer padding. Motion: 120ms washes, instant press.
+///
+
+// Thread action bar (Send/Log/Activity + composer) at the top of the
+// thread. NOT sticky: stock pins it through Bootstrap's
+// `position-sticky` utility (!important) so the thread scrolls under
+// it — with a translucent fill, message text ghosted straight through
+// the bar mid-scroll (same irritation as the form statusbar). The
+// explicit relative !important beats the utility; the solid fill means
+// nothing can ever bleed through even if a rule re-introduces overlap.
+.o_web_client .o-mail-Chatter-top {
+    position: relative !important;
+    z-index: 5;
+    background: $o-white;
+    border-bottom: 1px solid $o-border-color;
+}
+
+// Aside (form side panel): no sticky bar chrome — the whole panel scrolls
+// as one column; stock's top padding + our sticky border double up.
+.o-mail-Form-chatter.o-aside .o-mail-Chatter-top {
+    position: static;
+    border-bottom: 0;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding-top: 8px;
+}
+
+.o-mail-Form-chatter.o-aside .o-mail-Chatter-topbar {
+    padding-bottom: 6px;
+}
+
+.o-mail-Chatter-topbar {
+    padding: 6px $o-horizontal-padding 8px;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+// Topbar text buttons read as quiet pills; follower count stays tabular.
+.o-mail-Chatter-topbar button.btn-link {
+    border-radius: 999px;
+    transition: background $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-200;
+        text-decoration: none;
+    }
+}
+
+.o-mail-Chatter-topbar .o-mail-Followers-counter {
+    font-variant-numeric: tabular-nums;
+}
+
+// Messages: calm rows, hover wash, selected blue-soft + action bar.
+.o-mail-Message {
+    border-radius: $o-border-radius;
+    transition: background $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        background: rgba($o-gray-100, 0.7);
+    }
+
+    &.o-selected {
+        background: $nova-action-soft;
+        box-shadow: inset 2px 0 0 $nova-action;
+    }
+}
+
+.o-mail-Message-author {
+    font-weight: 600;
+    color: $nova-ink;
+}
+
+.o-mail-Message-date {
+    font-size: 12px;
+    color: $nova-ink-muted;
+    font-variant-numeric: tabular-nums;
+}
+
+// Row actions reveal on hover/focus (Slack-calm); touch always shows them.
+.o-mail-Message-actions {
+    opacity: 0;
+    transition: opacity $nova-dur-base $o-easing-enter;
+
+    .o-mail-Message:hover &, .o-mail-Message:focus-within & {
+        opacity: 1;
+    }
+
+    @media (hover: none) {
+        opacity: 1;
+    }
+}
+
+// Composer as an elevated card. Grid rows must not stretch: stock's
+// `auto 1fr auto` + aside chatter height leaves a dead band between
+// the input and the Log/send row. Card is the only frame — focus
+// lives here only; every inner form-control ring is dead.
+.o-mail-Composer {
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    background: $o-view-background-color;
+    box-shadow: $nova-shadow-sm;
+    grid-template-rows: auto auto auto;
+    transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter;
+
+    &:focus-within {
+        border-color: $nova-action;
+        box-shadow: none;
+    }
+}
+
+// Note mode ships stock `pt-4` (24px) — dead air above the card.
+.o-mail-Chatter-top .o-mail-Composer {
+    padding-top: 0 !important;
+}
+
+// form-control + Bootstrap focus rings (teal box around the field) lose
+// to the card. Specificity beats .form-control:focus without scaring
+// the rest of the backend (scoped to Chatter only).
+.o-mail-Chatter .o-mail-Composer-input,
+.o-mail-Chatter .o-mail-Composer-html,
+.o-mail-Chatter .o-mail-Composer-coreMain textarea,
+.o-mail-Chatter .o-mail-Composer-coreMain [contenteditable="true"],
+.o-mail-Chatter .o-mail-Composer-coreMain .form-control,
+.o-mail-Chatter .o-mail-Composer-coreMain .form-control:focus,
+.o-mail-Chatter .o-mail-Composer-inputStyle,
+.o-mail-Chatter .o-mail-Composer-inputStyle:focus {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding-left: 0;
+    padding-right: 0;
+
+    &::placeholder {
+        border: 0;
+    }
+}
+
+// Bootstrap's `.border` utility is `!important` — a plain border:0 loses
+// and you get the double-frame (card + teal-focus inner box).
+.o-mail-Chatter .o-mail-Composer-inputContainer {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: $o-border-radius !important;
+    --border-color: transparent !important;
+
+    // Stock :has(textarea:focus) recolors --border-color; inert it.
+    &:has(textarea:focus),
+    &:has(.o-mail-Composer-html:focus) {
+        border: 0 !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+        --border-color: transparent !important;
+    }
+}
+
+.o-mail-Composer-coreMain {
+    padding: 8px 12px 2px;
+}
+
+// Footer: no separator rule, no stock mt-2 float — Log/send sits tight
+// under the input; attachment icons share the same row without a gap.
+.o-mail-Composer-footer {
+    border-top: 0;
+    padding: 0 12px 8px;
+
+    > .d-flex {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .pt-1 {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+}
+
+// Disabled Log is a quiet label, not a hollow button floating in space.
+.o-mail-Chatter .o-mail-Composer.o-extended .o-mail-Composer-send:disabled {
+    border-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: $nova-ink-muted;
+    opacity: 1;
+    cursor: default;
+}
+
+.o-mail-Composer-input, .o-mail-Composer-html {
+    font-size: 14px;
+    line-height: 1.55;
+    color: $nova-ink;
+}
+
+.o-mail-Composer-input::placeholder {
+    color: $nova-ink-muted;
+}
+
+.o-mail-Composer-fake {
+    color: $nova-ink-muted;
+    border-radius: $o-border-radius;
+    transition: background $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+}
+
+// Composer To/Cc/Subject rows inherit the card (labels stay muted stock).
+.o-mail-Chatter .o-mail-RecipientsInput {
+    background: transparent;
+}
+
+.o-mail-Chatter input[name="subject"] {
+    border-radius: $o-border-radius;
+}
+
+// Composer send: primary pill in extended mode (aside Log note / Send
+// message), quiet icon circle inline (Discuss bubbles). Muted when empty
+// so a blank Log button does not read as a dead gray pill.
+.o-mail-Composer.o-extended .o-mail-Composer-send {
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 4px 14px;
+    min-height: 28px;
+    transition: background $nova-dur-base $o-easing-enter, transform $nova-dur-press $o-easing-enter;
+
+    &:not(:disabled) {
+        background: $nova-action;
+        color: $o-white;
+        text-decoration: none;
+    }
+
+    &:not(:disabled):hover {
+        background: $nova-action-hover;
+        color: $o-white;
+    }
+
+    &:not(:disabled):active {
+        transform: $nova-press;
+    }
+
+    &:disabled {
+        background: transparent;
+        color: $nova-ink-muted;
+        opacity: 1;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.o-mail-Composer-actions button:not(.active) {
+    border-radius: 999px;
+    transition: background $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-200;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+// Inline (non-extended) send stays a quiet icon circle.
+.o-mail-Composer:not(.o-extended) .o-mail-Composer-send {
+    border-radius: 999px;
+    min-width: 36px;
+    min-height: 36px;
+    transition: background $nova-dur-base $o-easing-enter;
+
+    &:not(:disabled):hover {
+        background: $o-gray-200;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.o-mail-Composer-avatar img {
+    border-radius: 50%;
+}
+
+// Thread avatars: 32px circles, cropped faces.
+.o-mail-Chatter .o-mail-Message-avatar img,
+.o-mail-Chatter .o-mail-Message-avatarContainer img {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+// Discuss bubbles keep their tails; corners go friendly.
+.o-mail-Message-bubble {
+    border-radius: 16px;
+}
+
+// Message bodies: readable measure, underlined links, preserved tracking.
+.o-mail-Chatter .o-mail-Message-body {
+    line-height: 1.55;
+}
+
+.o-mail-Chatter .o-mail-Message-richBody {
+    overflow-x: auto;
+
+    a {
+        text-decoration: underline;
+    }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+// Reaction pills: round, soft when self-reacted.
+.o-mail-Chatter .o-mail-MessageReaction {
+    border-radius: 999px;
+}
+
+.o-mail-Chatter .o-mail-MessageReaction.o-selfReacted {
+    background: $nova-action-soft;
+    border-color: $nova-action;
+}
+
+// Edit mode reads as a draft: dashed frame, compact body.
+.o-mail-Composer.o-editing {
+    border-style: dashed;
+    box-shadow: none;
+}
+
+.o-mail-Message.o-editing .o-mail-Message-body {
+    padding: 4px;
+}
+
+// System/notification lines stay quiet and centered.
+.o-mail-Chatter .o-mail-NotificationMessage {
+    color: $nova-ink-muted;
+    font-size: 12px;
+    text-align: center;
+}
+
+// Link previews + mention suggestions as calm cards.
+.o-mail-Chatter .o-mail-LinkPreviewCard, .o-mail-Chatter .o-mail-LinkPreviewVideo {
+    border-radius: 12px;
+    border: 1px solid $o-border-color;
+}
+
+.o-mail-Chatter .o-mail-MentionList-suggestionList:has(.o-open),
+.o-mail-Chatter .o-mail-Composer-suggestionList:has(.o-open) {
+    border-radius: 12px;
+    box-shadow: $nova-shadow-sm;
+}
+
+// Activities: 28px soft-blue icon discs — but planned/today/overdue keep
+// their success/warning/danger fills; overdue grows a danger edge.
+.o-mail-Chatter .o-mail-Activity-iconContainer:not(.text-bg-success):not(.text-bg-warning):not(.text-bg-danger) {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: $nova-action-soft;
+}
+
+.o-mail-Chatter .o-mail-Activity:has(.text-bg-danger) .o-mail-Activity-info {
+    border-left: 2px solid $o-danger;
+    padding-left: 8px;
+}
+
+// Followers: pill trigger, calm dropdown, round avatars.
+.o-mail-Chatter .o-mail-Followers-button {
+    border-radius: 999px;
+}
+
+.o-mail-Chatter .o-mail-Followers-dropdown {
+    border-radius: 12px;
+    border: 1px solid $o-border-color;
+    box-shadow: $nova-shadow-sm;
+}
+
+.o-mail-Chatter .o-mail-Followers-dropdown img {
+    border-radius: 50%;
+}
+
+.o-mail-Chatter .o-mail-Follower.o-inactive {
+    opacity: 0.6;
+}
+
+.o-mail-Chatter .o-mail-Follower-action {
+    opacity: 0.5;
+    border-radius: 999px;
+    transition: opacity $nova-dur-fast $o-easing-enter, background $nova-dur-fast $o-easing-enter;
+
+    .o-mail-Follower:hover &, .o-mail-Follower:focus-within & {
+        opacity: 1;
+    }
+
+    &:focus-visible {
+        opacity: 1;
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+
+    @media (hover: none) {
+        opacity: 1;
+    }
+}
+
+// Attachment cards: 12px calm cards, quiet info bar.
+.o-mail-Chatter .o-mail-AttachmentCard {
+    border-radius: 12px;
+    border: 1px solid $o-border-color;
+    overflow: hidden;
+    transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-border-strong;
+        box-shadow: $nova-shadow-sm;
+    }
+}
+
+// Uploading cards signal progress via cursor; duplicates read as pills.
+.o-mail-Chatter .o-mail-AttachmentContainer.o-isUploading {
+    cursor: progress;
+}
+
+.o-mail-AttachmentBox .form-check-input {
+    accent-color: $nova-action;
+}
+
+.o-mail-Chatter-attachFiles,
+.o-mail-Chatter-selectFiles {
+    border-radius: 999px;
+}
+
+// Topbar trio: compact pills. Stable width so send/log primary swap
+// never reflows; quiet inactive state (no heavy secondary border).
+.o-mail-Chatter-topbar .o-mail-Chatter-sendMessage,
+.o-mail-Chatter-topbar .o-mail-Chatter-logNote,
+.o-mail-Chatter-topbar .o-mail-Chatter-activity {
+    border-radius: 999px;
+    min-width: 11ch;
+    min-height: 28px;
+    padding: 2px 12px;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    border-color: transparent;
+    transition: background $nova-dur-base $o-easing-enter,
+        color $nova-dur-base $o-easing-enter,
+        border-color $nova-dur-base $o-easing-enter;
+
+    &.btn-secondary {
+        background: transparent;
+        color: $nova-ink-muted;
+        border-color: transparent;
+
+        &:hover:not(:disabled) {
+            background: $o-gray-200;
+            color: $nova-ink;
+            border-color: transparent;
+        }
+    }
+
+    &.btn-primary,
+    &.active {
+        background: $nova-action;
+        color: $o-white;
+        border-color: transparent;
+        box-shadow: none;
+
+        &:hover:not(:disabled) {
+            background: $nova-action-hover;
+            color: $o-white;
+        }
+    }
+}
+
+.o-mail-Chatter .o-mail-Chatter-attachmentActions .btn {
+    border-radius: $o-border-radius;
+    font-weight: 600;
+}
+
+// New-message divider speaks blue, not alarm red.
+.o-mail-Thread-newMessageLine {
+    border-color: $nova-action;
+}
+
+// Jump-to-present + empty thread: circle action, muted guidance.
+.o-mail-Thread-jumpPresent {
+    border-radius: 999px;
+    box-shadow: $nova-shadow-md;
+}
+
+// Scheduled messages reuse the calm card + pill buttons.
+.o-mail-Chatter .o-mail-Scheduled .o-mail-Message-body {
+    background: $nova-action-soft;
+    border-radius: $o-border-radius-lg;
+    padding: 12px 16px;
+}
+
+.o-mail-Chatter .o-mail-Scheduled-Message-buttons .btn {
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.o-mail-Thread-empty {
+    color: $nova-ink-muted;
+    font-size: 13px;
+}
+
+@include media-breakpoint-down(md) {
+    // Composer pins to the thumb with home-indicator air.
+    .o-mail-Chatter .o-mail-Composer {
+        position: sticky;
+        bottom: 0;
+    }
+
+    .o-mail-Chatter-content {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}

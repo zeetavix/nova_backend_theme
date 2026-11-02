@@ -1,0 +1,16 @@
+# Nova a11y baseline: files with motion but no prefers-reduced-motion block yet.
+# Fix a file, then delete its line here.
+core/buttons/nova_buttons.scss
+core/commands/nova_command_palette.scss
+core/nova_components.scss
+search/control_panel/nova_control_panel.scss
+views/calendar/nova_calendar.scss
+views/chatter/nova_chatter.scss
+views/discuss/nova_discuss.scss
+views/fields/nova_fields.scss
+views/form/nova_form.scss
+views/kanban/nova_kanban.scss
+views/list/nova_list.scss
+views/pivot/nova_pivot.scss
+webclient/navbar/nova_navbar.scss
+webclient/settings/nova_settings.scss

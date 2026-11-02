@@ -1,0 +1,741 @@
+///
+/// Nova form — sheet as welcoming card, statusbar as pills, notebook as tabs.
+/// Public .o_form_sheet_bg / .o_form_sheet / .o_statusbar_* / .o_notebook DOM.
+///
+
+// Page holds the sheet on app gray with air around it.
+// The top gutter is slim (8px): the control panel above already spaces the
+// header block, and the statusbar card carries its own bottom margin —
+// 16px here used to read as a dead gap ("space without reason").
+.o_form_sheet_bg {
+    background: $o-webclient-background-color;
+    padding: 8px 16px 16px;
+
+    @include media-breakpoint-up(md) {
+        padding: 8px 16px 48px;
+    }
+}
+
+// Statusbar as its own card: separate from the control panel above and
+// the sheet below, with gutters on both sides. Higher specificity beats
+// stock's full-bleed negative margins. Flex row: buttons left, pills right,
+// vertically centered, wrapping cleanly on narrow screens.
+//
+// NOT sticky: stock pins this bar at top:0 on md+, which reads fine on its
+// full-bleed bar but turns our card into a floating slab that content
+// peeks around while scrolling (the sheet scrolls under its gutters).
+// The control panel title stays put above; the bar itself scrolls away.
+.o_web_client .o_form_view .o_form_sheet_bg > .o_form_statusbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    // Never collapse: in side-chatter (xxl) mode the sheet_bg is a flex
+    // COLUMN, so a shrinkable header absorbs all vertical shrink and
+    // flattens to padding+border while its content bleeds out. The sheet
+    // below is the part that scrolls, not this bar.
+    flex-shrink: 0;
+    position: relative;
+    z-index: 0;
+    margin: 0 0 12px;
+    padding: 8px 16px;
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    box-shadow: $nova-shadow-sm;
+
+    > .o_statusbar_buttons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+
+        &:empty {
+            display: none;
+        }
+    }
+
+    > .o_field_statusbar {
+        display: flex;
+        align-items: center;
+        // Shrink chain: both the field and the pills row default to
+        // min-width auto, which lets the pills force the whole card
+        // wider than the sheet (page-level horizontal scrollbar, crammed
+        // row) instead of wrapping inside it. min-width 0 lets them
+        // shrink; Odoo's own collapse (More... dropdowns) then engages.
+        min-width: 0;
+        flex: 1 1 auto;
+        margin-left: auto;
+        margin-bottom: 0;
+    }
+
+    // Pills row: centered, wrapping, never overlapping. Direction stays
+    // row-reverse — stock renders the steps reversed in the DOM and the
+    // chevron/pill order depends on it; only the wrap axis is ours.
+    .o_statusbar_status {
+        display: flex;
+        flex-flow: row-reverse wrap;
+        align-items: center;
+        min-width: 0;
+        row-gap: 4px;
+        padding: 0;
+        background: transparent;
+        border: 0;
+    }
+}
+
+// Won/Lost ribbons anchor to the whole content area stock-side, so they
+// drape over the pills. Anchor them to the sheet corner instead: the sheet
+// always starts below the statusbar, so the ribbon can never touch pills.
+.o_form_sheet:has(> .ribbon) {
+    position: relative;
+}
+
+// Sheet-less forms (dialogs, settings, wizards) get the same air, no card.
+.o_form_nosheet {
+    padding: 16px;
+
+    @include media-breakpoint-up(md) {
+        padding: 24px 16px 32px;
+    }
+}
+
+.modal .o_form_sheet {
+    border-radius: $o-border-radius-lg;
+}
+
+// Embedded one2many lists sit flush in the sheet: tighter rows, soft header.
+.o_form_sheet .o_field_x2many_list .o_list_renderer {
+    border: 0;
+    border-radius: $o-border-radius;
+    box-shadow: none;
+}
+
+.o_form_sheet .o_field_x2many_list .o_list_table {
+    thead th {
+        font-size: 11px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
+    tbody tr td {
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+}
+
+.o_form_sheet {
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-xl;
+    box-shadow: $nova-shadow-md;
+    padding: $nova-card-padding;
+
+    @include media-breakpoint-up(md) {
+        padding: 24px;
+    }
+}
+
+// Phones: edge-to-edge sheet, sideways statusbar, wrapped button box.
+@include media-breakpoint-down(md) {
+    .o_form_sheet_bg {
+        padding: 0 0 32px;
+    }
+
+    .o_form_sheet {
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .o_form_statusbar {
+        overflow-x: auto;
+    }
+
+    .o_form_statusbar .o_statusbar_buttons {
+        flex-wrap: wrap;
+    }
+}
+
+// Section dividers: uppercase micro eyebrows with a hairline rule.
+.o_form_view .o_horizontal_separator {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $nova-ink-muted;
+    padding: 16px 0 8px;
+    border-bottom: 1px solid $o-border-color;
+}
+
+// Title + header: larger, tighter, human.
+.o_form_sheet .oe_title, .o_form_view .oe_title {
+    h1, .o_field_widget {
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.25;
+    }
+}
+
+// Links inside forms read action blue with a visible keyboard ring.
+.o_form_view .o_form_uri {
+    color: $nova-action-active;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+        border-radius: $o-border-radius-sm;
+    }
+}
+
+// Statusbar: flat pills, not zigzag chevrons. The clip-path chain is
+// Odoo's most recognizable silhouette — pills keep the sequence readable
+// (current = solid blue) without the 2010s geometry. Specificity matches
+// Community's md+ negative-margin rule so pills never overlap.
+.o_statusbar_status .o_arrow_button {
+    clip-path: none;
+    border-radius: 999px;
+    margin: 0 4px 0 0;
+    border: 1px solid $o-border-color;
+    transition: background $nova-dur-base $o-easing-enter, color $nova-dur-base $o-easing-enter, border-color $nova-dur-base $o-easing-enter;
+
+    &:hover:not(.o_arrow_button_current):not(.btn-primary) {
+        background: $o-gray-200;
+        border-color: $nova-border-strong;
+    }
+
+    &.o_arrow_button_current, &.btn-primary {
+        background: $nova-action;
+        border-color: $nova-action;
+        color: $o-white;
+        font-weight: 600;
+    }
+
+    // Future (disabled) stages recede; only the current + clickable lead.
+    &:disabled:not(.o_arrow_button_current) {
+        color: $nova-ink-muted;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+// Community wraps the bar in a bordered card at md+ — flatten to the sheet.
+// Double-class bumps specificity above Community's (0,4,0) chevron rule
+// (negative margin, border reset, clip-path), so pills hold on desktop.
+.o_field_statusbar.o_field_statusbar > .o_statusbar_status {
+    @include media-breakpoint-up(md) {
+        border: 0;
+        padding: 0;
+        background: transparent;
+
+        .o_arrow_button:not(.d-none) {
+            clip-path: none;
+            border-radius: 999px;
+            border: 1px solid $o-border-color;
+            margin-inline-start: 0;
+            margin-inline-end: 4px;
+            padding: 6px 14px;
+        }
+    }
+}
+
+// Mobile "More" toggler has no icon-button class stock: give it a real target.
+.o_statusbar_buttons .btn.dropdown-toggle {
+    min-width: 32px;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &::after {
+        content: none;
+    }
+
+    @include media-breakpoint-down(md) {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+// Invalid-count badge: template-free pill injected on the save button by
+// nova_form_jump.js. Button is the positioning context; pill hides at 0.
+.o_form_view .o_form_button_save {
+    position: relative;
+}
+
+.nova-invalid-badge {
+    position: absolute;
+    top: -8px;
+    inset-inline-end: -8px;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: map-get($o-theme-text-colors, "danger");
+    color: $o-white;
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: $nova-shadow-sm;
+
+    &[hidden] {
+        display: none;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $o-white;
+        outline-offset: 1px;
+        box-shadow: 0 0 0 4px $nova-action;
+    }
+}
+
+@media (forced-colors: active) {
+    .nova-invalid-badge {
+        border: 1px solid CanvasText;
+        background: Canvas;
+        color: CanvasText;
+    }
+}
+.o_form_statusbar .o_statusbar_buttons .btn,
+.oe_button_box .oe_stat_button,
+.o-form-buttonbox .oe_stat_button {
+    border-radius: $o-border-radius;
+    transition: background $nova-dur-base $o-easing-enter, border-color $nova-dur-base $o-easing-enter;
+
+    // Quiet gray hover + neutral border are for the secondary/stat chrome
+    // only. Filled variants (Validate = .btn-primary, plus danger/success)
+    // keep their own tokens — the blanket hover used to wash them to
+    // $o-gray-100 with white ink, i.e. invisible on hover.
+    &:not(.btn-primary, .btn-danger, .btn-success, .btn-warning, .btn-info) {
+        border-color: $o-border-color;
+
+        &:hover {
+            background: $o-gray-100;
+        }
+    }
+
+    &:disabled {
+        opacity: 1;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+
+    .o_stat_value {
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+        // Ink, not muted: the figure is the point of a stat button.
+        // Muted grey measured 4.39:1 on the soft button fill (WCAG AA
+        // wants 4.5:1 for small text).
+        color: $nova-ink;
+    }
+}
+
+// Same rule for the inline stat info row ("Invoiced $ 0.00" on a
+// contact): its own span, its own muted default, same ink treatment.
+.o_form_field.o_stat_info .o_stat_value,
+.o_form_field.o_stat_info .o_stat_value span {
+    color: $nova-ink;
+}
+
+// Warm paper records (fintech calm): cream canvas, boxed soft-fill inputs,
+// ink text. Teal strictly for actions. Scoped .o_form_view .o_form_sheet
+// (0,4,0) to outrank the underline system in core (0,3,0). Lists stay cool.
+.o_web_client .o_form_view .o_form_sheet {
+    background: $nova-paper;
+    border-color: $nova-paper-border;
+}
+
+.o_web_client .o_form_view .o_form_sheet .o_input,
+.o_web_client .o_form_view .o_form_sheet .o_field_widget input.o_input,
+.o_web_client .o_form_view .o_form_sheet .o_field_widget select.o_input,
+.o_web_client .o_form_view .o_form_sheet .o_field_widget textarea.o_input {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: $nova-paper-deep;
+    padding: 6px 10px;
+    transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter, background-color $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-paper-border;
+        background-color: $nova-paper-deep;
+    }
+
+    &:focus, &:focus-within {
+        border: 1px solid $nova-action;
+        background-color: $o-white;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
+        outline: none;
+    }
+}
+
+// Monetary overlay: the absolutely-positioned currency/ghost layer also
+// carries .o_input — it must stay transparent or typed digits disappear
+// under its opaque fill (clicks pass through, text does not show).
+.o_web_client .o_form_view .o_form_sheet .o_field_monetary span.o_input,
+.modal .o_form_view .o_field_monetary span.o_input {
+    background: transparent;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+// Affix rows (monetary $, percent %): center every child on one baseline so
+// side-by-side pairs share a height. The $ overlay also stretches full
+// height with input-matching left padding so the symbol centers on text.
+// `.o-wysiwyg` is EXCLUDED: it is a column flex whose children must stretch
+// to full width — centering them shrinks every editor to its padding
+// (22px sliver). Same trap, sheet and dialog.
+.o_web_client .o_form_view .o_form_sheet .o_field_widget .d-flex:not(.o-wysiwyg),
+.modal .o_form_view .o_field_widget .d-flex:not(.o-wysiwyg) {
+    align-items: center;
+}
+
+.o_web_client .o_form_view .o_form_sheet .o_field_monetary span.o_input,
+.modal .o_form_view .o_field_monetary span.o_input {
+    height: 100%;
+    align-items: center;
+    padding-left: 10px;
+}
+.o_web_client .o_form_view .o_form_sheet .o_field_widget.o_required_modifier .o_input,
+.o_web_client .o_form_view .o_form_sheet .o_required_modifier,
+.modal .o_form_view .o_field_widget.o_required_modifier .o_input,
+.modal .o_form_view .o_required_modifier {
+    border-bottom: 1px solid transparent;
+}
+
+// Dialogs render .o_form_view WITHOUT .o_form_sheet, so the sheet-scoped
+// boxed inputs never applied — dialogs fell back to underline inputs while
+// full-page forms were boxed. Dialogs share the sheet recipe exactly:
+// same paper, same boxes, same focus ring.
+.modal .o_form_view {
+    background: $nova-paper;
+}
+
+.modal .o_form_view .o_input,
+.modal .o_form_view .o_field_widget input.o_input,
+.modal .o_form_view .o_field_widget select.o_input,
+.modal .o_form_view .o_field_widget textarea.o_input {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: $nova-paper-deep;
+    padding: 6px 10px;
+    transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter, background-color $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-paper-border;
+        background-color: $nova-paper-deep;
+    }
+
+    &:focus, &:focus-within {
+        border: 1px solid $nova-action;
+        background-color: $o-white;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
+        outline: none;
+    }
+}
+
+// ── Field visibility floor ────────────────────────────────────────────────
+// Nova shows a field by its FILL: transparent border at rest, paper-deep
+// box, action border on hover, white + ring on focus. The fill is the
+// FLOOR — borders come and go (stock zeroes them on activity notes and
+// small screens; Nova zeroes them on borderless icon rows and border-0
+// utilities), but an editable surface must never disappear.
+//
+// Inputs carried the recipe above in sheet + dialog containers only.
+// HTML editors (.note-editable) and sheet-less forms carried NOTHING —
+// that gap is how Schedule Activity went invisible: stock
+// `.o_activity_details .note-editable { border: 0 }` (and html_editor's
+// transparent-at-rest bottom rule) + our borderless `.o_outlined`
+// wrapper + no fill of its own = paper on paper.
+//
+// Three tiers, deliberately:
+//   (0,4,0) page/dialog — ties stock's editor rules, loads later → wins.
+//   (0,3,0) backstop    — any other root still gets the fill (visibility
+//                         is fill, not border, so losing the border war
+//                         here still leaves a visible field).
+//   nosheet inputs      — settings, full composer, sheet-less wizards
+//                         join the boxed language instead of stock grey.
+// Chatter composers stay excluded (their card is their frame, enforced
+// with !important in nova_chatter.scss).
+.o_web_client .o_form_view .o_field_html .note-editable,
+.modal .o_form_view .o_field_html .note-editable,
+.o_form_view .o_field_html .note-editable,
+.o_form_view .o_activity_details .note-editable,
+.o_web_client .o_form_view .o_form_nosheet .o_input,
+.o_web_client .o_form_view .o_form_nosheet .o_field_widget input.o_input,
+.o_web_client .o_form_view .o_form_nosheet .o_field_widget select.o_input,
+.o_web_client .o_form_view .o_form_nosheet .o_field_widget textarea.o_input {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: $nova-paper-deep;
+    padding: 6px 10px;
+    transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter, background-color $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-paper-border;
+        background-color: $nova-paper-deep;
+    }
+
+    &:focus, &:focus-within {
+        border: 1px solid $nova-action;
+        background-color: $o-white;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
+        outline: none;
+    }
+}
+
+// Stock forces `padding: 0 !important` on activity notes (icon-row
+// rhythm) — !important beats any specificity, so answer at the same
+// weight and the editor text keeps air inside its new box.
+.o_form_view .o_activity_details .note-editable {
+    padding: 6px 10px !important;
+}
+
+// Dialog detail rows (Schedule Activity .o_outlined): borderless wrapper,
+// fixed icon rail, same rhythm as sheet rows.
+.modal .o_form_view .o_outlined {
+    border: 0;
+    background: transparent;
+    align-items: center;
+
+    > i {
+        color: $nova-ink-muted;
+        text-align: center;
+        width: 20px;
+        flex-shrink: 0;
+    }
+}
+
+// Composite tag/chip fields (many2many_tags): the container carries the one
+// frame, the inner search input stays borderless. Otherwise the container
+// ring + the input ring stack into the double border in the shot.
+.o_web_client .o_form_view .o_form_sheet .o_field_many2many_tags,
+.modal .o_form_view .o_field_many2many_tags {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: $nova-paper-deep;
+    padding: 6px 10px;
+    transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter, background-color $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-paper-border;
+    }
+
+    &:focus-within {
+        border: 1px solid $nova-action;
+        background-color: $o-white;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
+    }
+}
+
+.o_web_client .o_form_view .o_form_sheet .o_field_many2many_tags .o_field_many2many_selection .o_input,
+.modal .o_form_view .o_field_many2many_tags .o_field_many2many_selection .o_input,
+.o_web_client .o_form_view .o_form_sheet .o_field_many2many_tags .o_field_many2many_selection,
+.modal .o_form_view .o_field_many2many_tags .o_field_many2many_selection,
+.o_web_client .o_form_view .o_form_sheet .o_field_many2many_tags .o_tags_input,
+.modal .o_form_view .o_field_many2many_tags .o_tags_input {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    background-color: transparent;
+    padding: 0;
+    box-shadow: none;
+
+    &:hover, &:focus, &:focus-within {
+        border: 0;
+        background: transparent;
+        background-color: transparent;
+        box-shadow: none;
+        outline: none;
+    }
+}
+
+// Compact strips + More dropdown stay borderless and quiet.
+.o-form-buttonbox-small .oe_stat_button,
+.o-form-buttonbox .o_dropdown_more {
+    border-color: transparent;
+}
+
+// Notebook tabs: sharp 3px rounded underline, blue active (settings pattern).
+// Enterprise paints a top bar via ::after — neutralized so only one signal shows.
+.o_notebook .nav-tabs .nav-link {
+    border: 0;
+    border-bottom: 3px solid transparent;
+    border-radius: 3px 3px 0 0;
+    color: $nova-ink-muted;
+    font-weight: 500;
+    padding: 10px 14px;
+    transition: color $nova-dur-base $o-easing-enter, border-color $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        color: $nova-ink;
+        border-bottom-color: $o-gray-300;
+    }
+
+    &.active {
+        color: $nova-action-active;
+        border-bottom-color: $nova-action;
+        font-weight: 600;
+        background: transparent;
+
+        &::after {
+            content: none;
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+// Vertical notebooks trade the underline for a left rail.
+.o_notebook.vertical .nav-tabs .nav-link.active {
+    border-bottom-color: transparent;
+    border-left: 3px solid $nova-action;
+    border-radius: 0 3px 3px 0;
+}
+
+// Required + invalid: honest, never color-alone. Required keeps ink underline;
+// invalid adds danger bar + tint + message-ready slot, and focus stays red.
+.o_field_widget.o_required_modifier .o_input, .o_required_modifier {
+    border-bottom: 2px solid $nova-ink;
+}
+
+// The statusbar wrapper is a required field too (state), so the bare rule
+// above drew a 2px ink line under the whole pill card. Pills are not
+// underline inputs: the card's own border is the frame. 0,2,0 beats 0,1,0.
+.o_form_statusbar .o_required_modifier {
+    border-bottom: 0;
+}
+
+// Lists and x2many grids keep their cell hairlines: a required marker there
+// is a cell-level cue (asterisk), never a field underline. Scoped 0,2,0 so it
+// beats the bare rule above wherever a grid lives inside a sheet.
+.o_list_renderer .o_required_modifier {
+    border-bottom: 0;
+}
+
+// Required asterisk reads in brand blue, not default red-on-black harshness.
+.o_form_view .o_form_label sup {
+    color: $nova-action-active;
+    font-weight: 600;
+}
+
+// Invalid fields tint their labels danger (sibling-cell aware, gracefully
+// absent where the layout differs).
+.o_form_view .o_wrap_label:has(+ * .o_field_invalid) .o_form_label {
+    color: map-get($o-theme-text-colors, "danger");
+    font-weight: 700;
+}
+.o_field_invalid {
+    .o_input, input, select, textarea {
+        border-color: $o-danger;
+        background: rgba($o-danger, 0.06);
+        border-left: 2px solid $o-danger;
+    }
+    .o_input:focus, input:focus, select:focus, textarea:focus {
+        border-color: $o-danger;
+        box-shadow: 0 0 0 3px rgba($o-danger, 0.18);
+        outline: none;
+    }
+}
+
+// Read-only HTML prose: comfortable measure, calm rhythm. Editor chrome
+// untouched. The 68ch reading measure applies to PROSE only — an active
+// editor keeps the full width of its cell (a boxed editor squeezed to a
+// paragraph width reads as a broken control).
+.o_form_view .o_field_html .o_readonly,
+.o_form_view .o_field_html .note-editable {
+    font-size: 15px;
+    line-height: 1.6;
+    color: $nova-ink;
+
+    h1, h2, h3 {
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+    }
+
+    a {
+        color: $nova-action-active;
+    }
+
+    blockquote {
+        border-left: 3px solid $o-border-color;
+        padding-left: 12px;
+        color: $nova-ink-muted;
+    }
+}
+
+.o_form_view .o_field_html .o_readonly {
+    max-width: 68ch;
+}
+
+// Field images get the squircle. Faces (.o_avatar) stay round — people are
+// not app icons (aesthetic restraint: one signature, not two).
+.o_field_image {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+// Avatar widgets: round stack, hover outline, muted grayscale.
+.o_form_view .oe_avatar {
+    border-radius: 50%;
+    transition: box-shadow $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        box-shadow: 0 0 0 2px $nova-action;
+    }
+}
+
+// Stat info label hierarchy: small muted text over bold tabular value.
+.o-form-buttonbox .o_stat_text {
+    font-size: 12px;
+    color: $nova-ink-muted;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// Dialogs: statusbar blends into the sheet, button box keeps air.
+.modal .o_form_statusbar {
+    background: $o-view-background-color;
+}
+
+.modal .o-form-buttonbox {
+    margin-bottom: 12px;
+}
+
+// Form alerts: padded callouts with a tinted edge, quiet paragraphs.
+.o_form_sheet_bg > .alert {
+    padding: 10px 12px;
+    border-left: 3px solid $nova-action;
+}
+
+.o_form_sheet_bg > .alert p {
+    margin: 0;
+}
+
+// Header create button: it duplicates the status "New" next to it, and on
+// a new record its only job (open another blank form) is pointless — the
+// list's New button covers creation. Removed, not restyled.
+.o_control_panel_main_buttons .o_form_button_create {
+    display: none;
+}

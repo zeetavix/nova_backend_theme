@@ -1,0 +1,331 @@
+///
+/// Nova runtime theme bridge — LAST file in assets_backend on purpose:
+/// same-specificity component rules above lose to these runtime overrides.
+/// Nova Settings → session → CSS vars at boot (see nova_theme_apply.js).
+/// Compiled fallbacks come first: no-JS renders exactly stock Nova.
+///
+
+.btn-primary {
+    background-color: $nova-action;
+    background-color: var(--nova-accent, $nova-action);
+    border-color: $nova-action;
+    border-color: var(--nova-accent, $nova-action);
+    // White on a light accent fails AA; the runtime bridge computes a
+    // readable foreground and hands it over.
+    color: $nova-on-action;
+    color: var(--nova-accent-fg, $nova-on-action);
+
+    &:hover {
+        background-color: $nova-action-hover;
+        background-color: var(--nova-accent-hover, $nova-action-hover);
+        border-color: $nova-action-hover;
+        border-color: var(--nova-accent-hover, $nova-action-hover);
+        color: $nova-on-action;
+        color: var(--nova-accent-fg, $nova-on-action);
+    }
+
+    &:active,
+    &:focus {
+        color: $nova-on-action;
+        color: var(--nova-accent-fg, $nova-on-action);
+    }
+
+    &:active {
+        background-color: $nova-action-active;
+        background-color: var(--nova-accent-active, $nova-action-active);
+    }
+}
+
+// Bootstrap utilities that Odoo compiles from the brand colour: without
+// these, a chosen accent leaves half the UI purple.
+.text-primary {
+    color: $nova-action-active !important;
+    color: var(--nova-accent-active, $nova-action-active) !important;
+}
+
+.bg-primary {
+    background-color: $nova-action !important;
+    background-color: var(--nova-accent, $nova-action) !important;
+    color: $nova-on-action !important;
+    color: var(--nova-accent-fg, $nova-on-action) !important;
+}
+
+.border-primary {
+    border-color: $nova-action !important;
+    border-color: var(--nova-accent, $nova-action) !important;
+}
+
+.link-primary,
+a.link-primary {
+    color: $nova-action-active !important;
+    color: var(--nova-accent-active, $nova-action-active) !important;
+
+    &:hover {
+        color: $nova-action-active !important;
+        color: var(--nova-accent-active, $nova-action-active) !important;
+    }
+}
+
+// Form controls: checkboxes, radios, switches and ranges read the native
+// accent, which has to follow the theme choice too.
+.o_web_client,
+.o_database_list {
+    input[type="checkbox"],
+    input[type="radio"] {
+        accent-color: $nova-action;
+        accent-color: var(--nova-accent, $nova-action);
+    }
+
+    .form-switch .form-check-input:checked {
+        background-color: $nova-action;
+        background-color: var(--nova-accent, $nova-action);
+        border-color: $nova-action;
+        border-color: var(--nova-accent, $nova-action);
+    }
+
+    .form-range::-webkit-slider-thumb {
+        background-color: $nova-action;
+        background-color: var(--nova-accent, $nova-action);
+    }
+}
+
+// Focus rings: one accent everywhere, so keyboard users see one system.
+.o_web_client :focus-visible,
+.o_database_list :focus-visible {
+    outline-color: $nova-action;
+    outline-color: var(--nova-accent, $nova-action);
+}
+
+.o_web_client .form-control:focus,
+.o_web_client .o_input:focus {
+    border-color: $nova-action;
+    border-color: var(--nova-accent, $nova-action);
+}
+
+// Selection + paging + progress: the three most-seen "active" surfaces.
+.o_list_table tbody tr.o_data_row.o_row_selected > td,
+.o_list_table tbody tr.o_data_row.table-active > td {
+    background-color: $nova-action-soft;
+    background-color: var(--nova-accent-soft, $nova-action-soft);
+    box-shadow: inset 2px 0 0 $nova-action;
+    box-shadow: inset 2px 0 0 var(--nova-accent, $nova-action);
+}
+
+.o_pager .btn.active,
+.o_pager .o_pager_counter .btn-primary,
+.pagination .page-item.active .page-link {
+    background-color: $nova-action;
+    background-color: var(--nova-accent, $nova-action);
+    border-color: $nova-action;
+    border-color: var(--nova-accent, $nova-action);
+    color: $nova-on-action;
+    color: var(--nova-accent-fg, $nova-on-action);
+}
+
+.progress-bar {
+    background-color: $nova-action;
+    background-color: var(--nova-accent, $nova-action);
+}
+
+// Statusbar: the current stage keeps the accent, arrows included.
+.o_form_statusbar .o_statusbar_status > .o_arrow_button.btn-primary {
+    background-color: $nova-action;
+    background-color: var(--nova-accent, $nova-action);
+    border-color: $nova-action;
+    border-color: var(--nova-accent, $nova-action);
+    color: $nova-on-action;
+    color: var(--nova-accent-fg, $nova-on-action);
+}
+
+// Kanban chips + record accent bar.
+.o_kanban_record .o_kanban_record_title .text-primary,
+.o_kanban_view .o_kanban_record.o_record_selected {
+    color: $nova-action-active;
+    color: var(--nova-accent-active, $nova-action-active);
+}
+
+// Search facets and the control-panel "Filters" pill read as actions.
+.o_searchview .o_searchview_facet {
+    border-color: $nova-action;
+    border-color: var(--nova-accent, $nova-action);
+}
+
+.o_searchview .o_searchview_facet .o_facet_values {
+    color: $nova-action-active;
+    color: var(--nova-accent-active, $nova-action-active);
+}
+
+// The home launcher keeps its own palette but the primary tile follows.
+.nova_launch_tile:focus-visible {
+    outline-color: $nova-action;
+    outline-color: var(--nova-accent, $nova-action);
+}
+
+.btn-link {
+    color: $nova-action-active;
+    color: var(--nova-accent-active, $nova-action-active);
+}
+
+.o_cp_searchview .o_searchview:focus-within {
+    border-color: $nova-action;
+    border-color: var(--nova-accent, $nova-action);
+}
+
+.o_menu_sections .dropdown.show .dropdown-toggle:not(.o-dropdown-toggle-custo),
+.o_menu_systray .dropdown.show .dropdown-toggle:not(.o-dropdown-toggle-custo) {
+    color: $nova-action-active;
+    color: var(--nova-accent-active, $nova-action-active);
+    background: $nova-action-soft;
+    background: var(--nova-accent-soft, $nova-action-soft);
+}
+
+.o_notebook .nav-tabs .nav-link.active {
+    color: $nova-action-active;
+    color: var(--nova-accent-active, $nova-action-active);
+    border-bottom-color: $nova-action;
+    border-bottom-color: var(--nova-accent, $nova-action);
+}
+
+.dropdown-menu .dropdown-item.active, .dropdown-menu .dropdown-item:active {
+    background: $nova-action-soft;
+    background: var(--nova-accent-soft, $nova-action-soft);
+}
+
+.o_form_sheet, .modal-content {
+    border-radius: $o-border-radius-xl;
+    border-radius: var(--nova-radius-xl, $o-border-radius-xl);
+}
+
+.o_list_renderer, .o_kanban_renderer .o_kanban_record {
+    border-radius: $o-border-radius-lg;
+    border-radius: var(--nova-radius-lg, $o-border-radius-lg);
+}
+
+.btn {
+    border-radius: $o-border-radius;
+    border-radius: var(--nova-radius-base, $o-border-radius);
+}
+
+.dropdown-menu .dropdown-item {
+    border-radius: $o-border-radius-sm;
+    border-radius: var(--nova-radius-sm, $o-border-radius-sm);
+}
+
+.tooltip-inner {
+    border-radius: $o-border-radius-sm;
+    border-radius: var(--nova-radius-sm, $o-border-radius-sm);
+}
+
+// NOTE: 999px pills (chips, badges, toggles, statusbar) intentionally ignore
+// the radius scale — a pill stays a pill at any corner setting.
+
+// Compact density: tighter rows, bars and sheets. Touch floors respected
+// (nothing interactive drops below 28px desktop / 44px mobile).
+html[data-nova-density="compact"] {
+    .o_list_table tbody tr td {
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+
+    .o_control_panel {
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+
+    .o_form_sheet {
+        padding: 16px;
+    }
+
+    // Compact fields: Community already reads the margin var; tighten
+    // widget rhythm and tag/pill padding. Coarse floor below still 44px.
+    .o_form_view {
+        --fieldWidget-margin-bottom: 2px;
+
+        .o_field_many2one input.o_input {
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+
+        .o_tag {
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+    }
+
+    // Compact messaging: padding-only tightening of thread rows, composer,
+    // and Discuss sidebar items. Hit-areas untouched (see coarse guard).
+    .o-mail-Message {
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+
+    .o-mail-Composer-coreMain {
+        padding: 8px 12px 6px;
+    }
+
+    .o-mail-NotificationItem {
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+
+    .o_web_client .btn {
+        min-height: 28px;
+    }
+}
+
+@media (pointer: coarse) {
+    html[data-nova-density="compact"] .o_web_client .btn,
+    html[data-nova-density="compact"] .o_web_client .o_nav_entry,
+    html[data-nova-density="compact"] .o_web_client .dropdown-item {
+        min-height: 44px;
+    }
+
+    // Compact never shrinks touch targets: composer send + message actions
+    // keep the 44px floor, and thread rows keep readable padding.
+    html[data-nova-density="compact"] .o-mail-Composer-send,
+    html[data-nova-density="compact"] .o-mail-Message-actions button {
+        min-height: 44px;
+    }
+
+    html[data-nova-density="compact"] .o-mail-Message {
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+}
+
+// Coarse pointers (touch laptops included, regardless of viewport): Nova's
+// newer small controls step up to the 44px floor.
+@media (pointer: coarse) {
+    .nova_digest_cta {
+        min-height: 44px;
+        padding: 6px 12px;
+    }
+
+    .nova-invalid-badge {
+        min-width: 28px;
+        height: 28px;
+    }
+
+    .nova_att_btn {
+        min-height: 44px;
+        padding: 8px 16px;
+    }
+
+    .nova_bell_btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .o_list_table .o_list_record_open_form_view button,
+    .o_list_table .o_list_record_remove button,
+    .o_group_header .o_pager .btn,
+    .o_group_header .o_pager_previous,
+    .o_group_header .o_pager_next,
+    .o-dashboard-action-header .btn,
+    .o-mail-Chatter-topbar .o-mail-Chatter-sendMessage,
+    .o-mail-Chatter-topbar .o-mail-Chatter-logNote,
+    .o-mail-Chatter-topbar .o-mail-Chatter-activity {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}

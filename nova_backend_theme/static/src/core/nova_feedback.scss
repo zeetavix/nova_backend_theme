@@ -1,0 +1,92 @@
+///
+/// Nova feedback — loading + empty + error states. Friendly, honest.
+/// Verified hooks: .o_loading_indicator(_wrap), .o_view_nocontent inner,
+/// .o_error_dialog. No motion without purpose.
+///
+
+// Loading indicator follows action blue, never blocks pointer.
+.o_loading_indicator_wrap {
+    z-index: 1080;
+}
+
+.o_loading_indicator {
+    background: $nova-action-soft;
+    color: $nova-action-active;
+    border: 1px solid rgba($nova-action, 0.3);
+    border-radius: 999px;
+    font-weight: 500;
+
+    .spinner-border {
+        width: 1em;
+        height: 1em;
+        color: $nova-action;
+    }
+}
+
+// Empty states invite the next action (HIG writing): roomy, centered, blue CTA.
+.o_view_nocontent {
+    padding: 48px 16px;
+
+    .o_nocontent_help {
+        border-radius: $o-border-radius-lg;
+        color: $nova-ink;
+
+        p:first-of-type {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        p + p {
+            color: $nova-ink-muted;
+            font-size: 14px;
+            font-weight: 400;
+        }
+    }
+
+    .btn {
+        margin-top: 16px;
+        min-height: 36px;
+    }
+
+    .btn:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+
+    .btn-primary {
+        border-radius: $o-border-radius;
+        font-weight: 600;
+    }
+}
+
+.o_empty_list td {
+    text-align: center;
+    color: $nova-ink-muted;
+    padding: 24px 16px;
+    border-top: 1px dashed $nova-border-strong;
+    font-size: 13px;
+}
+
+// Error dialogs: danger title bar, roomy detail, tappable disclosures.
+.o_error_dialog {
+    .modal-header {
+        background: rgba($o-danger, 0.08);
+        border-bottom: 1px solid rgba($o-danger, 0.25);
+    }
+
+    .modal-title {
+        color: map-get($o-theme-text-colors, "danger");
+        font-weight: 600;
+    }
+
+    details summary {
+        min-height: 32px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    pre {
+        border-radius: $o-border-radius;
+        font-size: 12px;
+    }
+}

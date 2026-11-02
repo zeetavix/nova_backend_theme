@@ -1,0 +1,1409 @@
+///
+/// Nova Launcher â€” Community home screen styling. Own .nova_* DOM (the stock
+/// Community has no .o_home_menu), same Meta-calm language as the theme.
+///
+
+// Full-bleed canvas with the Nova mesh. height (not min-height): the box
+// must stay exactly the action height so inner content scrolls â€” with
+// min-height alone the flex item grows past .o_action (overflow:hidden)
+// and the page never scrolls.
+.nova_launcher {
+    height: 100%;
+    min-height: 0;
+    padding: 48px 16px 64px;
+    background-image:
+        radial-gradient(720px 420px at 18% 8%, rgba(14, 124, 138, 0.13), transparent 60%),
+        radial-gradient(760px 480px at 85% 18%, rgba(14, 124, 138, 0.10), transparent 62%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, transparent 35%),
+        radial-gradient(900px 600px at 50% 110%, rgba(28, 30, 33, 0.10), transparent 60%);
+    background-color: $o-webclient-background-color;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    background-size: auto, auto, 100% 40%, auto;
+    overflow-y: auto;
+}
+
+.nova_launcher_inner {
+    max-width: $o-home-menu-container-size;
+    margin: 0 auto;
+}
+
+.nova_title {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: $nova-ink;
+    margin: 0 0 4px;
+}
+
+// Greeting banner: a compact brand moment. Gradient identity, half the
+// height of the old billboard â€” date + greeting fit one visual line.
+.nova_banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: $o-home-menu-container-size;
+    margin: 0 auto 20px;
+    padding: 10px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba($nova-action-active, 0.35);
+    background:
+        radial-gradient(420px 160px at 10% 0%, rgba(255, 255, 255, 0.28), transparent 60%),
+        linear-gradient(135deg, $nova-action 0%, $nova-action-hover 55%, $nova-action-active 100%);
+    box-shadow: $nova-shadow-md;
+    color: $o-white;
+    text-align: left;
+
+    .nova_title {
+        color: $o-white;
+        margin: 0;
+        font-size: 17px;
+    }
+}
+
+.nova_date {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $o-white;
+    opacity: 0.8;
+    margin: 0 0 2px;
+}
+
+.nova_assistant_open {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 9px 18px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba($o-white, 0.95);
+    color: $nova-action-active;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: $nova-shadow-sm;
+    transition: transform $nova-dur-press $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        box-shadow: $nova-shadow-md;
+    }
+
+    &:active {
+        transform: $nova-press;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $o-white;
+        outline-offset: 2px;
+    }
+}
+
+.nova_spark {
+    font-size: 16px;
+    display: inline-flex;
+
+    .nova_ai_glyph {
+        width: 1em;
+        height: 1em;
+        display: block;
+    }
+}
+
+// Tile wrapper carries grid sizing + the sibling star button (valid HTML:
+// buttons never nest). Star keeps its tile-corner position.
+.nova_tile {
+    position: relative;
+    width: 100%;
+    max-width: 128px;
+}
+
+.nova_fav {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 2;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 999px;
+    background: rgba($o-white, 0.85);
+    border: 1px solid $o-border-color;
+    color: $nova-border-strong;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity $nova-dur-base $o-easing-enter, transform $nova-dur-base $o-easing-enter, color $nova-dur-base $o-easing-enter;
+
+    &:focus-visible {
+        opacity: 1;
+        transform: none;
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+
+    @media (hover: none) {
+        opacity: 0.9;
+        transform: none;
+    }
+}
+
+.nova_tile:hover .nova_fav, .nova_tile:focus-within .nova_fav, .nova_fav_on {
+    opacity: 1;
+    transform: none;
+}
+
+.nova_fav_on {
+    color: $nova-action;
+    border-color: rgba($nova-action, 0.4);
+}
+
+// Favorites empty hint.
+.nova_hint_card {
+    text-align: center;
+    margin-top: 28px;
+    padding: 32px 16px;
+    border: 1px dashed $nova-border-strong;
+    border-radius: $o-border-radius-lg;
+    color: $nova-ink-muted;
+}
+
+.nova_hint_title {
+    font-size: 15px;
+    font-weight: 600;
+    color: $nova-ink;
+    margin: 0 0 4px;
+}
+
+.nova_hint_text {
+    font-size: 13px;
+    margin: 0;
+}
+
+// Pill search, capped to the grid.
+.nova_search_wrap {
+    position: relative;
+    max-width: 480px;
+    // Animated collapse: full height when open, zero when closed, so no
+    // dead slot sits on the page. The motion reads as intentional.
+    max-height: 60px;
+    margin: 0 auto 20px;
+    transition: max-height $nova-dur-base $o-easing-enter, margin-bottom $nova-dur-base $o-easing-enter, opacity $nova-dur-base $o-easing-enter;
+}
+
+.nova_search_wrap.nova_search_closed {
+    max-height: 0;
+    margin-bottom: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.nova_search {
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid $o-home-menu-input-border;
+    background: $o-white;
+    box-shadow: $nova-shadow-sm;
+    padding: 8px 44px 8px 20px;
+    font-size: 15px;
+    color: $nova-ink;
+    transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter, opacity $nova-dur-base $o-easing-enter, transform $nova-dur-base $o-easing-enter;
+
+    &::placeholder {
+        color: $nova-ink-muted;
+    }
+
+    &:focus-visible {
+        border-color: $nova-action;
+        // 3:1 focus indicator (WCAG 2.4.11): solid 2px ring + halo wash.
+        box-shadow: 0 0 0 2px $o-white, 0 0 0 4px $nova-action, 0 0 0 7px rgba($nova-action, 0.18);
+        outline: none;
+    }
+}
+
+// Collapsed: mounted but invisible (so first-keystroke focus is
+// synchronous and the character lands), out of the tab order.
+.nova_search_closed .nova_search {
+    opacity: 0;
+    transform: scale(0.98);
+    pointer-events: none;
+}
+
+.nova_search_clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 999px;
+    background: $o-gray-200;
+    color: $nova-ink;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+        background: $o-gray-300;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+// Tile grid: auto-fill, generous and touch-friendly.
+.nova_apps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+    gap: 8px;
+    justify-items: center;
+    justify-content: center;
+}
+
+.nova_app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 8px 12px;
+    border: 1px solid transparent;
+    border-radius: $o-border-radius-lg;
+    background: transparent;
+    cursor: pointer;
+    contain: layout style;
+    transition: background $nova-dur-base $o-easing-enter, transform $nova-dur-base $o-easing-enter, border-color $nova-dur-base $o-easing-enter;
+
+    @media (hover: hover) {
+        &:hover {
+            background: rgba($o-white, 0.8);
+            border-color: $o-border-color;
+        }
+
+        &:hover .nova_app_icon {
+            transform: translateY($nova-lift);
+            box-shadow: $nova-shadow-lg;
+        }
+    }
+
+    &:active {
+        transform: translateY($nova-lift) $nova-press;
+        transition: none;
+    }
+
+    &:focus-visible, &.nova_focused {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+        background: $o-component-active-bg;
+    }
+}
+
+.nova_app_icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 68px;
+    height: 68px;
+    padding: $o-home-menu-app-icon-padding;
+    background-color: $o-home-menu-app-icon-background-color;
+    border-radius: $o-home-menu-app-icon-radius;
+    box-shadow: $nova-shadow-md;
+    transform-origin: center bottom;
+    transition: transform $nova-dur-base $o-easing-enter;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: $o-border-radius-sm;
+    }
+
+    .oi {
+        font-size: $o-home-menu-app-icon-max-width * 0.5;
+        line-height: 1;
+    }
+}
+
+.nova_app_initial {
+    font-size: 28px;
+    font-weight: 600;
+    color: $nova-action-active;
+}
+
+.nova_launcher .nova_app .nova_caption {
+    color: $o-home-menu-caption-color;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.3;
+    min-height: 2.6em;
+    max-width: 100%;
+    text-align: center;
+    text-shadow: $o-home-menu-caption-shadow;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+    margin: 0;
+}
+
+// Menu-item results: full-width rows with breadcrumb paths.
+.nova_section {
+    margin-top: 28px;
+}
+
+.nova_section_title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $nova-ink-muted;
+    margin: 0 4px 8px;
+}
+
+// Section headers with a trailing action (Today + Start day).
+.nova_section_head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 4px 8px;
+
+    .nova_section_title {
+        margin: 0;
+    }
+}
+
+.nova_apps_head {
+    margin: 28px 4px 8px;
+
+    .nova_section_title {
+        margin: 0;
+    }
+}
+
+.nova_menu_rows {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+// Attention rows pair the opener with one-click triage actions.
+.nova_att_row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .nova_result {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+.nova_att_actions {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.nova_att_btn {
+    appearance: none;
+    border: 1px solid $nova-border-strong;
+    border-radius: 999px;
+    background: $o-view-background-color;
+    color: $nova-ink-muted;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    min-height: 28px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background $nova-dur-fast $o-easing-enter,
+        color $nova-dur-fast $o-easing-enter, border-color $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $nova-action-soft;
+        border-color: $nova-border-strong;
+        color: $nova-action-active;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+// "N more due": the rest of the queue stays one click away, out of the
+// first screen's way.
+.nova_att_more {
+    appearance: none;
+    border: 0;
+    background: none;
+    margin: 6px 0 0 2px;
+    padding: 4px 2px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: $nova-action-active;
+    cursor: pointer;
+    border-radius: 6px;
+
+    &:hover {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+// Due-date pills: overdue danger, today warning, tabular numerals.
+.nova_due {
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    padding: 2px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.nova_due_overdue {
+    background: rgba($o-danger, 0.12);
+    color: map-get($o-theme-text-colors, "danger");
+}
+
+.nova_due_today {
+    background: rgba($o-warning, 0.16);
+    color: map-get($o-theme-text-colors, "warning");
+}
+
+.nova_result {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 48px;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-radius: $o-border-radius-lg;
+    background: rgba($o-white, 0.55);
+    cursor: pointer;
+    text-align: left;
+    transition: background $nova-dur-base $o-easing-enter, border-color $nova-dur-base $o-easing-enter, transform $nova-dur-press $o-easing-enter;
+
+    @media (hover: hover) {
+        &:hover {
+            background: $o-white;
+            border-color: $o-border-color;
+            box-shadow: $nova-shadow-sm;
+        }
+    }
+
+    &:active {
+        transform: $nova-press;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+        background: $o-component-active-bg;
+    }
+}
+
+.nova_result_icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: $o-gray-100;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.nova_result_initial {
+    font-size: 15px;
+    font-weight: 600;
+    color: $nova-action-active;
+}
+
+.nova_result_text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.nova_result_name {
+    font-size: 14px;
+    font-weight: 600;
+    color: $nova-ink;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nova_result.nova_focused {
+    background: $o-component-active-bg;
+    border-color: $nova-action;
+    outline: 2px solid $nova-action;
+    outline-offset: 1px;
+}
+
+.nova_result_path {
+    font-size: 12px;
+    color: $nova-ink-muted;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// Show-all toggle under the capped app grid.
+.nova_apps_toggle {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+// Live insight tiles: KPI cards with tabular numerals.
+.nova_insights {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+
+    @include media-breakpoint-up(lg) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.nova_kpi {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 16px;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    background: $o-view-background-color;
+    box-shadow: $nova-shadow-sm;
+    cursor: pointer;
+    text-align: left;
+    transition: box-shadow $nova-dur-base $o-easing-enter, transform $nova-dur-base $o-easing-enter, border-color $nova-dur-base $o-easing-enter;
+
+    @media (hover: hover) {
+        &:hover {
+            box-shadow: $nova-shadow-md;
+            border-color: $nova-border-strong;
+        }
+    }
+
+    &:active {
+        transform: $nova-press;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.nova_kpi_title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: $nova-ink-muted;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nova_kpi_dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $o-danger;
+    flex-shrink: 0;
+}
+
+.nova_kpi_value {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: $nova-ink;
+}
+
+.nova_kpi_due {
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: map-get($o-theme-text-colors, "danger");
+}
+
+// Delta vs last visit + freshness stamp: quieter than the value.
+.nova_kpi_delta,
+.nova_fresh {
+    font-size: 11px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: $nova-ink-muted;
+}
+
+// "All caught up" done-state: finished, not missing.
+.nova_caughtup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 4px;
+    font-size: 13px;
+    color: $nova-ink-muted;
+}
+
+.nova_caughtup_tick {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: $nova-action-soft;
+    color: $nova-action-active;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+// Insight loading shimmer (replaced by tiles or nothing; motion-guarded).
+.nova_kpi.nova_shimmer {
+    min-height: 96px;
+    border-color: $o-border-color;
+    background: $o-gray-100;
+    animation: nova-shimmer $nova-dur-em $o-easing-enter infinite alternate;
+}
+
+@keyframes nova-shimmer {
+    from {
+        opacity: 0.55;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+// Assistant floating button + drawer (rule-based shortcut guide, not AI).
+.nova_fab {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 40;
+    width: 48px;
+    height: 48px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, $nova-action 0%, $nova-action-hover 100%);
+    color: $o-white;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: $nova-shadow-lg;
+    transition: transform $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    .nova_ai_glyph {
+        width: 1em;
+        height: 1em;
+        display: block;
+    }
+
+    &:hover {
+        transform: translateY($nova-lift);
+    }
+
+    &:active {
+        transform: $nova-press;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.nova_assistant {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    width: 380px;
+    max-width: 100vw;
+    background: $o-view-background-color;
+    border-left: 1px solid $o-border-color;
+    box-shadow: $nova-shadow-lg;
+}
+
+.nova_assistant_head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid $o-border-color;
+}
+
+.nova_assistant_title {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: $nova-ink;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    .nova_ai_glyph {
+        width: 1em;
+        height: 1em;
+        display: block;
+        color: $nova-action-active;
+    }
+}
+
+.nova_assistant_close {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: $nova-ink;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+        background: $o-gray-200;
+    }
+}
+
+.nova_assistant_messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nova_msg {
+    max-width: 88%;
+    padding: 10px 14px;
+    border-radius: $o-border-radius-lg;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.nova_msg_text {
+    margin: 0;
+}
+
+.nova_msg_assistant {
+    align-self: flex-start;
+    background: $o-gray-100;
+    color: $nova-ink;
+    border-bottom-left-radius: $o-border-radius-sm;
+}
+
+.nova_msg_user {
+    align-self: flex-end;
+    background: $nova-action;
+    color: $o-white;
+    border-bottom-right-radius: $o-border-radius-sm;
+}
+
+.nova_msg_buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.nova_chip {
+    border: 1px solid rgba($nova-action, 0.4);
+    border-radius: 999px;
+    background: $o-white;
+    color: $nova-action-active;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $nova-action-soft;
+    }
+}
+
+.nova_assistant_inputbar {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid $o-border-color;
+}
+
+.nova_assistant_input {
+    flex: 1;
+    min-width: 0;
+    border-radius: 999px;
+    border: 1px solid $nova-border-strong;
+    background: $o-white;
+    padding: 9px 16px;
+    font-size: 14px;
+    color: $nova-ink;
+
+    &::placeholder {
+        color: $nova-ink-muted;
+    }
+
+    &:focus-visible {
+        border-color: $nova-action;
+        // 3:1 focus indicator (WCAG 2.4.11): solid 2px ring + halo wash.
+        box-shadow: 0 0 0 2px $o-white, 0 0 0 4px $nova-action, 0 0 0 7px rgba($nova-action, 0.18);
+        outline: none;
+    }
+}
+
+.nova_assistant_send {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 999px;
+    background: $nova-action;
+    color: $o-white;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+        background: $nova-action-hover;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+// Onboarding checklist: compact card with progress + checkmarks.
+.nova_onboard {
+    max-width: $o-home-menu-container-size;
+    margin: 0 auto 24px;
+    padding: 16px 20px;
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    box-shadow: $nova-shadow-sm;
+}
+
+.nova_onboard_head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.nova_onboard_title {
+    font-size: 14px;
+    font-weight: 600;
+    color: $nova-ink;
+    margin: 0;
+}
+
+.nova_onboard_count {
+    font-variant-numeric: tabular-nums;
+    color: $nova-ink-muted;
+    font-weight: 500;
+    margin-left: 4px;
+}
+
+.nova_onboard_dismiss {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: $nova-ink-muted;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+        background: $o-gray-200;
+        color: $nova-ink;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.nova_onboard_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nova_onboard_item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: $nova-ink-muted;
+}
+
+.nova_onboard_box {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+    border: 1px solid $nova-border-strong;
+}
+
+.nova_onboard_done {
+    color: $nova-ink-muted;
+    text-decoration: line-through;
+
+    .nova_onboard_box {
+        background: $nova-action;
+        border-color: $nova-action;
+    }
+}
+
+// Coachmark pulse on search while onboarding is active.
+.nova_onboarding .nova_search {
+    animation: nova-nudge $nova-dur-em $o-easing-enter 3;
+}
+
+@keyframes nova-nudge {
+    0%, 100% {
+        box-shadow: $nova-shadow-sm;
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba($nova-action, 0.25), $nova-shadow-sm;
+    }
+}
+
+// Quick-create row: white pills with a blue "+" medallion â€” distinct from
+// the assistant's tinted chips, own future.
+.nova_create_row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.nova_create_btn {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid $o-border-color;
+    border-radius: 999px;
+    background: $o-view-background-color;
+    color: $nova-ink;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 16px 7px 8px;
+    cursor: pointer;
+    box-shadow: $nova-shadow-sm;
+    transition: box-shadow $nova-dur-base $o-easing-enter, transform $nova-dur-base $o-easing-enter, border-color $nova-dur-base $o-easing-enter;
+
+    @media (hover: hover) {
+        &:hover {
+            box-shadow: $nova-shadow-md;
+            border-color: $nova-border-strong;
+        }
+    }
+
+    &:active {
+        transform: $nova-press;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.nova_create_plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: $nova-action;
+    color: $o-white;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+@media (forced-colors: active) {
+    .nova_create_btn {
+        border: 1px solid CanvasText;
+        color: CanvasText;
+        background: transparent;
+    }
+}
+
+// Result counts under search.
+.nova_counts {
+    text-align: center;
+    font-size: 13px;
+    color: $nova-ink-muted;
+    margin: 0 0 20px;
+    font-variant-numeric: tabular-nums;
+}
+
+// Result rows with sibling pin buttons (valid HTML: buttons never nest).
+.nova_result_wrap {
+    position: relative;
+}
+
+.nova_result_wrap .nova_result {
+    width: 100%;
+    padding-right: 48px;
+}
+
+.nova_pin {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: $nova-ink-muted;
+    font-size: 15px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity $nova-dur-fast $o-easing-enter, background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+
+    @media (hover: none) {
+        opacity: 0.9;
+    }
+}
+
+.nova_result_wrap:hover .nova_pin,
+.nova_result_wrap:focus-within .nova_pin,
+.nova_pin_on {
+    opacity: 1;
+}
+
+.nova_pin:hover {
+    background: $o-gray-200;
+    color: $nova-ink;
+}
+
+.nova_pin:focus-visible {
+    opacity: 1;
+    outline: 2px solid $nova-action;
+    outline-offset: 1px;
+}
+
+.nova_pin_on {
+    color: $nova-action;
+}
+
+// Staleness dots for watch-dock rows.
+.nova_stale {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: baseline;
+}
+
+.nova_stale_fresh {
+    background: $o-success;
+}
+
+.nova_stale_week {
+    background: $o-warning;
+}
+
+.nova_stale_month {
+    background: $o-danger;
+}
+
+.nova_stale_unknown {
+    background: $o-gray-400;
+}
+
+// Keyboard hints footer with kbd chips.
+.nova_hints {
+    margin: 28px 0 0;
+    text-align: center;
+    text-wrap: balance;
+    font-size: 12px;
+    color: $nova-ink-muted;
+}
+
+.nova_hints kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    margin: 0 1px;
+    border: 1px solid $o-border-color;
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: $o-white;
+    font-size: 11px;
+    font-family: $o-font-family-monospace;
+    color: $nova-ink;
+}
+
+// Empty state.
+.nova_no_result {
+    text-align: center;
+    padding: 48px 16px;
+    color: $nova-ink-muted;
+}
+
+.nova_no_result_title {
+    font-size: 17px;
+    font-weight: 600;
+    color: $nova-ink;
+    margin: 0 0 4px;
+}
+
+.nova_no_result_hint {
+    font-size: 14px;
+    margin: 0 0 16px;
+}
+
+// Small screens: tighter tiles, 16px search (no iOS zoom).
+@include media-breakpoint-down(md) {
+    .nova_launcher {
+        padding: 32px 12px 48px;
+    }
+
+    .nova_title {
+        font-size: 20px;
+    }
+
+    .nova_search {
+        padding: 8px 40px 8px 16px;
+        font-size: 16px;
+    }
+
+    .nova_apps {
+        grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    }
+
+    .nova_app_icon {
+        width: $o-home-menu-app-icon-max-width * 0.7;
+        height: $o-home-menu-app-icon-max-width * 0.7;
+        border-radius: $o-home-menu-app-icon-radius-sm;
+    }
+
+    .nova_banner {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .nova_assistant_open {
+        justify-content: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nova_launcher .nova_app,
+    .nova_launcher .nova_app_icon,
+    .nova_launcher .nova_kpi,
+    .nova_launcher .nova_result,
+    .nova_launcher .nova_fab,
+    .nova_launcher .nova_chip,
+    .nova_launcher .nova_assistant,
+    .nova_launcher .nova_search,
+    .nova_launcher .nova_search_wrap,
+    .nova_launcher .nova_assistant_input {
+        transition: background 0.001ms !important;
+        transform: none !important;
+        animation: none !important;
+        opacity: 1 !important;
+    }
+
+    .nova_launcher .nova_app:hover {
+        background: rgba($o-white, 0.9);
+    }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    .nova_launcher {
+        background-image: none;
+        background-color: $o-view-background-color;
+    }
+}
+
+@media (forced-colors: active) {
+    .nova_launcher {
+        background-image: none;
+        background-color: Canvas;
+    }
+
+    .nova_app_icon {
+        box-shadow: none;
+        border: 1px solid CanvasText;
+    }
+
+    .nova_launcher .nova_app .nova_caption {
+        color: CanvasText;
+        text-shadow: none;
+    }
+
+    .nova_app:focus-visible {
+        outline: 3px solid Highlight;
+    }
+
+    .nova_banner {
+        background: Canvas;
+        border: 1px solid CanvasText;
+    }
+
+    .nova_banner .nova_title, .nova_date {
+        color: CanvasText;
+    }
+
+    .nova_assistant_open {
+        border: 1px solid CanvasText;
+        color: CanvasText;
+        background: transparent;
+    }
+
+    .nova_kpi, .nova_result {
+        box-shadow: none;
+        border: 1px solid CanvasText;
+    }
+
+    .nova_kpi_overdue {
+        border-inline-start: 3px solid CanvasText;
+    }
+
+    .nova_create_btn {
+        border: 1px solid CanvasText;
+        color: CanvasText;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .nova_create_plus {
+        background: CanvasText;
+        color: Canvas;
+    }
+
+    .nova_kpi_delta,
+    .nova_fresh,
+    .nova_caughtup {
+        color: CanvasText;
+    }
+
+    .nova_caughtup_tick {
+        border: 1px solid CanvasText;
+        background: transparent;
+        color: CanvasText;
+    }
+
+    .nova_kpi_due {
+        color: CanvasText;
+        font-weight: 700;
+    }
+
+    .nova_digest_cta:hover {
+        text-decoration: underline;
+        border-color: CanvasText;
+    }
+
+    .nova_due_overdue, .nova_due_today {
+        color: CanvasText;
+        border: 1px solid CanvasText;
+        background: transparent;
+    }
+
+    .nova_att_btn {
+        border: 1px solid CanvasText;
+        color: CanvasText;
+        background: transparent;
+    }
+}
+
+// Start-day call-to-action in the Today header.
+.nova_digest_cta {
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 2px 8px;
+    min-height: 24px;
+    font: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    color: $nova-action-active;
+
+    &:hover {
+        border-color: currentColor;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+// Cards with past-due items carry a danger edge â€” urgency reads before text.
+.nova_kpi_overdue {
+    border-inline-start: 3px solid $o-danger;
+    padding-inline-start: 14px;
+}

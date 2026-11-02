@@ -1,0 +1,15 @@
+///
+/// Nova burger (dark): drawer follows charcoal surfaces.
+///
+.o_burger_menu {
+    .o_sidebar_topbar {
+        background: $o-view-background-color;
+        color: $nova-ink;
+        border-bottom-color: $o-border-color;
+    }
+
+    .o_burger_menu_content.o_burger_menu_app {
+        background: $o-view-background-color;
+        color: $nova-ink;
+    }
+}

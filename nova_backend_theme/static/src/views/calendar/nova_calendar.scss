@@ -1,0 +1,179 @@
+///
+/// Nova calendar — FullCalendar surfaces in Nova tokens. Verified hooks:
+/// o_calendar_widget, fc-* grid, o_calendar_filter items, sidepanel,
+/// popovers, --o-cw-* vars. Original styling only.
+///
+
+// Design tokens flow into the calendar engine (light values here).
+.o_calendar_widget {
+    --o-cw-bg: #{$o-view-background-color};
+    --o-cw-color: #{$nova-action-active};
+    --o-cw-border-color: #{$o-border-color};
+}
+
+.o_calendar_renderer {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    overflow: hidden;
+}
+
+// Today/now markers follow the accent. Stock repaints --o-cw-bg to danger
+// red on the agenda views with a chain that outranks the day-number rule
+// below; repoint the same vars on the same elements so the number, the
+// now-line and its dot all read one accent.
+.o_calendar_renderer .o_calendar_widget .fc-timeGridDay-view,
+.o_calendar_renderer .o_calendar_widget .fc-timeGridWeek-view {
+    --o-cw-bg: #{$nova-action};
+    --o-cw-color: #{$nova-on-action};
+}
+
+.o_calendar_renderer .o_calendar_widget .fc-dayGridMonth-view .fc-daygrid-body tr .fc-day.fc-day-today {
+    --o-cw-bg: #{$nova-action};
+    --o-cw-color: #{$nova-on-action};
+}
+
+// Event pills: soft fills with border + radius, icon dots kept.
+.o_calendar_widget {
+    .fc-event, .fc-timegrid-event, .fc-daygrid-event {
+        border-radius: 8px;
+        border: 1px solid $o-border-color;
+        box-shadow: $nova-shadow-sm;
+        font-weight: 500;
+    }
+
+    // Event inner: 11px muted time, truncated title.
+    .fc-time {
+        font-size: 11px;
+        color: $nova-ink-muted;
+    }
+
+    .o_event_title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    // Today: solid blue dot on the Day/Week number, wash on month cells.
+    .fc-dayGridMonth-view .fc-day-today {
+        background: $nova-action-soft;
+    }
+
+    .fc-day-today .o_cw_day_number {
+        background: $nova-action;
+        color: $nova-on-action;
+    }
+
+    .o_cw_day_number {
+        border-radius: 50%;
+    }
+
+    // Column headers: uppercase micro, muted.
+    .fc-col-header-cell {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: $nova-ink-muted;
+    }
+
+    // Timegrid axis: cushioned labels, hairline minors.
+    .fc-timegrid-slot-label-cushion {
+        margin-top: -18px;
+        color: $nova-ink-muted;
+        font-size: 12px;
+    }
+
+    .fc-timegrid-slot-minor {
+        border-top-style: none;
+    }
+
+    // Now indicator: blue line, never intercepting clicks.
+    .fc-timegrid-now-indicator-line, .o_calendar_time_indicator_now {
+        border-color: $nova-action;
+        background: $nova-action;
+        pointer-events: none;
+    }
+
+    // More-links read as links.
+    .fc-more-link {
+        color: $nova-action-active;
+    }
+}
+
+// Filter chips keep their swatches; hover reveals remove.
+.o_calendar_filter .o_calendar_filter_item {
+    border-radius: $o-border-radius;
+    transition: background $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+}
+
+// Toolbar: pill button group, blue-soft active view.
+.o_calendar_widget .fc-toolbar .fc-button-group {
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.o_calendar_widget .fc-toolbar .fc-button {
+    border-radius: 0;
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+        z-index: 1;
+    }
+}
+
+.o_calendar_widget .fc-toolbar .fc-button-active {
+    background: $nova-action-soft;
+    border-color: transparent;
+    color: $nova-action-active;
+    font-weight: 600;
+}
+
+// Side panel as a calm card; unscheduled zone dashed.
+.o_calendar_sidepanel_container {
+    background: $o-view-background-color;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+}
+
+// Popovers reuse the modal language with a capped scroll body.
+.fc-more-popover, .o_cw_popover {
+    border-radius: 12px;
+    border: 1px solid $o-border-color;
+    box-shadow: $nova-shadow-lg;
+}
+
+.fc-more-popover .popover-body, .o_cw_popover .popover-body {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+// Year view: tinted has-event days.
+.o_calendar_widget {
+    .fc-dayGridYear-view .fc-has-event {
+        background: mix($nova-action, $o-view-background-color, 25%);
+        border-radius: 8px;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .o_calendar_renderer {
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+    }
+
+    .o_calendar_widget .fc-toolbar {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .o_calendar_widget .fc-toolbar .fc-button-group {
+        overflow: visible;
+    }
+}

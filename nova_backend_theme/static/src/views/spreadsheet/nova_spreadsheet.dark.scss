@@ -1,0 +1,54 @@
+///
+/// Nova spreadsheet (dark).
+///
+
+.o_spreadsheet_container {
+    // Runtime accent wins in dark too (dark-aware paint); compiled dark
+    // tokens are the fallback. Otherwise the light file's var() chain is
+    // overridden and per-user accent silently dies in dark mode.
+    --os-action-color: var(--nova-accent, #{$nova-action});
+    --os-action-color-hover: var(--nova-accent-hover, #{$nova-action-hover});
+    --os-link-color: var(--nova-accent-active, #{$nova-action-hover});
+    --os-primary-button-bg: var(--nova-accent, #{$nova-action});
+    --os-primary-button-hover-bg: var(--nova-accent-hover, #{$nova-action-hover});
+    --os-white-bg: #{$o-view-background-color};
+    --os-button-active-bg: var(--nova-accent-soft, #{$nova-action-soft});
+    --os-border-color: #{$o-border-color};
+    // Grid canvas, formula bar and sheet chrome: unmapped vars keep the
+    // light sheet while the chrome goes dark.
+    --os-content-bg: #{$o-view-background-color};
+    --os-grid-bg: #{$o-view-background-color};
+    --os-grid-border-color: #{$o-border-color};
+    --os-formula-bar-bg: #{$o-gray-200};
+    --os-formula-bar-color: #{$nova-ink};
+    --os-sheet-tab-bg: #{$o-gray-200};
+    --os-sheet-tab-color: #{$nova-ink-muted};
+    --os-cell-bg: #{$o-view-background-color};
+    --os-cell-color: #{$nova-ink};
+}
+
+// Dashboards: the lib's own dark machinery (os-theme-dependant +
+// --os-dark-mode-filter) covers the sheet backdrop, but the KPI /
+// chart grid inside renders light. Invert the grid with the lib's own
+// filter so figures, text and charts flip together, and neutralise
+// nested pre-inverted wrappers so nothing flips twice.
+.o_web_client .o_spreadsheet_dashboard_action .o-dashboard-grid {
+    filter: var(--os-dark-mode-filter,
+        invert(1) hue-rotate(170deg) contrast(0.85) brightness(1.2));
+}
+
+.o_web_client .o_spreadsheet_dashboard_action .o-dashboard-grid .os-theme-dependant {
+    filter: none;
+}
+
+// The sheet backdrop is painted inline light (the lib's invert helper
+// does not cover it here): re-point it so gutters and gaps between
+// figures sit on charcoal, not paper.
+.o_web_client .o_spreadsheet_dashboard_action .o-dashboard-sheet-background {
+    background-color: $o-view-background-color !important;
+}
+
+.o-sample-dashboard .o-figure-wrapper {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+}

@@ -1,0 +1,58 @@
+///
+/// Nova settings (dark).
+///
+
+.app_settings_block, .o_settings_container .o_setting_box {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    box-shadow: none;
+}
+
+.app_settings_block h2, .o_setting_box h2 {
+    color: $o-main-headings-color;
+}
+
+h3.o_setting_tip {
+    color: $nova-ink-muted;
+}
+
+.o_doc_link {
+    color: $nova-ink-muted;
+
+    &:hover {
+        color: $nova-action-hover;
+    }
+}
+
+.settingSearchHeader {
+    background: transparent;
+}
+
+.o_enterprise_label {
+    background: $nova-action-soft;
+    color: $nova-action-hover;
+}
+
+.settings_tab .tab {
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    &.selected {
+        background: $nova-action-soft;
+        color: $nova-action-hover;
+    }
+
+    &.o_page_invalid {
+        color: map-get($o-theme-text-colors, "danger");
+    }
+}
+
+.o_searchable_setting.o_setting_highlight {
+    background: rgba($o-warning, 0.16);
+}
+
+.highlighter {
+    background: rgba($o-warning, 0.45);
+    color: inherit;
+}

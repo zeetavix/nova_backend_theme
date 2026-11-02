@@ -3,7 +3,7 @@
     "name": "Nova Leave Grid",
     "summary": "Better-than-Enterprise leave grid for Odoo Community",
     "description": """
-Nova Leave Grid — clean-room time-off matrix for Community (OPL-1).
+Nova Leave Grid — clean-room time-off matrix for Community (LGPL-3).
 
 * My Time Off grid (rows: employee, section: leave type, columns: months),
   All Time Off grid for approvers and managers.
@@ -22,7 +22,7 @@ No Enterprise code is copied. All Python + OWL is original.
     "maintainer": "Zeetavix",
     "support": "support@zeetavix.com",
     "website": "https://zeetavix.com",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "price": 0.0,
     "currency": "USD",
     "images": [

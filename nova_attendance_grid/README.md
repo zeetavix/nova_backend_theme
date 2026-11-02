@@ -2,7 +2,7 @@
 
 Better-than-Enterprise attendance grid for Odoo Community
 
-Nova Attendance Grid — clean-room attendance matrix for Community (OPL-1).
+Nova Attendance Grid — clean-room attendance matrix for Community (LGPL-3).
 
 * My Attendance grid (rows: employee, columns: days/weeks), All Attendances
   grid for officers and managers.
@@ -21,7 +21,7 @@ No Enterprise code is copied. All Python + OWL is original.
 |---|---|
 | Odoo | 20.0 Community |
 | Depends | `nova_grid`, `hr_attendance` |
-| License | OPL-1 (Odoo Proprietary License v1.0) |
+| License | LGPL-3 (GNU Lesser General Public License v3.0) |
 | Price | **Free** |
 
 No Enterprise code is copied or required.

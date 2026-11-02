@@ -6,7 +6,7 @@
 Nova AI
 =======
 
-A clean-room (OPL-1) AI agent layer for Odoo Community that ships with
+A clean-room (LGPL-3) AI agent layer for Odoo Community that ships with
 the Nova backend theme. Connect any model — local (Ollama, LM Studio,
 llama.cpp, vLLM) or hosted (OpenAI-compatible: OpenAI, OpenRouter,
 Groq, Together, …) — and run agents inside the Nova design system.
@@ -33,7 +33,7 @@ opt-in and refuses work when the server is busy.
     "maintainer": "Zeetavix",
     "support": "support@zeetavix.com",
     "website": "https://zeetavix.com",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "price": 0.0,
     "currency": "USD",
     "images": [

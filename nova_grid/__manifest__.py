@@ -3,7 +3,7 @@
     "name": "Nova Grid",
     "summary": "Modular 2D grid view engine for Odoo Community (better than Enterprise)",
     "description": """
-Nova Grid — clean-room grid view engine for Odoo Community (OPL-1).
+Nova Grid — clean-room grid view engine for Odoo Community (LGPL-3).
 
 * Generic <grid> view type usable by ANY model (timesheets, attendance,
   sales, stock, ...), not just one app.
@@ -25,7 +25,7 @@ No Enterprise code is copied. All Python + OWL is original.
     "maintainer": "Zeetavix",
     "support": "support@zeetavix.com",
     "website": "https://zeetavix.com",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "price": 0.0,
     "currency": "USD",
     "images": [

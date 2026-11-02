@@ -3,7 +3,7 @@
     "name": "Nova Gantt",
     "summary": "Modular 2D Gantt view engine for Odoo Community (better than Enterprise)",
     "description": """
-Nova Gantt — clean-room Gantt view engine for Odoo Community (OPL-1).
+Nova Gantt — clean-room Gantt view engine for Odoo Community (LGPL-3).
 
 * Generic <gantt> view type usable by ANY model with a start/end date pair
   (projects, events, leaves, manufacturing orders, ...).
@@ -24,7 +24,7 @@ No Enterprise code is copied. All Python + OWL is original.
     "maintainer": "Zeetavix",
     "support": "support@zeetavix.com",
     "website": "https://zeetavix.com",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "price": 0.0,
     "currency": "USD",
     "images": [

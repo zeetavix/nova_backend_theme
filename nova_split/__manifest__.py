@@ -3,7 +3,7 @@
     "name": "Nova Split View",
     "summary": "Productivity split view: list on the left, form on the right",
     "description": """
-Nova Split View, clean-room productivity view for Odoo Community (OPL-1).
+Nova Split View, clean-room productivity view for Odoo Community (LGPL-3).
 
 Any window action that already offers both a list and a form view
 automatically gains a third view-switcher entry, Split. The list stays
@@ -31,7 +31,7 @@ No Enterprise code is copied. All Python + OWL is original.
     "maintainer": "Zeetavix",
     "support": "support@zeetavix.com",
     "website": "https://zeetavix.com",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "price": 0.0,
     "currency": "USD",
         "images": [

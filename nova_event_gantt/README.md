@@ -2,7 +2,7 @@
 
 Better-than-Enterprise event timeline for Odoo Community
 
-Nova Event Gantt — clean-room event timeline for Community (OPL-1).
+Nova Event Gantt — clean-room event timeline for Community (LGPL-3).
 
 * Events app gets a Gantt as the default view: sections by event type,
   one lane per event, bars from begin to end.
@@ -19,7 +19,7 @@ No Enterprise code is copied. All Python + OWL is original.
 |---|---|
 | Odoo | 20.0 Community |
 | Depends | `nova_gantt`, `event` |
-| License | OPL-1 (Odoo Proprietary License v1.0) |
+| License | LGPL-3 (GNU Lesser General Public License v3.0) |
 | Price | **Free** |
 
 No Enterprise code is copied or required.

@@ -16,7 +16,7 @@ the core theme never depends on mail.
     "website": "https://zeetavix.com",
     "price": 0.0,
     "currency": "USD",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "depends": ["nova_backend_theme", "mail"],
     "auto_install": True,
     "data": [

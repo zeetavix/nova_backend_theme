@@ -2,7 +2,7 @@
 
 Modular 2D grid view engine for Odoo Community (better than Enterprise)
 
-Nova Grid — clean-room grid view engine for Odoo Community (OPL-1).
+Nova Grid — clean-room grid view engine for Odoo Community (LGPL-3).
 
 * Generic <grid> view type usable by ANY model (timesheets, attendance,
   sales, stock, ...), not just one app.
@@ -22,7 +22,7 @@ No Enterprise code is copied. All Python + OWL is original.
 |---|---|
 | Odoo | 20.0 Community |
 | Depends | `web` |
-| License | OPL-1 (Odoo Proprietary License v1.0) |
+| License | LGPL-3 (GNU Lesser General Public License v3.0) |
 | Price | **Free** |
 
 No Enterprise code is copied or required.

@@ -1,0 +1,19 @@
+# Part of Nova. See LICENSE file for full copyright and licensing details.
+# Runtime Python requirements for Nova AI (Odoo modules cannot
+# pip-install; this file is the install contract for the packager).
+#
+# Everything is optional at import time — every integration degrades
+# to an honest message when its package is missing — but install the
+# whole file and every feature works out of the box, voice included.
+# No services, daemons, or system packages are needed for any of it.
+requests>=2.31
+reportlab>=4.0
+Pillow>=10.0
+pypdf>=4.0
+numpy>=1.26
+# Offline voice (in-process, CPU): hearing + speech with zero config.
+faster-whisper>=1.0
+onnxruntime>=1.17
+piper-tts>=1.2
+# Foreign audio containers only (the drawer always sends WAV anyway).
+imageio-ffmpeg>=0.4

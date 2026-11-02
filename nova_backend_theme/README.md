@@ -32,7 +32,7 @@ brings stock Odoo back.
 |---|---|
 | Odoo | 20.0 Community |
 | Dependencies | `web` only |
-| License | OPL-1 (Odoo Proprietary License v1.0) |
+| License | LGPL-3 (GNU Lesser General Public License v3.0) |
 | Price | **Free** |
 
 No Enterprise code is used or required.
@@ -58,6 +58,6 @@ See `static/description/index.html` (rendered on the Odoo Apps listing) and the
 
 ## License
 
-Odoo Proprietary License v1.0 (OPL-1) — see [LICENSE](LICENSE).
+GNU Lesser General Public License v3.0 (LGPL-3) — see [LICENSE](LICENSE).
 
 Copyright (c) Zeetavix.

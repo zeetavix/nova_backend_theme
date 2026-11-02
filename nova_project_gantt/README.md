@@ -2,7 +2,7 @@
 
 Better-than-Enterprise project portfolio Gantt for Odoo Community
 
-Nova Project Gantt — clean-room portfolio timeline for Community (OPL-1).
+Nova Project Gantt — clean-room portfolio timeline for Community (LGPL-3).
 
 * Projects app grid... timeline: sections by project manager, one lane per
   project, bars from start to expiration date.
@@ -19,7 +19,7 @@ No Enterprise code is copied. All Python + OWL is original.
 |---|---|
 | Odoo | 20.0 Community |
 | Depends | `nova_gantt`, `project` |
-| License | OPL-1 (Odoo Proprietary License v1.0) |
+| License | LGPL-3 (GNU Lesser General Public License v3.0) |
 | Price | **Free** |
 
 No Enterprise code is copied or required.

@@ -3,7 +3,7 @@
     "name": "Nova Attendance Grid",
     "summary": "Better-than-Enterprise attendance grid for Odoo Community",
     "description": """
-Nova Attendance Grid — clean-room attendance matrix for Community (OPL-1).
+Nova Attendance Grid — clean-room attendance matrix for Community (LGPL-3).
 
 * My Attendance grid (rows: employee, columns: days/weeks), All Attendances
   grid for officers and managers.
@@ -24,7 +24,7 @@ No Enterprise code is copied. All Python + OWL is original.
     "maintainer": "Zeetavix",
     "support": "support@zeetavix.com",
     "website": "https://zeetavix.com",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "price": 0.0,
     "currency": "USD",
     "images": [

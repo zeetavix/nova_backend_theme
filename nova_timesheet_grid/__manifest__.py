@@ -3,7 +3,7 @@
     "name": "Nova Timesheet Grid",
     "summary": "Better-than-Enterprise timesheet grid for Odoo Community",
     "description": """
-Nova Timesheet Grid — clean-room timesheet grid for Community (OPL-1).
+Nova Timesheet Grid — clean-room timesheet grid for Community (LGPL-3).
 
 * My Timesheets grid (rows: project/task, columns: days/weeks), All
   Timesheets grid (section: employee, rows: project/task), Project grid.
@@ -21,7 +21,7 @@ No Enterprise code is copied. All Python + OWL is original.
     "maintainer": "Zeetavix",
     "support": "support@zeetavix.com",
     "website": "https://zeetavix.com",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "price": 0.0,
     "currency": "USD",
     "images": [

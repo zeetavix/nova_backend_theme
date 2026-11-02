@@ -29,7 +29,7 @@ pulls the engine in automatically. `nova_ai` needs the backend theme.
 | | |
 |---|---|
 | Odoo | 20.0 Community |
-| License | OPL-1 (Odoo Proprietary License v1.0) |
+| License | LGPL-3 (free and open source) |
 | Price | Free — all modules, `0.0` USD |
 
 No Enterprise code is copied or required.

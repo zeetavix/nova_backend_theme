@@ -3,7 +3,7 @@
     "name": "Nova Project Workload Grid",
     "summary": "Better-than-Enterprise workload grid for Odoo Community",
     "description": """
-Nova Project Workload Grid — clean-room deadline load matrix for Community (OPL-1).
+Nova Project Workload Grid — clean-room deadline load matrix for Community (LGPL-3).
 
 * Project Tasks grid (section: project, rows: stage, columns: deadline
   weeks) with allocated hours as the measure.
@@ -23,7 +23,7 @@ No Enterprise code is copied. All Python + OWL is original.
     "maintainer": "Zeetavix",
     "support": "support@zeetavix.com",
     "website": "https://zeetavix.com",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "price": 0.0,
     "currency": "USD",
     "images": [

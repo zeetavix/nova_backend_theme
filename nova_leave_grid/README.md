@@ -2,7 +2,7 @@
 
 Better-than-Enterprise leave grid for Odoo Community
 
-Nova Leave Grid — clean-room time-off matrix for Community (OPL-1).
+Nova Leave Grid — clean-room time-off matrix for Community (LGPL-3).
 
 * My Time Off grid (rows: employee, section: leave type, columns: months),
   All Time Off grid for approvers and managers.
@@ -19,7 +19,7 @@ No Enterprise code is copied. All Python + OWL is original.
 |---|---|
 | Odoo | 20.0 Community |
 | Depends | `nova_grid`, `hr_holidays` |
-| License | OPL-1 (Odoo Proprietary License v1.0) |
+| License | LGPL-3 (GNU Lesser General Public License v3.0) |
 | Price | **Free** |
 
 No Enterprise code is copied or required.

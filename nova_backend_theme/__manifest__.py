@@ -6,7 +6,7 @@
 Nova Backend Theme
 ==================
 
-An original, clean-room backend theme for Odoo Community (OPL-1).
+An original, clean-room backend theme for Odoo Community (LGPL-3).
 
 Design thesis: if Meta designed an ERP, it would feel instant, calm and
 human — one action blue, soft surfaces, Apple-HIG craft, zero clutter.
@@ -36,7 +36,7 @@ colour/typography/spacing systems and Meta's clarity language.
     "website": "https://zeetavix.com",
     "price": 0.0,
     "currency": "USD",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "depends": ["web"],
     "images": [
         "static/description/screens/03-home.png",

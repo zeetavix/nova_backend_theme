@@ -3,7 +3,7 @@
     "name": "Nova Leave Gantt",
     "summary": "Better-than-Enterprise time-off timeline for Odoo Community",
     "description": """
-Nova Leave Gantt — clean-room who's-out timeline for Community (OPL-1).
+Nova Leave Gantt — clean-room who's-out timeline for Community (LGPL-3).
 
 * All Time Off gains a Gantt next to the grid: sections by employee,
   bars per leave request from start to end date.
@@ -22,7 +22,7 @@ No Enterprise code is copied. All Python + OWL is original.
     "maintainer": "Zeetavix",
     "support": "support@zeetavix.com",
     "website": "https://zeetavix.com",
-    "license": "OPL-1",
+    "license": "LGPL-3",
     "price": 0.0,
     "currency": "USD",
     "images": [

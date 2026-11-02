@@ -1,0 +1,23 @@
+///
+/// Nova AI chatter entry — one control in the topbar, same metrics as
+/// the Send/Log/Activity buttons. The menu itself is stock dropdown
+/// chrome; only the spark toggle is themed.
+///
+
+.nova_ai_chatter_btn {
+    .nova_ai_spark {
+        color: $nova-action-active;
+        font-size: 13px;
+        display: inline-flex;
+    }
+
+    .nova_ai_glyph {
+        width: 1em;
+        height: 1em;
+        display: block;
+    }
+}
+
+.nova_ai_chatter_menu {
+    min-width: 220px;
+}

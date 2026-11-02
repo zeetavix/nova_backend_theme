@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="nova_split.SplitFormPanel">
+        <div class="o_nova_split_form">
+            <PanelFormController
+                resModel="this.props.resModel"
+                resId="this.props.resId"
+                resIds="this.props.resIds"
+                viewId="this.props.viewId"
+                arch="this.props.arch"
+                fields="this.props.fields"
+                relatedModels="this.props.relatedModels"
+                archInfo="this.props.archInfo"
+                context="this.props.context"
+                domain="this.props.domain"
+                groupBy="this.props.groupBy"
+                orderBy="this.props.orderBy"
+                searchMenuTypes="this.props.searchMenuTypes"
+                useSampleModel="this.props.useSampleModel"
+                display="this.props.display"
+                info="this.props.info"
+                Model="this.FormModel"
+                Renderer="this.FormRenderer"
+                Compiler="this.FormCompiler"
+                buttonTemplate="'web.FormView.Buttons'"
+                buttonDialogTemplate="'web.FormView.DialogButtons'"
+                onSave="this.props.onSave"
+            />
+        </div>
+    </t>
+
+</templates>

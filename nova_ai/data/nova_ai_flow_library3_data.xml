@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     Loop-100 pack: meeting prep and vendor-bill triage. Same contract —
+     reads first, writes last, every write a card the user approves. -->
+<odoo>
+    <data noupdate="1">
+    <record id="flow_meeting_prep" model="nova.ai.flow">
+        <field name="name">Meeting prep</field>
+        <field name="description">Who you meet today, open items with them, and a one-line brief each</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {'type': 'start', 'config': {'variables': []}},
+  {'type': 'search', 'resultVariable': 'events', 'config': {'args': {
+    'model': 'calendar.event',
+    'domain': [['start', '&gt;=', '${today_start}'], ['start', '&lt;', '${today_end}']],
+    'fields': ['name', 'start', 'partner_ids', 'description'],
+    'limit': 10, 'order': 'start asc'}}},
+  {'type': 'agent', 'resultVariable': 'brief', 'config': {'instruction': 'For each meeting in ${events}, brief me in two lines: who it is with, and any open sale orders, invoices, or tasks with those partners (search for them). No open items: say so in one line.'}},
+  {'type': 'output', 'config': {'value': '${brief}'}}
+]" />
+    </record>
+
+    <record id="flow_vendor_bill_triage" model="nova.ai.flow">
+        <field name="name">Vendor-bill triage</field>
+        <field name="description">Fresh vendor bills sorted into ready-to-post and needs-partner-or-total</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {'type': 'start', 'config': {'variables': []}},
+  {'type': 'search', 'resultVariable': 'drafts', 'config': {'args': {
+    'model': 'account.move',
+    'domain': [['move_type', '=', 'in_invoice'], ['state', '=', 'draft']],
+    'fields': ['name', 'partner_id', 'amount_total', 'invoice_date'],
+    'limit': 15, 'order': 'invoice_date asc'}}},
+  {'type': 'agent', 'resultVariable': 'triage', 'config': {'instruction': 'Triage these draft vendor bills in ${drafts}: which are ready to post, and which need a partner or a total first. One line per bill.'}},
+  {'type': 'output', 'config': {'value': '${triage}'}}
+]" />
+    </record>
+    </data>
+</odoo>

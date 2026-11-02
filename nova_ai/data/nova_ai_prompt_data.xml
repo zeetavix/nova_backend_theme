@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     The drawer suggestions and chatter menu read these rows; the clients
+     keep built-in fallbacks, so seats stay filled on a fresh database. -->
+<odoo>
+    <data noupdate="1">
+    <record id="prompt_summarize" model="nova.ai.prompt">
+        <field name="name">Summarize this record</field>
+        <field name="code">summarize</field>
+        <field name="body">Summarize this record's chatter thread in a few bullets.</field>
+        <field name="place">both</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="prompt_translate" model="nova.ai.prompt">
+        <field name="name">Translate last message</field>
+        <field name="code">translate</field>
+        <field name="body">Translate the most recent chatter message into English.</field>
+        <field name="place">chatter</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="prompt_draft" model="nova.ai.prompt">
+        <field name="name">Draft reply</field>
+        <field name="code">draft</field>
+        <field name="body">Draft a short follow-up reply for this record.</field>
+        <field name="place">chatter</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="prompt_next" model="nova.ai.prompt">
+        <field name="name">Suggest next steps</field>
+        <field name="code">next</field>
+        <field name="body">Suggest concrete next steps for this record.</field>
+        <field name="place">both</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="prompt_risk" model="nova.ai.prompt">
+        <field name="name">Check risks</field>
+        <field name="code">risk</field>
+        <field name="body">Flag risks on this record: overdue amounts, stalled states, missing data.</field>
+        <field name="place">chatter</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="prompt_open_invoices" model="nova.ai.prompt">
+        <field name="name">Find open invoices</field>
+        <field name="code">open_invoices</field>
+        <field name="body">Find this customer's open invoices and their due dates.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="prompt_attention" model="nova.ai.prompt">
+        <field name="name">What needs attention?</field>
+        <field name="code">attention</field>
+        <field name="body">What needs attention?</field>
+        <field name="place">drawer</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="prompt_cash_radar" model="nova.ai.prompt">
+        <field name="name">Overdue cash radar</field>
+        <field name="code">cash_radar</field>
+        <field name="body">List overdue customer invoices: number, partner, residual amount with currency, days overdue, and the date of the last message or activity on each. Sort by days overdue, worst first. End each row with one concrete collection step. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="prompt_stale_quotes" model="nova.ai.prompt">
+        <field name="name">Stale quotations</field>
+        <field name="code">stale_quotes</field>
+        <field name="body">Find sent quotations older than 7 days with no recent activity: number, customer, amount, days silent, owner. Suggest one revival step per row. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="prompt_stock_watch" model="nova.ai.prompt">
+        <field name="name">Stock exceptions</field>
+        <field name="code">stock_watch</field>
+        <field name="body">Report stock exceptions: products below reorder point, backordered or late receipts, blocked moves. Per row: product, location, shortfall, and the replenishment move to make. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="prompt_bill_check" model="nova.ai.prompt">
+        <field name="name">Bill vs PO check</field>
+        <field name="code">bill_check</field>
+        <field name="body">For draft vendor bills, compare each against its purchase order and receipts: flag quantity or price gaps with the computed delta per row. Report exceptions only. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">70</field>
+    </record>
+    <record id="prompt_crm_triage" model="nova.ai.prompt">
+        <field name="name">Triage this lead</field>
+        <field name="code">crm_triage</field>
+        <field name="body">Triage this lead: read its contact fields, expected revenue and stage, plus recent chatter. Score it Hot, Warm or Cold with one grounded reason, then queue a log note with the score and schedule the one next activity. Never invent contact details.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">80</field>
+    </record>
+    <record id="prompt_crm_dupe_guard" model="nova.ai.prompt">
+        <field name="name">Check duplicate leads</field>
+        <field name="code">crm_dupe_guard</field>
+        <field name="body">Find leads sharing this one's email, phone or name. List each duplicate with stage and age. Queue a log note naming the keeper and propose closing the rest as duplicate — never merge or delete anything without approval.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">81</field>
+    </record>
+    <record id="prompt_paste_quote" model="nova.ai.prompt">
+        <field name="name">Paste to quote</field>
+        <field name="code">paste_quote</field>
+        <field name="body">Turn pasted order lines into a draft quotation: match each line to a real product (ask when unsure, never guess the product), set quantities and prices from the text, and queue a create_draft card for a sale.order with order_line. State every assumption.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">82</field>
+    </record>
+    <record id="prompt_discount_guard" model="nova.ai.prompt">
+        <field name="name">Check discounts</field>
+        <field name="code">discount_guard</field>
+        <field name="body">Check every order line's discount on this quotation: flag any line above 15% with the line, product, discount and margin impact. Per row: line, discount, line total, verdict. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">83</field>
+    </record>
+    <record id="prompt_upsell" model="nova.ai.prompt">
+        <field name="name">Suggest upsell</field>
+        <field name="code">upsell</field>
+        <field name="body">Suggest upsell for this order: read its lines, find related or higher-tier products the customer does not have yet, and queue nothing — propose in prose with one line of reason each. Only products that exist.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">84</field>
+    </record>
+    <record id="prompt_delivery_risk" model="nova.ai.prompt">
+        <field name="name">Delivery risk</field>
+        <field name="code">delivery_risk</field>
+        <field name="body">Flag delivery risk on this order: stock on hand for each line, incoming receipts, and the promised date. Per row: product, ordered vs available, verdict. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">85</field>
+    </record>
+    <record id="prompt_margin_watch" model="nova.ai.prompt">
+        <field name="name">Margin check</field>
+        <field name="code">margin_watch</field>
+        <field name="body">Check margin on this order: unit price vs cost per line, line margin and order total. Flag any line under 10% margin. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">86</field>
+    </record>
+    <record id="prompt_qtc_brief" model="nova.ai.prompt">
+        <field name="name">Quote to cash brief</field>
+        <field name="code">qtc_brief</field>
+        <field name="body">Brief this quote to cash: stage, amount, customer, what blocks confirmation, delivery and invoice state. One paragraph plus the single next action. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">87</field>
+    </record>
+    <record id="prompt_chatter_closer" model="nova.ai.prompt">
+        <field name="name">Draft closing message</field>
+        <field name="code">chatter_closer</field>
+        <field name="body">Draft a short closing message for this order's chatter: reference the actual amount, products and stage, one clear call to action, no pressure tricks. Queue it as a log note for review — never send.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">88</field>
+    </record>
+    <record id="prompt_match_explainer" model="nova.ai.prompt">
+        <field name="name">Explain bill match</field>
+        <field name="code">match_explainer</field>
+        <field name="body">Explain how this vendor bill matches its purchase order and receipts: line by line, ordered vs received vs billed quantities with prices. End with matched or the exact gap. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">89</field>
+    </record>
+    <record id="prompt_price_variance" model="nova.ai.prompt">
+        <field name="name">Price variance check</field>
+        <field name="code">price_variance</field>
+        <field name="body">Check price variance on this bill against its purchase order: per line ordered price vs billed price with the computed delta and percent. Flag anything over 5%. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">90</field>
+    </record>
+    <record id="prompt_rfq_drafter" model="nova.ai.prompt">
+        <field name="name">Draft RFQ lines</field>
+        <field name="code">rfq_drafter</field>
+        <field name="body">Draft request-for-quotation lines from pasted text: match each line to a real product (ask when unsure), quantities and any target price, then queue a create_draft card for a purchase.order. State every assumption.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">91</field>
+    </record>
+    <record id="prompt_approval_digest" model="nova.ai.prompt">
+        <field name="name">Bills awaiting approval</field>
+        <field name="code">approval_digest</field>
+        <field name="body">Search account.move vendor bills with move_type=in_invoice and state=draft first (count_records, then search_records oldest first). List number, vendor, amount, age; one line each on what blocks posting. Empty is a finding — report the exact search and count. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">92</field>
+    </record>
+    <record id="prompt_vendor_brief" model="nova.ai.prompt">
+        <field name="name">Vendor brief</field>
+        <field name="code">vendor_brief</field>
+        <field name="body">Brief this vendor: open orders, draft and overdue bills with amounts, recent activity. One paragraph plus the single next action. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">93</field>
+    </record>
+    <record id="prompt_late_chaser" model="nova.ai.prompt">
+        <field name="name">Draft late chaser</field>
+        <field name="code">late_chaser</field>
+        <field name="body">Draft a short chasing message for this late purchase order: reference the order number, expected date and days late, one clear ask. Queue it as a log note for review — never send.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">94</field>
+    </record>
+    <record id="prompt_stockout_watch" model="nova.ai.prompt">
+        <field name="name">Stockout watch</field>
+        <field name="code">stockout_watch</field>
+        <field name="body">Report stockouts and risks: products at zero or below reorder point with open demand, late receipts, blocked moves. Per row: product, location, shortfall, the replenishment to make. Empty shelves are a finding, not a failure — say so. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">95</field>
+    </record>
+    <record id="prompt_delivery_scan" model="nova.ai.prompt">
+        <field name="name">Scan delivery note</field>
+        <field name="code">delivery_scan</field>
+        <field name="body">Turn a delivery-note scan into a receipt check: list the file with list_attachments, read it with read_attachment (bills go through digitize_bill), then match quantities against the picking's moves. Report matched or the exact gap.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">96</field>
+    </record>
+    <record id="prompt_replenish" model="nova.ai.prompt">
+        <field name="name">Propose replenishment</field>
+        <field name="code">replenish</field>
+        <field name="body">Propose replenishment: compare demand (open sale lines, forecasts) against stock on hand per product. Queue nothing — propose product, quantity and reason per row. If reorder points are missing, say which products need them first.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">97</field>
+    </record>
+    <record id="prompt_collection_radar" model="nova.ai.prompt">
+        <field name="name">Collection radar</field>
+        <field name="code">collection_radar</field>
+        <field name="body">Search account.move customer invoices with move_type=out_invoice first (count_records, then search_records): number, customer, residual with currency, days overdue, last chatter or activity date. Worst first, one collection step per row. Paid-up is a finding — report the exact search and count. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">98</field>
+    </record>
+    <record id="prompt_dupe_bill" model="nova.ai.prompt">
+        <field name="name">Duplicate bill guard</field>
+        <field name="code">dupe_bill</field>
+        <field name="body">Guard against duplicate vendor bills: compare this bill's vendor, reference, date and total against other bills. Same vendor + same ref, or same vendor + same total + close date, is a duplicate suspect — list each with the evidence. Never void anything without approval.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">99</field>
+    </record>
+    <record id="prompt_bank_triage" model="nova.ai.prompt">
+        <field name="name">Triage bank statement</field>
+        <field name="code">bank_triage</field>
+        <field name="body">Triage this bank statement: unmatched lines, large or unusual amounts, missing partners. Per row: line, amount, status, the action to take. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">100</field>
+    </record>
+    <record id="prompt_approval_router" model="nova.ai.prompt">
+        <field name="name">Route for approval</field>
+        <field name="code">approval_router</field>
+        <field name="body">Route this bill for approval: check totals, vendor, purchase-order link and taxes, then state who should approve next and what is missing. Queue nothing — advise in prose. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">101</field>
+    </record>
+    <record id="prompt_tax_checker" model="nova.ai.prompt">
+        <field name="name">Check taxes</field>
+        <field name="code">tax_checker</field>
+        <field name="body">Check taxes on this bill or invoice: every line's tax, the computed tax total vs the document tax total, missing or wrong taxes. Per row: line, tax, expected, verdict. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">102</field>
+    </record>
+    <record id="prompt_close_checklist" model="nova.ai.prompt">
+        <field name="name">Close checklist</field>
+        <field name="code">close_checklist</field>
+        <field name="body">Search account.move vendor bills with move_type=in_invoice and state=draft and list them. Search account.move customer invoices with move_type=out_invoice and state=draft and list them. Search bank statement lines not reconciled and list them. Then report the accounting lock date. Present all four as a month-end close checklist with the action per item. Empty is a finding — report the exact search and count. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">103</field>
+    </record>
+    <record id="prompt_cash_narrator" model="nova.ai.prompt">
+        <field name="name">Cash position</field>
+        <field name="code">cash_narrator</field>
+        <field name="body">Narrate the cash position — run the searches yourself: bank journal balances (read the journals' debit/credit or default balance fields), latest bank statement balance_end_real per journal, customer invoices with residual &gt; 0 due within 30 days, vendor bills with residual &gt; 0 due within 30 days. Two sentences plus the three figures. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">104</field>
+    </record>
+    <record id="prompt_dispute_summary" model="nova.ai.prompt">
+        <field name="name">Summarize dispute</field>
+        <field name="code">dispute_summary</field>
+        <field name="body">Summarize this invoice dispute for the record: amount contested, reason from the chatter, who said what last, and the one next step. Queue it as a log note for review — never send.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">105</field>
+    </record>
+    <record id="prompt_shortage_watch" model="nova.ai.prompt">
+        <field name="name">Shortage watch</field>
+        <field name="code">shortage_watch</field>
+        <field name="body">Watch manufacturing shortages: open manufacturing orders with missing components, late planned dates, blocked stock moves. Per row: order, missing component, shortfall, expected date. Empty shops are a finding — say so. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">106</field>
+    </record>
+    <record id="prompt_bom_copilot" model="nova.ai.prompt">
+        <field name="name">BoM copilot</field>
+        <field name="code">bom_copilot</field>
+        <field name="body">Build a bill of materials from pasted text: match the finished product and each component to real products (ask when unsure), quantities and units, then queue a create_draft card for an mrp.bom with bom_line_ids. State every assumption.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">107</field>
+    </record>
+    <record id="prompt_product_from_name" model="nova.ai.prompt">
+        <field name="name">Product from name</field>
+        <field name="code">product_from_name</field>
+        <field name="body">Create a product from a name and a few words: pick the right product type, sales and purchase flags, list price when given, then queue a create_draft card for a product.template. Ask for anything missing instead of guessing.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">108</field>
+    </record>
+    <record id="prompt_email_to_lead" model="nova.ai.prompt">
+        <field name="name">Email to lead</field>
+        <field name="code">email_to_lead</field>
+        <field name="body">Turn a pasted email into a lead: extract name, company, email, phone and interest, match against existing leads for duplicates first, then queue a create_draft card for a crm.lead. State every assumption.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">109</field>
+    </record>
+    <record id="prompt_dead_revival" model="nova.ai.prompt">
+        <field name="name">Revive dead leads</field>
+        <field name="code">dead_revival</field>
+        <field name="body">Search crm.lead lost or long-silent leads first (count_records, then search_records): only leads with real contact details and past engagement. Per row: lead, silence, why it may revive, the one reopening step. Empty is a finding — report the exact search and count. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">110</field>
+    </record>
+    <record id="prompt_meeting_prep" model="nova.ai.prompt">
+        <field name="name">Meeting prep</field>
+        <field name="code">meeting_prep</field>
+        <field name="body">Prepare this meeting: the record, its chatter highlights, open items and risks, plus three questions to ask. One page, no fluff. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">111</field>
+    </record>
+    <record id="prompt_activity_hygiene" model="nova.ai.prompt">
+        <field name="name">Activity hygiene</field>
+        <field name="code">activity_hygiene</field>
+        <field name="body">Check activity hygiene: overdue activities, leads and orders with no next activity, empty owners. Per row: what, owner, the fix. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">112</field>
+    </record>
+    <record id="prompt_lost_reason" model="nova.ai.prompt">
+        <field name="name">Lost reason analysis</field>
+        <field name="code">lost_reason</field>
+        <field name="body">Analyze lost leads and orders: group by lost reason, count and value per reason, the top pattern and one fix. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">113</field>
+    </record>
+    <record id="prompt_lot_watch" model="nova.ai.prompt">
+        <field name="name">Lot watcher</field>
+        <field name="code">lot_watch</field>
+        <field name="body">Search stock.quant quants first (count_records, then search_records), then stock.lot records: negative quants, zero-quantity lots, lots with no quants on hand. Per row: lot, product, quantity, location, the action. Empty lot tracking is a finding — report the exact search and count. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">114</field>
+    </record>
+    <record id="prompt_mismatch_triage" model="nova.ai.prompt">
+        <field name="name">Triage picking mismatch</field>
+        <field name="code">mismatch_triage</field>
+        <field name="body">Triage this picking's mismatches: demanded vs done quantities per move, missing lots or packages, the exact gap per line and whether to force, split or backorder. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">115</field>
+    </record>
+    <record id="prompt_slow_mover" model="nova.ai.prompt">
+        <field name="name">Slow movers</field>
+        <field name="code">slow_mover</field>
+        <field name="body">Flag slow-moving stock: products with quantity on hand but no moves in 90 days. Per row: product, on hand, days idle, the markdown-or-move suggestion. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">116</field>
+    </record>
+    <record id="prompt_transfer_suggest" model="nova.ai.prompt">
+        <field name="name">Suggest transfer</field>
+        <field name="code">transfer_suggest</field>
+        <field name="body">Search stock.quant quants and open demand first (count_records, then search_records per location): where stock sits vs where demand is, per product and location pair with quantities. Queue nothing — propose source, destination, product and qty per row. Do NOT say 'queued'. Empty is a finding — report the exact search and count. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">117</field>
+    </record>
+    <record id="prompt_cycle_count" model="nova.ai.prompt">
+        <field name="name">Build cycle count</field>
+        <field name="code">cycle_count</field>
+        <field name="body">Search stock.quant quants for this location first (count_records, then search_records, recently moved first): products with quants, zero-count suspects. Present the count order with expected quantities; queue nothing without approval. Do NOT say 'queued'. Empty is a finding — report the exact search and count. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">118</field>
+    </record>
+    <record id="prompt_quote_followup" model="nova.ai.prompt">
+        <field name="name">Quote follow-up</field>
+        <field name="code">quote_followup</field>
+        <field name="body">Follow up this quotation: read its stage, age, lines and thread, then draft one short follow-up message with the real amount and a clear next step. Queue it as a log note for review — never send.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">119</field>
+    </record>
+    <record id="prompt_delay_flag" model="nova.ai.prompt">
+        <field name="name">Delay flag</field>
+        <field name="code">delay_flag</field>
+        <field name="body">Search mrp.production manufacturing orders with date_start in the past and state not done first (count_records, then search_records), then purchase receipts past their scheduled date (stock.picking scheduled_date). Per row: order, planned vs today, days late, the blocker. Empty shops are a finding — report the exact search and count. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">120</field>
+    </record>
+    <record id="prompt_scrap_narration" model="nova.ai.prompt">
+        <field name="name">Scrap narration</field>
+        <field name="code">scrap_narration</field>
+        <field name="body">Narrate scrap on this record: what was scrapped, quantity, reason from the data or chatter, cost impact when computable. Queue it as a log note for the record — never post adjustments. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">121</field>
+    </record>
+    <record id="prompt_mo_copilot" model="nova.ai.prompt">
+        <field name="name">MO copilot</field>
+        <field name="code">mo_copilot</field>
+        <field name="body">Drive this manufacturing order: components availability vs needed quantities, readiness verdict per line, then queue nothing — advise confirm or the exact missing purchase. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">122</field>
+    </record>
+    <record id="prompt_shop_digest" model="nova.ai.prompt">
+        <field name="name">Shop digest</field>
+        <field name="code">shop_digest</field>
+        <field name="body">Search mrp.production open manufacturing orders first (count_records, then search_records) and report the shop floor: counts by state, late orders, blocked moves, today's due. End with the single most urgent action. Empty is a finding — report the exact search and count. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">123</field>
+    </record>
+    <record id="prompt_voice_to_lead" model="nova.ai.prompt">
+        <field name="name">Voice to lead</field>
+        <field name="code">voice_to_lead</field>
+        <field name="body">Dictated lead capture: transcribe the contact details from the transcript, match duplicates first, then queue a create_draft card for a crm.lead. State every assumption.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">124</field>
+    </record>
+    <record id="prompt_configurator" model="nova.ai.prompt">
+        <field name="name">Configurator help</field>
+        <field name="code">configurator</field>
+        <field name="body">Help configure this product: explain its options and variants, compatible accessories from the catalog, and queue nothing — advise the configuration in prose. Only products that exist.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">125</field>
+    </record>
+    <record id="prompt_voice_to_order" model="nova.ai.prompt">
+        <field name="name">Voice to order</field>
+        <field name="code">voice_to_order</field>
+        <field name="body">Dictated order capture: transcribe products and quantities from the transcript, match each to a real product (ask when unsure), then queue a create_draft card for a sale.order. State every assumption.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">126</field>
+    </record>
+    <record id="prompt_rfq_reply" model="nova.ai.prompt">
+        <field name="name">RFQ reply draft</field>
+        <field name="code">rfq_reply</field>
+        <field name="body">Draft a vendor reply for this request for quotation: reference lines and quantities, ask for price and lead time, one clear call to action. Queue it as a log note for review — never send.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">127</field>
+    </record>
+    <record id="prompt_voice_rfq" model="nova.ai.prompt">
+        <field name="name">Voice RFQ</field>
+        <field name="code">voice_rfq</field>
+        <field name="body">Dictated RFQ capture: transcribe vendor, products and quantities from the transcript, match each to a real product (ask when unsure), then queue a create_draft card for a purchase.order. State every assumption.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">128</field>
+    </record>
+    <record id="prompt_blanket_review" model="nova.ai.prompt">
+        <field name="name">Blanket review</field>
+        <field name="code">blanket_review</field>
+        <field name="body">Review blanket purchase agreements: consumed vs agreed quantities, expiry dates, open releases. Per row: agreement, consumed, remaining, the action. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">129</field>
+    </record>
+    <record id="prompt_voice_count" model="nova.ai.prompt">
+        <field name="name">Voice count</field>
+        <field name="code">voice_count</field>
+        <field name="body">Dictated stock count: transcribe product and quantity pairs from the transcript, match each to a real product and location, then present the count list with expected quantities. Queue nothing without approval.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">130</field>
+    </record>
+    <record id="prompt_putaway" model="nova.ai.prompt">
+        <field name="name">Putaway help</field>
+        <field name="code">putaway</field>
+        <field name="body">Advise putaway for this receipt: product sizes, free space per location, fixed location rules. Recommend the destination location per line with one reason each. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">131</field>
+    </record>
+    <record id="prompt_voice_expense" model="nova.ai.prompt">
+        <field name="name">Voice expense</field>
+        <field name="code">voice_expense</field>
+        <field name="body">Dictated expense capture: transcribe amount, category and vendor from the transcript, then queue a create_draft card for an hr.expense where available. State every assumption.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">132</field>
+    </record>
+    <record id="prompt_terms_advisor" model="nova.ai.prompt">
+        <field name="name">Payment terms advice</field>
+        <field name="code">terms_advisor</field>
+        <field name="body">Advise payment terms for this partner: history of late payments, invoice sizes, standard terms. Recommend terms with one reason. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">133</field>
+    </record>
+    <record id="prompt_routing_suggest" model="nova.ai.prompt">
+        <field name="name">Routing suggestion</field>
+        <field name="code">routing_suggest</field>
+        <field name="body">Suggest a routing for this product: operations needed, work centers, time estimates. Queue nothing — propose the operation sequence in prose. Only work centers that exist.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">134</field>
+    </record>
+    <record id="prompt_bom_from_text" model="nova.ai.prompt">
+        <field name="name">BoM from text</field>
+        <field name="code">bom_from_text</field>
+        <field name="body">Build a bill of materials from pasted text: finished product plus components with quantities, matched to real products (ask when unsure), then queue a create_draft card for an mrp.bom. State every assumption.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">135</field>
+    </record>
+    <record id="prompt_voice_logger" model="nova.ai.prompt">
+        <field name="name">Voice shop logger</field>
+        <field name="code">voice_logger</field>
+        <field name="body">Dictated shop-floor log: transcribe the order, operation and quantities from the transcript, then queue it as a log note on the manufacturing order for review — never post production.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">136</field>
+    </record>
+    <record id="prompt_paste_bill" model="nova.ai.prompt">
+        <field name="name">Paste to bill</field>
+        <field name="code">paste_bill</field>
+        <field name="body">Turn pasted bill text into a draft vendor bill: match the vendor to a real partner (ask when unsure), lines with quantities and prices, totals that reconcile. Flag anything uncertain on the card — low-confidence fields must be visible before approval. Queue a create_draft card for an account.move in_invoice. State every assumption.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">137</field>
+    </record>
+    <record id="prompt_compare" model="nova.ai.prompt">
+        <field name="name">Compare records</field>
+        <field name="code">compare</field>
+        <field name="body">Compare two records side by side: read both, table the same fields, call out every difference with figures, end with a verdict. Name both records first — never compare without reading each. Use only figures the tools return.</field>
+        <field name="place">drawer</field>
+        <field name="sequence">138</field>
+    </record>
+    </data>
+</odoo>

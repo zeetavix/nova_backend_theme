@@ -1,0 +1,23 @@
+///
+/// Nova AI — tier badges (dark). The T3 solid stays the loudest chip
+/// but lightens to the dark action hue with dark ink on top.
+///
+
+.nova_tier {
+    &.nova_tier-t1 {
+        border-color: $nova-border-strong;
+        color: $nova-ink;
+    }
+
+    &.nova_tier-t2 {
+        border-color: $nova-action;
+        background: $nova-action-soft;
+        color: $nova-action-active;
+    }
+
+    &.nova_tier-t3 {
+        border-color: $nova-action;
+        background: $nova-action;
+        color: $nova-on-action;
+    }
+}

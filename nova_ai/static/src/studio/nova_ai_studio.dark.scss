@@ -1,0 +1,447 @@
+///
+/// Nova Studio (dark): the same structure, the dark palette. The teal
+/// stays the only accent; state colours are desaturated just enough to
+/// sit on a dark surface without glowing.
+///
+
+.nova_studio {
+    background: $nova-surface-app;
+    color: $nova-ink;
+}
+
+.nova_studio_head {
+    background: $nova-surface-view;
+    border-bottom-color: $o-border-color;
+}
+
+.nova_studio_mark {
+    background: $nova-action-soft;
+    color: $nova-action-hover;
+}
+
+.nova_studio_agent {
+    background: $nova-surface-view;
+    border-color: $o-border-color;
+}
+
+.nova_studio_avatar {
+    background: $nova-action;
+    color: $nova-on-action;
+}
+
+.nova_studio_btn {
+    background: $nova-surface-view;
+    border-color: $nova-border-strong;
+    color: $nova-ink;
+
+    &:hover:not([disabled]) {
+        background: rgba(255, 255, 255, 0.06);
+    }
+}
+
+.nova_studio_btn_primary {
+    background: $nova-action;
+    border-color: $nova-action;
+    color: $nova-on-action;
+
+    &:hover:not([disabled]) {
+        background: $nova-action-hover;
+        border-color: $nova-action-hover;
+    }
+}
+
+.nova_studio_linkbtn {
+    color: $nova-action-hover;
+
+    &:hover {
+        color: $nova-action;
+    }
+}
+
+.nova_studio_iconbtn {
+    color: $nova-ink-muted;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: $nova-ink;
+    }
+}
+
+.nova_studio_rail {
+    background: $nova-surface-view;
+    border-right-color: $o-border-color;
+}
+
+.nova_studio_railbtn {
+    color: $nova-ink;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+}
+
+.nova_studio_railbtn_on {
+    background: $nova-action-soft;
+    color: $nova-action-hover;
+
+    &:hover {
+        background: $nova-action-soft;
+    }
+}
+
+.nova_studio_railicon {
+    color: $nova-ink-muted;
+}
+
+.nova_studio_railbtn_on .nova_studio_railicon {
+    color: $nova-action-hover;
+}
+
+.nova_studio_railcount {
+    background: rgba(255, 255, 255, 0.08);
+    color: $nova-ink-muted;
+}
+
+.nova_studio_railcount_alert {
+    background: $o-warning;
+    color: #101114;
+}
+
+.nova_studio_main {
+    background: $nova-surface-app;
+}
+
+.nova_studio_error {
+    background: rgba($o-danger, 0.16);
+    color: lighten($o-danger, 18%);
+    border-color: rgba($o-danger, 0.4);
+}
+
+.nova_studio_notice {
+    background: $nova-action-soft;
+    color: $nova-action-hover;
+    border-color: rgba($nova-action, 0.4);
+}
+
+.nova_studio_empty {
+    background: $nova-surface-view;
+    border-color: $nova-border-strong;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_skeleton span {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.09) 37%, rgba(255, 255, 255, 0.04) 63%);
+    background-size: 400% 100%;
+}
+
+.nova_studio_panel {
+    background: $nova-surface-view;
+    border-color: $o-border-color;
+    box-shadow: none;
+}
+
+.nova_studio_panelfoot {
+    border-top-color: $o-border-color;
+}
+
+.nova_studio_waitrow {
+    border-bottom-color: $o-border-color;
+}
+
+.nova_studio_waitnum {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.nova_studio_stat {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: $o-border-color;
+
+    &:hover {
+        background: $nova-action-soft;
+        border-color: $nova-action;
+    }
+}
+
+.nova_studio_dot {
+    background: $nova-border-strong;
+}
+
+.nova_studio_dot_on {
+    background: $o-success;
+}
+
+.nova_studio_search {
+    background: $nova-surface-view;
+    border-color: $nova-border-strong;
+
+    &:focus-within {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.24);
+    }
+}
+
+.nova_studio_input_block {
+    background: $nova-surface-view;
+    border-color: $nova-border-strong;
+
+    &:focus {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.24);
+    }
+}
+
+.nova_studio_chip {
+    background: $nova-surface-view;
+    border-color: $nova-border-strong;
+    color: $nova-ink;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+}
+
+.nova_studio_chip_on {
+    background: $nova-action;
+    border-color: $nova-action;
+    color: $nova-on-action;
+
+    &:hover {
+        background: $nova-action-hover;
+    }
+}
+
+.nova_studio_card {
+    background: $nova-surface-view;
+    border-color: $o-border-color;
+    box-shadow: none;
+
+    &:hover {
+        border-color: $nova-border-strong;
+        box-shadow: none;
+    }
+}
+
+.nova_studio_cardfoot {
+    border-top-color: $o-border-color;
+}
+
+.nova_studio_kind {
+    background: rgba(255, 255, 255, 0.07);
+    color: $nova-ink-muted;
+}
+
+.nova_studio_kind-skill {
+    background: $nova-action-soft;
+    color: $nova-action-hover;
+}
+
+.nova_studio_kind-memory {
+    background: rgba($o-info, 0.2);
+    color: lighten($o-info, 18%);
+}
+
+.nova_studio_kind-wiki {
+    background: rgba(255, 255, 255, 0.1);
+    color: $nova-ink;
+}
+
+.nova_studio_kind-reference {
+    background: rgba($o-info, 0.2);
+    color: lighten($o-info, 18%);
+}
+
+.nova_studio_kind-document {
+    background: rgba(255, 255, 255, 0.07);
+    color: $nova-ink-muted;
+}
+
+.nova_studio_kind-flow {
+    background: rgba($o-success, 0.2);
+    color: lighten($o-success, 14%);
+}
+
+.nova_studio_trust {
+    border-color: $o-border-color;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_trust-human-reviewed {
+    border-color: rgba($o-success, 0.45);
+    background: rgba($o-success, 0.18);
+    color: lighten($o-success, 16%);
+}
+
+.nova_studio_trust-machine-confirmed {
+    border-color: rgba($o-info, 0.45);
+    background: rgba($o-info, 0.18);
+    color: lighten($o-info, 18%);
+}
+
+.nova_studio_pill {
+    background: rgba(255, 255, 255, 0.07);
+    color: $nova-ink-muted;
+}
+
+.nova_studio_pill_warn {
+    background: rgba($o-warning, 0.2);
+    color: lighten($o-warning, 14%);
+}
+
+.nova_studio_pill_ok {
+    background: rgba($o-success, 0.2);
+    color: lighten($o-success, 14%);
+}
+
+.nova_studio_pill_info {
+    background: $nova-action-soft;
+    color: $nova-action-hover;
+}
+
+.nova_studio_pill_danger {
+    background: rgba($o-danger, 0.22);
+    color: lighten($o-danger, 16%);
+}
+
+.nova_studio_prose {
+    background: $nova-paper;
+    border-color: $nova-paper-border;
+    color: $nova-ink;
+
+    code,
+    pre {
+        background: $nova-paper-deep;
+    }
+}
+
+.nova_studio_stepicon {
+    background: $nova-surface-view;
+    border-color: $nova-border-strong;
+}
+
+.nova_studio_step:not(:last-child)::before {
+    background: $o-border-color;
+}
+
+.nova_studio_stepvar {
+    background: $nova-action-soft;
+    color: $nova-action-hover;
+}
+
+.nova_studio_flowproblem {
+    background: rgba($o-danger, 0.18);
+    color: lighten($o-danger, 18%);
+}
+
+.nova_studio_tablewrap {
+    background: $nova-surface-view;
+    border-color: $o-border-color;
+    box-shadow: none;
+}
+
+.nova_studio_table {
+    th {
+        background: rgba(255, 255, 255, 0.04);
+        color: $nova-ink-muted;
+        border-bottom-color: $o-border-color;
+    }
+
+    td {
+        border-bottom-color: $o-border-color;
+    }
+
+    tbody tr:hover td {
+        background: rgba(255, 255, 255, 0.04);
+    }
+}
+
+.nova_studio_row_bad td {
+    background: rgba($o-danger, 0.16);
+}
+
+.nova_studio_errtext {
+    color: lighten($o-danger, 18%);
+}
+
+.nova_studio_tier {
+    background: rgba(255, 255, 255, 0.08);
+    color: $nova-ink-muted;
+}
+
+.nova_studio_tier-t2 {
+    background: $nova-action-soft;
+    color: $nova-action-hover;
+}
+
+.nova_studio_tier-t3 {
+    background: rgba($o-success, 0.2);
+    color: lighten($o-success, 14%);
+}
+
+.nova_studio_cap {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: $o-border-color;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_missing {
+    color: lighten($o-danger, 18%);
+}
+
+.nova_studio_relbar {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nova_studio_chosen_none {
+    color: lighten($o-danger, 18%);
+}
+
+.nova_studio_skillbar {
+    background: rgba(255, 255, 255, 0.1);
+
+    span {
+        background: $nova-action;
+    }
+}
+
+.nova_studio_sheet {
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.nova_studio_sheetpanel {
+    background: $nova-surface-view;
+    border-left-color: $o-border-color;
+    box-shadow: none;
+}
+
+.nova_studio_sheethead,
+.nova_studio_sheetfoot {
+    border-color: $o-border-color;
+}
+
+.nova_studio_sheetfoot {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.nova_studio_dl dt {
+    color: $nova-ink-muted;
+}
+
+// The flow editor, dark: same structure, hairlines instead of fills.
+.nova_studio_estep {
+    background: $nova-surface-view;
+    border-color: $o-border-color;
+}
+
+.nova_studio_estephead {
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom-color: $o-border-color;
+}
+
+.nova_studio_epalette {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: $nova-border-strong;
+}
+
+.nova_studio_paletlabel {
+    color: $nova-ink-muted;
+}

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     Flow screens. A flow is a saved plan: ordered steps, each one a
+     block with a type and a config, values passed forward through
+     ${variable} placeholders. -->
+<odoo>
+    <record id="nova_ai_flow_view_tree" model="ir.ui.view">
+        <field name="name">nova.ai.flow.list</field>
+        <field name="model">nova.ai.flow</field>
+        <field name="arch" type="xml">
+            <list string="Flows">
+                <field name="name"/>
+                <field name="description" optional="show"/>
+                <field name="agent_id"/>
+                <field name="use_count" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="nova_ai_flow_view_form" model="ir.ui.view">
+        <field name="name">nova.ai.flow.form</field>
+        <field name="model">nova.ai.flow</field>
+        <field name="arch" type="xml">
+            <form string="Flow">
+                <header>
+                    <button name="action_run" type="object" string="Run"
+                            class="btn-primary"/>
+                    <button name="action_open_canvas" type="object"
+                            string="Open canvas" class="btn-primary"/>
+                    <button name="action_open_runs" type="object"
+                            string="Runs"/>
+                    <button name="action_graph_from_steps" type="object"
+                            string="Upgrade to graph"/>
+                    <button name="action_rotate_webhook" type="object"
+                            string="Rotate webhook"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Title"/>
+                        <h1><field name="name" placeholder="Chase overdue invoices"/></h1>
+                    </div>
+                    <group>
+                        <group name="left">
+                            <field name="agent_id"/>
+                            <field name="active"/>
+                            <field name="trigger_type"/>
+                        </group>
+                        <group name="right">
+                            <field name="use_count"/>
+                            <field name="run_count"/>
+                            <field name="last_status"/>
+                            <field name="version"/>
+                        </group>
+                    </group>
+                    <group string="What it does">
+                        <field name="description" nolabel="1"
+                               placeholder="Shown to the agent when it lists flows — keep it one line."/>
+                    </group>
+                    <group string="Trigger" name="trigger">
+                        <field name="trigger_config" nolabel="1"
+                               placeholder='{"cron": "0 8 * * *"} or {"model": "sale.order", "event": "create"}'/>
+                        <field name="webhook_url" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Canvas (graph)">
+                            <field name="nodes" nolabel="1"/>
+                            <field name="edges" nolabel="1"/>
+                        </page>
+                        <page string="Legacy steps">
+                            <field name="steps" nolabel="1"
+                                   placeholder='[{"type": "start", "config": {"variables": [{"name": "days", "type": "required"}]}}]'/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="nova_ai_flow_view_search" model="ir.ui.view">
+        <field name="name">nova.ai.flow.search</field>
+        <field name="model">nova.ai.flow</field>
+        <field name="arch" type="xml">
+            <search string="Flows">
+                <field name="name"/>
+                <field name="agent_id"/>
+                <filter name="archived" string="Archived" domain="[('active','=',False)]"/>
+                <group>
+                    <filter name="group_agent" string="Agent" context="{'group_by': 'agent_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_nova_ai_flow" model="ir.actions.act_window">
+        <field name="name">Flows</field>
+        <field name="res_model">nova.ai.flow</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="nova_ai_flow_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No flows yet</p>
+            <p>A flow is a saved plan the agent can run in one call: search,
+               then ask, then queue the write. Every write still lands as a
+               confirmation card.</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Leave grid: rows employees, section leave type, columns months,
+             measure validated days. Read-only: time off flows through the
+             approval workflow, so editable="0" and the model refuses writes.
+             kpi_unit="d" keeps the hero numbers honest (days, not hours). -->
+        <record id="view_nova_leave_grid" model="ir.ui.view">
+            <field name="name">hr.leave.grid</field>
+            <field name="model">hr.leave</field>
+            <field name="arch" type="xml">
+                <grid string="Time Off" editable="0"
+                      show_heatmap="1" heatmap_scale="10" kpi_unit="d">
+                    <field name="work_entry_type_id" type="row" section="1" string="Leave Type"/>
+                    <field name="employee_id" type="row" string="Employee"/>
+                    <field name="request_date_from" type="col">
+                        <range name="month" string="Month" span="month" step="day" default="1"/>
+                        <range name="week" string="Week" span="week" step="day"/>
+                    </field>
+                    <field name="number_of_days" type="measure" operator="sum" string="Days"/>
+                </grid>
+            </field>
+        </record>
+
+        <!-- Attach the grid as the FIRST (default) view of the stock Time
+             Off actions. The My action already filters to the current user.
+             Uninstall-safe: only our own act_window.view rows are added,
+             stock actions are untouched. -->
+        <record id="nova_grid_in_my_time_off" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">grid</field>
+            <field name="view_id" ref="view_nova_leave_grid"/>
+            <field name="act_window_id" ref="hr_holidays.hr_leave_action_new_request"/>
+        </record>
+
+        <record id="nova_grid_in_all_time_off" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">grid</field>
+            <field name="view_id" ref="view_nova_leave_grid"/>
+            <field name="act_window_id" ref="hr_holidays.hr_leave_action_action_approve_department"/>
+        </record>
+    </data>
+</odoo>

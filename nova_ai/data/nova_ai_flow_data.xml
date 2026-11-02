@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     Two flows that show what a saved plan is for. Both read first and
+     write last, and the write lands as a card the user approves. -->
+<odoo>
+    <data noupdate="1">
+    <record id="flow_chase_overdue" model="nova.ai.flow">
+        <field name="name">Chase overdue invoices</field>
+        <field name="description">Find the oldest unpaid customer invoices and draft a reminder for each</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="steps" eval="[
+  {
+    &quot;type&quot;: &quot;start&quot;,
+    &quot;config&quot;: {&quot;variables&quot;: [
+      {&quot;name&quot;: &quot;days&quot;, &quot;type&quot;: &quot;required&quot;, &quot;description&quot;: &quot;Only invoices due more than this many days ago&quot;},
+      {&quot;name&quot;: &quot;limit&quot;, &quot;type&quot;: &quot;optional&quot;, &quot;value&quot;: 10, &quot;description&quot;: &quot;How many invoices to chase&quot;}
+    ]}
+  },
+  {
+    &quot;type&quot;: &quot;search&quot;,
+    &quot;config&quot;: {&quot;args&quot;: {
+      &quot;model&quot;: &quot;account.move&quot;,
+      &quot;domain&quot;: [[&quot;move_type&quot;, &quot;=&quot;, &quot;out_invoice&quot;], [&quot;payment_state&quot;, &quot;in&quot;, [&quot;not_paid&quot;, &quot;partial&quot;]]],
+      &quot;fields&quot;: [&quot;name&quot;, &quot;partner_id&quot;, &quot;amount_residual&quot;, &quot;invoice_date_due&quot;],
+      &quot;limit&quot;: 10,
+      &quot;order&quot;: &quot;invoice_date_due asc&quot;
+    }},
+    &quot;resultVariable&quot;: &quot;overdue&quot;
+  },
+  {
+    &quot;type&quot;: &quot;agent&quot;,
+    &quot;config&quot;: {&quot;instruction&quot;: &quot;Write a short, friendly reminder for each overdue invoice in ${overdue}. One paragraph per invoice, naming the invoice number, the customer and the amount due. Plain text, no subject line, no sign-off.&quot;},
+    &quot;resultVariable&quot;: &quot;drafts&quot;
+  },
+  {
+    &quot;type&quot;: &quot;output&quot;,
+    &quot;config&quot;: {&quot;value&quot;: &quot;${drafts}&quot;}
+  }
+]" />
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="flow_stockout" model="nova.ai.flow">
+        <field name="name">Stockout report</field>
+        <field name="description">Quants at or below zero, with the open demand and what to reorder</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="steps" eval="[
+  {
+    &quot;type&quot;: &quot;start&quot;,
+    &quot;config&quot;: {&quot;variables&quot;: [
+      {&quot;name&quot;: &quot;location&quot;, &quot;type&quot;: &quot;required&quot;, &quot;description&quot;: &quot;Location name or id to check&quot;}
+    ]}
+  },
+  {
+    &quot;type&quot;: &quot;search&quot;,
+    &quot;config&quot;: {&quot;args&quot;: {
+      &quot;model&quot;: &quot;stock.quant&quot;,
+      &quot;domain&quot;: [[&quot;quantity&quot;, &quot;&lt;=&quot;, 0], [&quot;location_id&quot;, &quot;ilike&quot;, &quot;${location}&quot;]],
+      &quot;fields&quot;: [&quot;product_id&quot;, &quot;location_id&quot;, &quot;quantity&quot;, &quot;reserved_quantity&quot;],
+      &quot;limit&quot;: 25
+    }},
+    &quot;resultVariable&quot;: &quot;quants&quot;
+  },
+  {
+    &quot;type&quot;: &quot;agent&quot;,
+    &quot;config&quot;: {&quot;instruction&quot;: &quot;Report the stock situation from ${quants}. One line per quant: product, location, on hand, reserved, and the action. If there are no reorder points on file, say the shortfall cannot be computed rather than inventing one.&quot;},
+    &quot;resultVariable&quot;: &quot;report&quot;
+  },
+  {
+    &quot;type&quot;: &quot;output&quot;,
+    &quot;config&quot;: {&quot;value&quot;: &quot;${report}&quot;}
+  }
+]" />
+        <field name="active" eval="True"/>
+    </record>
+    </data>
+</odoo>

@@ -1,0 +1,29 @@
+///
+/// Nova Flow Canvas (dark): the same structure, the dark palette.
+/// The stage deepens to app surface with a dotted grid; nodes lift
+/// onto view surface with borders instead of shadows (Community dark
+/// pattern). Accent wires keep their meaning in desaturated form.
+///
+
+.nova_flow { background: $nova-surface-app; color: $nova-ink; }
+.nova_flow_top { background: $nova-surface-view; border-bottom-color: $o-border-color; }
+.nova_flow_palette { background: $nova-surface-view; border-right-color: $o-border-color; }
+.nova_flow_pal { background: $nova-surface-app; border-color: $o-border-color; color: $nova-ink; }
+.nova_flow_pal:hover { border-color: $nova-action; }
+.nova_flow_stage { background: $nova-surface-app; background-image: radial-gradient($nova-border 1px, transparent 1px); }
+.nova_flow_wire { stroke: $nova-action-hover; }
+.nova_flow_wirelabel { fill: $o-main-code-color; }
+.nova_flow_node { background: $nova-surface-view; box-shadow: none; }
+.nova_flow_node.is_sel { outline-color: $nova-action-hover; }
+.nova_flow_nops button { background: $o-gray-200; border-color: $nova-border; color: $nova-ink; }
+.nova_flow_inspector { background: $nova-surface-view; border-left-color: $o-border-color; }
+.nova_flow_hookbar { background: $nova-action-soft; }
+.nova_flow_tabs button { background: $o-gray-200; border-color: $nova-border; color: $nova-ink; }
+.nova_flow_tabs button.on { background: $nova-action; border-color: $nova-action; color: $nova-on-action; }
+.nova_flow_io { background: $nova-surface-app; border-color: $nova-border; color: $nova-ink; }
+.nova_flow_copilot { background: $nova-paper; border-left-color: $nova-action; }
+.nova_flow_proposal { background: $nova-action-soft; border-color: $nova-action; color: $nova-ink; }
+.nova_flow_msg_u { background: $o-gray-200; color: $nova-ink; }
+.nova_flow_msg_n { background: $nova-surface-view; border-color: $nova-action; color: $nova-ink; }
+.nova_flow_run:hover { color: $nova-action-hover; }
+.nova_flow_ntype { filter: none; }

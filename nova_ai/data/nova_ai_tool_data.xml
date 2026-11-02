@@ -1,0 +1,889 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     Tool metadata only: handlers live in the service layer (P2). Schemas
+     are the contract the model sees, so they stay small and explicit. -->
+<odoo>
+    <record id="tool_search_records" model="nova.ai.tool">
+        <field name="name">Search records</field>
+        <field name="code">search_records</field>
+        <field name="description">Find records of a model. Returns rows plus total/offset/has_more/next_offset: pass next_offset as offset while has_more is true to page. Respects the user's own access rights.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Model name, e.g. purchase.order&quot;},
+   &quot;domain&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;description&quot;: &quot;Odoo domain as nested arrays&quot;, &quot;default&quot;: []},
+   &quot;fields&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;default&quot;: [&quot;name&quot;]},
+   &quot;limit&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;default&quot;: 10},
+   &quot;offset&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;Skip this many rows; use next_offset from the previous call&quot;, &quot;default&quot;: 0},
+   &quot;order&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Sort, e.g. 'create_date desc, name'. Only real fields, asc or desc&quot;},
+&quot;about&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;What you are looking for, in words (e.g. 'overdue invoices with amounts'). Used to pick the most useful fields when you omit fields. Never name an id here.&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;res.partner&quot;, &quot;domain&quot;: [[&quot;name&quot;, &quot;ilike&quot;, &quot;Acme&quot;]], &quot;fields&quot;: [&quot;email&quot;, &quot;phone&quot;], &quot;limit&quot;: 5}" />
+    </record>
+
+    <record id="tool_read_record" model="nova.ai.tool">
+        <field name="name">Read record</field>
+        <field name="code">read_record</field>
+        <field name="description">Read one record's fields by model and id. Pass res_ids (up to 10) to read several at once; missing ids come back in a missing list instead of failing the batch.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;},
+   &quot;res_ids&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;integer&quot;}, &quot;description&quot;: &quot;Up to 10 ids instead of res_id&quot;},
+   &quot;fields&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;string&quot;}},
+   &quot;about&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;What you want to know, in words. Used to pick the most useful fields when you omit fields.&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;res.partner&quot;, &quot;res_id&quot;: 7, &quot;fields&quot;: [&quot;name&quot;, &quot;email&quot;]}" />
+    </record>
+
+    <record id="tool_count_records" model="nova.ai.tool">
+        <field name="name">Count records</field>
+        <field name="code">count_records</field>
+        <field name="description">Count records matching a domain.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;domain&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;default&quot;: []}
+ },
+ &quot;required&quot;: [&quot;model&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;sale.order&quot;, &quot;domain&quot;: [[&quot;state&quot;, &quot;=&quot;, &quot;sale&quot;]]}" />
+    </record>
+
+    <record id="tool_open_view" model="nova.ai.tool">
+        <field name="name">Open view</field>
+        <field name="code">open_view</field>
+        <field name="description">Return an action that opens a list/kanban/form view for the user's client.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;view_type&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;list&quot;, &quot;kanban&quot;, &quot;form&quot;, &quot;pivot&quot;]},
+   &quot;domain&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;default&quot;: []}
+ },
+ &quot;required&quot;: [&quot;model&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;account.move&quot;, &quot;view_type&quot;: &quot;list&quot;}" />
+    </record>
+
+    <record id="tool_summarize_thread" model="nova.ai.tool">
+        <field name="name">Summarize chatter thread</field>
+        <field name="code">summarize_thread</field>
+        <field name="description">Summarize the chatter of a record for a reader who knows nothing.</field>
+        <field name="tier_min">t1</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;model&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;}},
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;sale.order&quot;, &quot;res_id&quot;: 4}" />
+    </record>
+
+    <record id="tool_translate_message" model="nova.ai.tool">
+        <field name="name">Translate message</field>
+        <field name="code">translate_message</field>
+        <field name="description">Translate a text to a target language, keeping tone and names.</field>
+        <field name="tier_min">t1</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;text&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;target_lang&quot;: {&quot;type&quot;: &quot;string&quot;}},
+ &quot;required&quot;: [&quot;text&quot;]
+}" />
+        <field name="example" eval="{&quot;text&quot;: &quot;Merci pour votre commande.&quot;, &quot;target_lang&quot;: &quot;English&quot;}" />
+    </record>
+
+    <record id="tool_draft_reply" model="nova.ai.tool">
+        <field name="name">Draft reply</field>
+        <field name="code">draft_reply</field>
+        <field name="description">Draft a reply to a chatter message. Never sends.</field>
+        <field name="tier_min">t1</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;model&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;}, &quot;tone&quot;: {&quot;type&quot;: &quot;string&quot;}},
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;sale.order&quot;, &quot;res_id&quot;: 4, &quot;tone&quot;: &quot;friendly&quot;}" />
+    </record>
+
+    <record id="tool_next_steps" model="nova.ai.tool">
+        <field name="name">Suggest next steps</field>
+        <field name="code">next_steps</field>
+        <field name="description">Suggest concrete next actions for a record, given its data and chatter.</field>
+        <field name="tier_min">t1</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;model&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;}},
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;crm.lead&quot;, &quot;res_id&quot;: 3}" />
+    </record>
+
+    <record id="tool_create_draft" model="nova.ai.tool">
+        <field name="name">Create draft record</field>
+        <field name="code">create_draft</field>
+        <field name="description">Prepare a record as a DRAFT the user reviews and confirms. Never posts. Send only fields the user or a fetched page actually stated — never invent SKUs, barcodes, prices, costs or references; omit unknown fields instead of filling them.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;values&quot;: {&quot;type&quot;: &quot;object&quot;, &quot;description&quot;: &quot;Field values for the new record&quot;},
+   &quot;force&quot;: {&quot;type&quot;: &quot;boolean&quot;, &quot;description&quot;: &quot;Leads only: set true when the user confirms creating a duplicate after the already-exists question. Never set pre-emptively.&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;, &quot;values&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;res.partner&quot;, &quot;values&quot;: {&quot;name&quot;: &quot;Example Co&quot;, &quot;email&quot;: &quot;hello@example.com&quot;}}" />
+    </record>
+
+    <record id="tool_log_note" model="nova.ai.tool">
+        <field name="name">Log note</field>
+        <field name="code">log_note</field>
+        <field name="description">Queue an internal note on a record; the user confirms before it is posted.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;model&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;}, &quot;body&quot;: {&quot;type&quot;: &quot;string&quot;}},
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;, &quot;body&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;res.partner&quot;, &quot;res_id&quot;: 7, &quot;body&quot;: &quot;Called back, will confirm Monday.&quot;}" />
+    </record>
+
+    <record id="tool_schedule_activity" model="nova.ai.tool">
+        <field name="name">Schedule activity</field>
+        <field name="code">schedule_activity</field>
+        <field name="description">Queue an activity on a record; the user confirms.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;},
+   &quot;summary&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;date&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;YYYY-MM-DD&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;, &quot;summary&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;crm.lead&quot;, &quot;res_id&quot;: 3, &quot;summary&quot;: &quot;Send the quote&quot;}" />
+    </record>
+
+    <record id="tool_confirm_sale_order" model="nova.ai.tool">
+        <field name="name">Confirm sale order</field>
+        <field name="code">confirm_sale_order</field>
+        <field name="description">Confirm a draft or sent quotation (sale.order). Queues an approval card showing partner and total; only runs when the user approves. Chain: pass after {kind, model} plus bind {field: created} and approving the earlier card fills the order in.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;sale.order id&quot;}},
+ &quot;required&quot;: [&quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 4}" />
+    </record>
+
+    <record id="tool_validate_invoice" model="nova.ai.tool">
+        <field name="name">Validate invoice</field>
+        <field name="code">validate_invoice</field>
+        <field name="description">Validate (post) a draft invoice or bill (account.move). Queues an approval card showing partner and total; only runs when the user approves.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;account.move id&quot;}},
+ &quot;required&quot;: [&quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 9}" />
+    </record>
+
+    <record id="tool_copy_record" model="nova.ai.tool">
+        <field name="name">Duplicate record</field>
+        <field name="code">copy_record</field>
+        <field name="description">Duplicate a record (quotation, invoice, task...). The copy restarts as a draft; sequences and posting data never carry over. Queues an approval card; only runs when the user approves.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;Record to duplicate&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;sale.order&quot;, &quot;res_id&quot;: 4}" />
+    </record>
+
+    <record id="tool_read_related" model="nova.ai.tool">
+        <field name="name">Read related lines</field>
+        <field name="code">read_related</field>
+        <field name="description">Read one2many lines of a record: order_line on a sale order, invoice_line_ids on a bill, move_ids on a picking. Returns rows plus count/offset/has_more/next_offset: pass next_offset as offset while has_more is true to page. Capped at 25 rows.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;},
+   &quot;field&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;One2many field name, e.g. order_line&quot;},
+   &quot;res_ids&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;integer&quot;}, &quot;description&quot;: &quot;Up to 10 ids instead of res_id&quot;},
+   &quot;fields&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;string&quot;}},
+   &quot;limit&quot;: {&quot;type&quot;: &quot;integer&quot;},
+   &quot;offset&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;Skip this many lines; use next_offset from the previous call&quot;, &quot;default&quot;: 0},
+   &quot;order&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Sort lines, e.g. 'price_total desc'. Only real fields, asc or desc&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;, &quot;field&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;sale.order&quot;, &quot;res_id&quot;: 4, &quot;field&quot;: &quot;order_line&quot;, &quot;fields&quot;: [&quot;product_id&quot;, &quot;product_uom_qty&quot;]}" />
+    </record>
+
+    <record id="tool_unlink_record" model="nova.ai.tool">
+        <field name="name">Delete record</field>
+        <field name="code">unlink_record</field>
+        <field name="description">Delete a record. Confirm-only and never automatic: queues an approval card stating the record, and only runs when the user approves. Deletion cannot be undone.</field>
+        <field name="tier_min">t3</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;Record to delete&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;res.partner&quot;, &quot;res_id&quot;: 7}" />
+    </record>
+
+    <record id="tool_execute_method" model="nova.ai.tool">
+        <field name="name">Run business method</field>
+        <field name="code">execute_method</field>
+        <field name="description">Run a public business button on a record: action_confirm, action_post, button_validate and similar. Never automatic and never private methods, sudo, or raw create/write/unlink. Queues an approval card naming method, record and arguments. Chain: pass after {kind, model} plus bind {field: created} and approving the earlier card fills this one in.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;},
+   &quot;method&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Public method name, e.g. action_confirm&quot;},
+   &quot;args&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;description&quot;: &quot;Optional positional arguments&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;, &quot;method&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;sale.order&quot;, &quot;res_id&quot;: 4, &quot;method&quot;: &quot;action_confirm&quot;}" />
+    </record>
+
+    <record id="tool_read_group" model="nova.ai.tool">
+        <field name="name">Aggregate records</field>
+        <field name="code">read_group</field>
+        <field name="description">Count and sum records grouped by a field: sales by month, tickets by priority. Aggregate only numeric fields (amount_total, residual); names and states are group-bys, never sums. Read-only, max 25 groups.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;domain&quot;: {&quot;type&quot;: &quot;array&quot;},
+   &quot;fields&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;string&quot;}},
+   &quot;groupby&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;string&quot;}}
+ },
+ &quot;required&quot;: [&quot;model&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;sale.order&quot;, &quot;domain&quot;: [], &quot;fields&quot;: [&quot;amount_total&quot;], &quot;groupby&quot;: [&quot;date_order:month&quot;]}" />
+    </record>
+
+    <record id="tool_fields_get" model="nova.ai.tool">
+        <field name="name">List model fields</field>
+        <field name="code">fields_get</field>
+        <field name="description">List a model's fields with type, label, required and options. Read-only introspection so field names are looked up, never guessed. Pass query (substring matched against names AND labels) or fields (exact names) to search instead of dumping all 150+ fields of a big model.</field>
+        <field name="tier_min">t1</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;query&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Substring to match against field names and labels, e.g. 'date'&quot;},
+   &quot;fields&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;description&quot;: &quot;Exact field names to return&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;project.project&quot;, &quot;query&quot;: &quot;date&quot;}" />
+    </record>
+
+    <record id="tool_inspect_method" model="nova.ai.tool">
+        <field name="name">Inspect method</field>
+        <field name="code">inspect_method</field>
+        <field name="description">Read a business method's parameter names and docs without running it — or list a model's callable methods when method is omitted. Read-only self-repair: when a method call fails, inspect first, then re-queue with corrected arguments instead of guessing again. Never executes anything.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;method&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Omit to list the model's business methods&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;sale.order&quot;, &quot;method&quot;: &quot;action_confirm&quot;}" />
+    </record>
+
+    <record id="tool_ask_user" model="nova.ai.tool">
+        <field name="name">Ask user</field>
+        <field name="code">ask_user</field>
+        <field name="description">Ask the user a clarifying question with clickable options instead of guessing when the request is ambiguous. One focused question, 1 to 6 concrete options; the answer arrives as the next message and the turn resumes. Options accept plain strings or {label, description} objects; header is an optional short label.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;question&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;The clarifying question&quot;},
+   &quot;header&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Optional short label (max 30 chars)&quot;},
+   &quot;options&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;description&quot;: &quot;1 to 6 clickable options, strings or {label, description}&quot;}
+ },
+ &quot;required&quot;: [&quot;question&quot;, &quot;options&quot;]
+}" />
+        <field name="example" eval="{&quot;question&quot;: &quot;Which customer did you mean?&quot;, &quot;options&quot;: [&quot;Acme Corp&quot;, {&quot;label&quot;: &quot;Acme Ltd&quot;, &quot;description&quot;: &quot;The Lyon subsidiary&quot;}]}" />
+    </record>
+
+    <record id="tool_list_attachments" model="nova.ai.tool">
+        <field name="name">List attachments</field>
+        <field name="code">list_attachments</field>
+        <field name="description">List files attached to a record (name, type, size) so scans can be found for digitizing. Read-only; file contents stay out.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;res.partner&quot;, &quot;res_id&quot;: 7}" />
+    </record>
+
+    <record id="tool_set_field" model="nova.ai.tool">
+        <field name="name">Set field value</field>
+        <field name="code">set_field</field>
+        <field name="description">Set one simple field (text, number, date, yes/no, choice, or linked record) on a record. Queues an approval card showing old and new values; only writes when the user approves. Chain: pass after {kind, model} plus bind {field: created} and approving the earlier card fills the record in.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;},
+   &quot;field&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Technical field name&quot;},
+   &quot;value&quot;: {&quot;description&quot;: &quot;New value as text&quot;}
+ },
+ &quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;, &quot;field&quot;, &quot;value&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;res.partner&quot;, &quot;res_id&quot;: 7, &quot;field&quot;: &quot;phone&quot;, &quot;value&quot;: &quot;+1 555 0100&quot;}" />
+    </record>
+
+    <record id="tool_digitize_bill" model="nova.ai.tool">
+        <field name="name">Digitize vendor bill</field>
+        <field name="code">digitize_bill</field>
+        <field name="description">Read a vendor-bill scan (PDF or image attachment) and propose a draft bill. Returns an approval card when partner and totals check out, otherwise a follow-up question (ambiguous partner, totals mismatch). Never posts.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="max_retries">1</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;attachment_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;ir.attachment id of the scan&quot;}},
+ &quot;required&quot;: [&quot;attachment_id&quot;]
+}" />
+        <field name="example" eval="{&quot;attachment_id&quot;: 12}" />
+    </record>
+
+    <record id="tool_fetch_url" model="nova.ai.tool">
+        <field name="name">Fetch web page</field>
+        <field name="code">fetch_url</field>
+        <field name="description">Fetch a public URL and return its readable text plus its outgoing links (no private hosts). Research by fetching: start at an index like https://www.odoo.com/documentation/ and follow the returned links.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="max_retries">1</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;url&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;format&quot;: &quot;uri&quot;}},
+ &quot;required&quot;: [&quot;url&quot;]
+}" />
+        <field name="example" eval="{&quot;url&quot;: &quot;https://example.com/&quot;}" />
+    </record>
+
+    <record id="tool_search_knowledge" model="nova.ai.tool">
+        <field name="name">Search knowledge sources</field>
+        <field name="code">search_knowledge</field>
+        <field name="description">Search the agent knowledge: skills (procedures to follow), saved facts, wiki concepts and indexed document passages. Returns concept codes you can then read with read_knowledge, and source passages with their document.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;query&quot;: {&quot;type&quot;: &quot;string&quot;}},
+ &quot;required&quot;: [&quot;query&quot;]
+}" />
+        <field name="example" eval="{&quot;query&quot;: &quot;payment terms&quot;}" />
+    </record>
+
+    <record id="tool_read_attachment" model="nova.ai.tool">
+        <field name="name">Read attachment</field>
+        <field name="code">read_attachment</field>
+        <field name="description">Read a file attached to a record into the turn: text files and text-layer PDFs come back as text; scans and images come back as metadata (bills go through digitize_bill). The file must sit on a record the agent may see.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;attachment_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;ir.attachment id from list_attachments&quot;}},
+ &quot;required&quot;: [&quot;attachment_id&quot;]
+}" />
+        <field name="example" eval="{&quot;attachment_id&quot;: 12}" />
+    </record>
+
+    <record id="tool_cancel_invoice" model="nova.ai.tool">
+        <field name="name">Cancel invoice</field>
+        <field name="code">cancel_invoice</field>
+        <field name="description">Cancel an invoice or bill (account.move). Refuses paid or locked entries with the credit-note route instead. Queues an approval card; only runs when the user approves.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;account.move id&quot;}},
+ &quot;required&quot;: [&quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 9}" />
+    </record>
+
+    <record id="tool_cancel_sale_order" model="nova.ai.tool">
+        <field name="name">Cancel sale order</field>
+        <field name="code">cancel_sale_order</field>
+        <field name="description">Cancel a draft or sent quotation (sale.order). Queues an approval card; only runs when the user approves.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;sale.order id&quot;}},
+ &quot;required&quot;: [&quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 4}" />
+    </record>
+
+    <record id="tool_confirm_purchase_order" model="nova.ai.tool">
+        <field name="name">Confirm purchase order</field>
+        <field name="code">confirm_purchase_order</field>
+        <field name="description">Confirm a draft request for quotation into a purchase order. Queues an approval card; only runs when the user approves.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;purchase.order id&quot;}},
+ &quot;required&quot;: [&quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 5}" />
+    </record>
+
+    <record id="tool_validate_delivery" model="nova.ai.tool">
+        <field name="name">Validate delivery</field>
+        <field name="code">validate_delivery</field>
+        <field name="description">Validate a ready delivery (stock.picking in Ready state). Refuses anything not reserved yet and says what is missing. Queues an approval card; only runs when the user approves.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;stock.picking id&quot;}},
+ &quot;required&quot;: [&quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 6}" />
+    </record>
+
+    <record id="tool_invoice_order" model="nova.ai.tool">
+        <field name="name">Invoice sale order</field>
+        <field name="code">invoice_order</field>
+        <field name="description">Create the draft invoice for a confirmed sale order. Refuses unconfirmed orders. Queues an approval card; only runs when the user approves. Chain: pass after {kind, model} plus bind {field: created} and approving the earlier card fills the order in.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {&quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;sale.order id&quot;}},
+ &quot;required&quot;: [&quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 4}" />
+    </record>
+
+    <record id="tool_add_order_line" model="nova.ai.tool">
+        <field name="name">Add order line</field>
+        <field name="code">add_order_line</field>
+        <field name="description">Add one product line with a positive quantity to a draft or sent order. Queues an approval card; only runs when the user approves. Chain: pass after {kind, model} plus bind {"values.order_id": "created"} and approving the earlier card fills the order in.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;sale.order id&quot;},
+   &quot;product_id&quot;: {&quot;type&quot;: &quot;integer&quot;},
+   &quot;quantity&quot;: {&quot;type&quot;: &quot;number&quot;}
+ },
+ &quot;required&quot;: [&quot;res_id&quot;, &quot;product_id&quot;, &quot;quantity&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 4, &quot;product_id&quot;: 8, &quot;quantity&quot;: 2}" />
+    </record>
+
+    <record id="tool_register_payment" model="nova.ai.tool">
+        <field name="name">Register invoice payment</field>
+        <field name="code">register_payment</field>
+        <field name="description">Register a payment against a posted invoice through the payment wizard (never a manual journal entry). Amount defaults to the open balance and is capped at it. Queues an approval card; only runs when the user approves. Chain: pass after {kind, model} plus bind {field: created} and approving the earlier card fills the invoice in.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;account.move id&quot;},
+   &quot;amount&quot;: {&quot;type&quot;: &quot;number&quot;, &quot;description&quot;: &quot;Defaults to the open balance&quot;},
+   &quot;journal_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;Defaults to the first bank journal&quot;}
+ },
+ &quot;required&quot;: [&quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 9, &quot;amount&quot;: 8000}" />
+    </record>
+
+    <record id="tool_reconcile_moves" model="nova.ai.tool">
+        <field name="name">Reconcile invoice</field>
+        <field name="code">reconcile_moves</field>
+        <field name="description">Reconcile an invoice with its payment move(s) on reconcilable accounts only. Name the payment moves explicitly. Queues an approval card; only runs when the user approves.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;account.move id&quot;},
+   &quot;payment_ids&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;integer&quot;}}
+ },
+ &quot;required&quot;: [&quot;res_id&quot;, &quot;payment_ids&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 9, &quot;payment_ids&quot;: [14]}" />
+    </record>
+
+    <record id="tool_reverse_move" model="nova.ai.tool">
+        <field name="name">Credit note</field>
+        <field name="code">reverse_move</field>
+        <field name="description">Create a credit note reversing a posted invoice through the reversal wizard (never a manual negative invoice). Only posted invoices qualify. Queues an approval card; only runs when the user approves.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;account.move id&quot;},
+   &quot;reason&quot;: {&quot;type&quot;: &quot;string&quot;}
+ },
+ &quot;required&quot;: [&quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 9, &quot;reason&quot;: &quot;Returned goods&quot;}" />
+    </record>
+
+    <record id="tool_resolve_ticket" model="nova.ai.tool">
+        <field name="name">Resolve ticket</field>
+        <field name="code">resolve_ticket</field>
+        <field name="description">Move a helpdesk ticket into its closing stage with an optional closing note. Queues an approval card; only runs when the user approves.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;helpdesk.ticket id&quot;},
+   &quot;note&quot;: {&quot;type&quot;: &quot;string&quot;}
+ },
+ &quot;required&quot;: [&quot;res_id&quot;]
+}" />
+        <field name="example" eval="{&quot;res_id&quot;: 3, &quot;note&quot;: &quot;Fixed in v2&quot;}" />
+    </record>
+
+    <record id="tool_log_timesheet" model="nova.ai.tool">
+        <field name="name">Log timesheet</field>
+        <field name="code">log_timesheet</field>
+        <field name="description">Log hours (0 to 24) on a project task with an optional date word like today or yesterday. Queues an approval card; only runs when the user approves.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;task_id&quot;: {&quot;type&quot;: &quot;integer&quot;},
+   &quot;hours&quot;: {&quot;type&quot;: &quot;number&quot;},
+   &quot;summary&quot;: {&quot;type&quot;: &quot;string&quot;},
+   &quot;date&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;YYYY-MM-DD or today/yesterday/tomorrow&quot;}
+ },
+ &quot;required&quot;: [&quot;task_id&quot;, &quot;hours&quot;]
+}" />
+        <field name="example" eval="{&quot;task_id&quot;: 2, &quot;hours&quot;: 2, &quot;date&quot;: &quot;today&quot;}" />
+    </record>
+
+    <record id="tool_read_knowledge" model="nova.ai.tool">
+        <field name="name">Read a knowledge concept</field>
+        <field name="code">read_knowledge</field>
+        <field name="description">Load one knowledge concept (a skill, a fact, a procedure) by its code. The system prompt lists only the names; call this to get the body, then follow it exactly.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;code&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Concept code from search_knowledge or the system prompt list&quot;}
+ },
+ &quot;required&quot;: [&quot;code&quot;]
+}" />
+        <field name="example" eval="{&quot;code&quot;: &quot;create-a-product&quot;}" />
+    </record>
+
+    <record id="tool_write_knowledge" model="nova.ai.tool">
+        <field name="name">Propose a knowledge concept</field>
+        <field name="code">write_knowledge</field>
+        <field name="description">Propose a durable piece of knowledge (a fact, a procedure, a reference). It is saved as a DRAFT and only counts once a human accepts it, so nothing you write becomes truth on its own. Never store credentials.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;name&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Short title&quot;},
+   &quot;kind&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;skill&quot;, &quot;memory&quot;, &quot;wiki&quot;, &quot;reference&quot;], &quot;default&quot;: &quot;memory&quot;, &quot;description&quot;: &quot;skill = a procedure to follow; memory = a durable fact; wiki = a concept; reference = documentation&quot;},
+   &quot;description&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;One line describing when this applies - this is what gets matched against the request&quot;},
+   &quot;body&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;The content, in markdown&quot;}
+ },
+ &quot;required&quot;: [&quot;name&quot;, &quot;body&quot;]
+}" />
+        <field name="example" eval="{&quot;name&quot;: &quot;Acme Corp is a res.partner with customer_rank 1&quot;, &quot;kind&quot;: &quot;memory&quot;, &quot;description&quot;: &quot;How to recognise our key customers&quot;, &quot;body&quot;: &quot;Acme Corp lives on res.partner with customer_rank &gt; 0. There is no customer flag.&quot;}" />
+    </record>
+
+    <record id="tool_list_flows" model="nova.ai.tool">
+        <field name="name">List saved flows</field>
+        <field name="code">list_flows</field>
+    <field name="description">List the saved multi-step flows you may run, with a one-line description of each.</field>
+    <field name="tier_min">t2</field>
+    <field name="write_kind">none</field>
+    <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;query&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Optional filter on the flow name or description&quot;}
+}
+}" />
+    <field name="example" eval="{&quot;query&quot;: &quot;invoice&quot;}" />
+</record>
+
+    <record id="tool_run_flow" model="nova.ai.tool">
+        <field name="name">Run a saved flow</field>
+        <field name="code">run_flow</field>
+        <field name="description">Run a saved multi-step flow. Steps that write queue a confirmation card instead of changing anything - approve the card, then run the flow again to continue.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+ &quot;type&quot;: &quot;object&quot;,
+ &quot;properties&quot;: {
+   &quot;flow&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Flow name from list_flows&quot;},
+   &quot;arguments&quot;: {&quot;type&quot;: &quot;object&quot;, &quot;description&quot;: &quot;Values for the flow's input variables&quot;}
+ },
+ &quot;required&quot;: [&quot;flow&quot;]
+}" />
+        <field name="example" eval="{&quot;flow&quot;: &quot;chase-overdue-invoices&quot;, &quot;arguments&quot;: {&quot;days&quot;: 30}}" />
+    </record>
+    <record id="tool_build_domain" model="nova.ai.tool">
+        <field name="name">Build a domain</field>
+        <field name="code">build_domain</field>
+        <field name="description">Build a validated Odoo domain from structured conditions. Say what you want ("customers that are overdue, for company Acme") and the server returns the domain to pass to search_records or count_records. Use this instead of hand-writing domain triplets: a hand-written domain with a wrong operator or a nested shape is the most common reason a search fails.</field>
+        <field name="tier_min">t1</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;model&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Model to filter&quot;},
+&quot;conditions&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;description&quot;: &quot;List of {field, operator, value}&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;object&quot;}},
+&quot;match&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;all&quot;, &quot;any&quot;], &quot;default&quot;: &quot;all&quot;, &quot;description&quot;: &quot;all = AND, any = OR&quot;}
+},
+&quot;required&quot;: [&quot;model&quot;, &quot;conditions&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;account.move&quot;, &quot;conditions&quot;: [{&quot;field&quot;: &quot;move_type&quot;, &quot;operator&quot;: &quot;=&quot;, &quot;value&quot;: &quot;out_invoice&quot;}, {&quot;field&quot;: &quot;payment_state&quot;, &quot;operator&quot;: &quot;in&quot;, &quot;value&quot;: [&quot;not_paid&quot;, &quot;partial&quot;]}]}" />
+    </record>
+
+    <record id="tool_list_models" model="nova.ai.tool">
+        <field name="name">List usable models</field>
+        <field name="code">list_models</field>
+        <field name="description">List the models you are allowed to read and write, with their labels. Use it when you do not know the exact model name, or to check that a model exists before you search it. Returns nothing for a model you may not touch, rather than a refusal later.</field>
+        <field name="tier_min">t1</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;query&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Optional filter on the model name or label&quot;}
+}
+}" />
+        <field name="example" eval="{&quot;query&quot;: &quot;product&quot;}" />
+    </record>
+
+    <record id="tool_validate_write" model="nova.ai.tool">
+        <field name="name">Check a write before making it</field>
+        <field name="code">validate_write</field>
+        <field name="description">Dry-run a create or a write: nothing is written and nothing is queued. You get back the unknown fields, the readonly fields, the required fields you are missing, and the current value of every field you want to change. Use it before queueing a write so the card you ask the user to approve is one that will actually apply.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;model&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Model to write&quot;},
+&quot;operation&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;write&quot;, &quot;create&quot;], &quot;default&quot;: &quot;write&quot;},
+&quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;Record id, for a write&quot;},
+&quot;values&quot;: {&quot;type&quot;: &quot;object&quot;, &quot;description&quot;: &quot;Field values to write&quot;}
+},
+&quot;required&quot;: [&quot;model&quot;, &quot;values&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;product.template&quot;, &quot;operation&quot;: &quot;write&quot;, &quot;res_id&quot;: 938, &quot;values&quot;: {&quot;list_price&quot;: 1499.0}}" />
+    </record>
+
+    <record id="tool_set_fields" model="nova.ai.tool">
+        <field name="name">Update several fields at once</field>
+        <field name="code">set_fields</field>
+        <field name="description">Write several fields on ONE record in one card: name, price, reference, category, description - all in a single approval. Use it instead of chaining several set_field calls, which meant several cards and a half-updated record if the user approved only some of them. The card shows every field with its old and new value, and Undo restores all of them together.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;model&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Model to write&quot;},
+&quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;Record id to update&quot;},
+&quot;values&quot;: {&quot;type&quot;: &quot;object&quot;, &quot;description&quot;: &quot;Field values to write: name, list_price, and the rest as a flat object&quot;}
+},
+&quot;required&quot;: [&quot;model&quot;, &quot;res_id&quot;, &quot;values&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;product.template&quot;, &quot;res_id&quot;: 938, &quot;values&quot;: {&quot;list_price&quot;: 1499.0, &quot;default_code&quot;: &quot;IP18P-512-BLK&quot;}}" />
+    </record>
+    <record id="tool_diagnose_access" model="nova.ai.tool">
+        <field name="name">Diagnose what the user may touch</field>
+        <field name="code">diagnose_access</field>
+        <field name="description">Diagnose whether the user may read or write a model or a record, and why. Returns per-operation access, the access rows that apply to this user, the effective rule domain, and for one record whether THAT row may be read and written. Use it when a read or write is refused (AccessError) instead of guessing: the refusal names no cause, this tool does. Also checks named fields for group gating and readonly before a card is queued.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;model&quot;: {&quot;type&quot;: &quot;string&quot;},
+&quot;operations&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;description&quot;: &quot;Subset of read, write, create, unlink&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;string&quot;}},
+&quot;res_id&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;description&quot;: &quot;Specific record to judge&quot;},
+&quot;fields&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;description&quot;: &quot;Field names to check for group gating&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;string&quot;}}
+},
+&quot;required&quot;: [&quot;model&quot;]
+}" />
+        <field name="example" eval="{&quot;model&quot;: &quot;res.partner&quot;, &quot;operations&quot;: [&quot;read&quot;, &quot;write&quot;], &quot;fields&quot;: [&quot;name&quot;, &quot;email&quot;]}" />
+    </record>
+    <record id="tool_scan_codebase" model="nova.ai.tool">
+        <field name="name">Scan custom code into knowledge</field>
+        <field name="code">scan_codebase</field>
+        <field name="description">Read the deployment's own custom Odoo code (models, fields, methods) without importing or running it. Returns the catalogue of models found, or the full knowledge-shaped body for the models you name. Use it when the question is about custom models or fields the seeds do not cover. Propose what you learn with write_knowledge - the human review gate still applies.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;query&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Filter models by technical name, label or field&quot;},
+&quot;model&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;One model to read in full&quot;},
+&quot;full&quot;: {&quot;type&quot;: &quot;boolean&quot;, &quot;description&quot;: &quot;Return full concept bodies, not just the catalogue&quot;},
+&quot;limit&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;default&quot;: 200}
+}
+}" />
+        <field name="example" eval="{&quot;query&quot;: &quot;approval&quot;}" />
+    </record>
+    <record id="tool_draft_flow" model="nova.ai.tool">
+        <field name="name">Save a plan as a reusable flow</field>
+        <field name="code">draft_flow</field>
+        <field name="description">Save the current plan as a reusable flow so next time it is one call instead of a whole conversation. The steps are validated with the flow rules BEFORE anything is queued: a broken flow comes back as problems to fix, never as a card. A valid one queues a normal create card; approving it registers the flow. Use it when you just solved something the user will ask for again.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;name&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Flow name, e.g. Chase overdue invoices&quot;},
+&quot;description&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;One line: what it does&quot;},
+&quot;steps&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;description&quot;: &quot;Ordered steps: {type, config, resultVariable}. Types: start, search, read, create, tool, agent, note, output.&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;object&quot;}}
+},
+&quot;required&quot;: [&quot;name&quot;, &quot;steps&quot;]
+}" />
+        <field name="example" eval="{&quot;name&quot;: &quot;Overdue check&quot;, &quot;description&quot;: &quot;List overdue invoices&quot;, &quot;steps&quot;: [{&quot;type&quot;: &quot;start&quot;, &quot;config&quot;: {&quot;variables&quot;: []}}, {&quot;type&quot;: &quot;search&quot;, &quot;resultVariable&quot;: &quot;rows&quot;, &quot;config&quot;: {&quot;args&quot;: {&quot;model&quot;: &quot;account.move&quot;, &quot;domain&quot;: [[&quot;payment_state&quot;, &quot;=&quot;, &quot;not_paid&quot;]]}}}, {&quot;type&quot;: &quot;output&quot;, &quot;config&quot;: {&quot;value&quot;: &quot;${rows}&quot;}}]}" />
+    </record>
+    <record id="tool_update_flow" model="nova.ai.tool">
+        <field name="name">Revise a flow from chat</field>
+        <field name="code">update_flow</field>
+        <field name="description">Revise a saved flow from chat: pass the flow name plus the full corrected nodes+edges (+trigger). Validated BEFORE anything is queued; the change queues an approval card, nothing writes inline. Use it when the user says change/fix/add a step to a flow.</field>
+        <field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;flow&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Flow name to revise&quot;},
+&quot;description&quot;: {&quot;type&quot;: &quot;string&quot;},
+&quot;nodes&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;description&quot;: &quot;Full node list: {id, type, name, config}&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;object&quot;}},
+&quot;edges&quot;: {&quot;type&quot;: &quot;array&quot;, &quot;description&quot;: &quot;Edges: {source, target, source_handle}&quot;, &quot;items&quot;: {&quot;type&quot;: &quot;object&quot;}},
+&quot;trigger&quot;: {&quot;type&quot;: &quot;object&quot;, &quot;description&quot;: &quot;{type: chat|schedule|webhook|record|manual, config: {...}}&quot;}
+},
+&quot;required&quot;: [&quot;flow&quot;, &quot;nodes&quot;]
+}" />
+        <field name="example" eval="{&quot;flow&quot;: &quot;Overdue check&quot;, &quot;nodes&quot;: [{&quot;id&quot;: &quot;t&quot;, &quot;type&quot;: &quot;trigger&quot;, &quot;config&quot;: {&quot;variables&quot;: []}}, {&quot;id&quot;: &quot;o&quot;, &quot;type&quot;: &quot;output&quot;, &quot;config&quot;: {&quot;value&quot;: &quot;done&quot;}}], &quot;edges&quot;: [{&quot;source&quot;: &quot;t&quot;, &quot;target&quot;: &quot;o&quot;}]}" />
+    </record>
+    <record id="tool_export_flow" model="nova.ai.tool">
+        <field name="name">Export a flow as JSON</field>
+<field name="code">export_flow</field>
+<field name="description">Return a flow's portable JSON definition so you can show, copy or audit it in chat. Read-only.</field>
+<field name="example" eval="{&quot;flow&quot;: &quot;Chase overdue invoices&quot;}" />
+<field name="tier_min">t1</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;flow&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Flow name&quot;}
+},
+&quot;required&quot;: [&quot;flow&quot;]
+}" />
+    </record>
+    <record id="tool_import_flow" model="nova.ai.tool">
+        <field name="name">Import a flow from JSON</field>
+<field name="code">import_flow</field>
+<field name="description">Build a flow from pasted JSON — Nova-native or n8n workflow JSON (nodes+connections). Same graph runs in Odoo; unknown n8n nodes import flagged. Validated BEFORE anything queues.</field>
+<field name="example" eval="{&quot;name&quot;: &quot;Imported check&quot;, &quot;definition&quot;: &quot;{\&quot;nodes\&quot;: []}&quot;}" />
+<field name="tier_min">t2</field>
+        <field name="write_kind">confirm</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;name&quot;: {&quot;type&quot;: &quot;string&quot;},
+&quot;description&quot;: {&quot;type&quot;: &quot;string&quot;},
+&quot;definition&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Workflow JSON (Nova or n8n)&quot;}
+},
+&quot;required&quot;: [&quot;name&quot;, &quot;definition&quot;]
+}" />
+    </record>
+    <record id="tool_list_flow_runs" model="nova.ai.tool">
+        <field name="name">List flow runs</field>
+<field name="code">list_flow_runs</field>
+<field name="description">Show recent flow runs: status, trigger, duration, error. Use it when the user asks what ran, what failed, or for the last run of a flow.</field>
+<field name="example" eval="{&quot;flow&quot;: &quot;Chase overdue invoices&quot;, &quot;limit&quot;: 5}" />
+<field name="tier_min">t1</field>
+        <field name="write_kind">none</field>
+        <field name="schema" eval="{
+&quot;type&quot;: &quot;object&quot;,
+&quot;properties&quot;: {
+&quot;flow&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;description&quot;: &quot;Flow name filter&quot;},
+&quot;limit&quot;: {&quot;type&quot;: &quot;integer&quot;, &quot;default&quot;: 10}
+}
+}" />
+    </record>
+</odoo>

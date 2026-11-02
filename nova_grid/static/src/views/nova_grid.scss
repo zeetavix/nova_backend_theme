@@ -1,0 +1,419 @@
+/* Part of Nova. See LICENSE file for full copyright and licensing details. */
+/* Nova Grid — calm, dense, professional. Sticky head + first col. */
+/* Accent token: lives on every Nova root (grid wrap, toolbar, KPI strip)
+   so all three resolve it — CSS vars do not cross into siblings. */
+.o_nova_grid_wrap, .o_nova_grid_toolbar, .o_nova_kpis {
+    /* Self-contained palette: Odoo 20 emits almost no --bs-* runtime vars,
+       and the Nova backend theme swaps palettes by loading a separate dark
+       bundle. Defining our own tokens lets the light file stay in charge of
+       structure while nova_grid.dark.scss only swaps the palette. */
+    --ng-accent: var(--nova-accent, #2563eb);
+    --o-nova-accent: var(--ng-accent);
+    --ng-surface: #ffffff;
+    --ng-surface-2: #f8fafc;
+    --ng-border: #e5e7eb;
+    --ng-border-strong: #cbd5e1;
+    --ng-ink: #0f172a;
+    --ng-muted: #5c6a7d;
+    --ng-weekend: rgba(100, 116, 139, 0.07);
+    --ng-hover: rgba(100, 116, 139, 0.05);
+    --ng-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    --ng-sticky-shadow: rgba(16, 24, 40, 0.28);
+    color: var(--ng-ink);
+}
+.o_nova_grid_wrap {
+    overflow: auto;
+    max-height: calc(100vh - 220px);
+    border: 1px solid var(--ng-border);
+    border-radius: 12px;
+    background: var(--ng-surface);
+    box-shadow: var(--ng-shadow);
+}
+/* A little air below the card, like Odoo's own list renderer. */
+.o_content:has(> .o_nova_grid_wrap) {
+    padding-bottom: 12px;
+}
+.o_nova_grid {
+    min-width: 760px;
+    /* Fixed layout keeps the project column from swallowing the slack on
+       narrow grids; the month then fits ~16 days per screen instead of 11. */
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.o_nova_grid thead th {
+    position: sticky;
+    top: 0;
+    background: var(--ng-surface-2);
+    background-clip: padding-box;
+    z-index: 3;
+    padding: 6px 6px 7px;
+    border-bottom: 1px solid var(--ng-border);
+    box-shadow: 0 1px 0 var(--ng-border);
+}
+/* Structured day header: weekday eyebrow + big day number. */
+.o_nova_grid .o_col_top {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    color: var(--ng-muted);
+    line-height: 1.2;
+    min-height: 12px;
+}
+.o_nova_grid .o_col_main {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
+}
+.o_nova_grid_wrap .o_nova_grid th.o_nova_grid_rowhead,
+.o_nova_grid_wrap .o_nova_grid td.o_nova_grid_rowhead {
+    position: sticky;
+    left: 0;
+    background: var(--ng-surface);
+    background-clip: padding-box;
+    z-index: 2;
+    width: 300px;
+    min-width: 220px;
+    max-width: 320px;
+    padding-left: 14px;
+    border-right: 1px solid var(--ng-border);
+}
+.o_nova_grid_wrap .o_nova_grid thead th.o_nova_grid_rowhead {
+    z-index: 4;
+    background: var(--ng-surface-2);
+    background-clip: padding-box;
+}
+/* Fixed day column width: the header row of a fixed-layout table sets the
+   width for every row below it. */
+.o_nova_grid .o_nova_grid_colhead {
+    width: 92px;
+}
+/* Sticky total column (right edge) for wide grids. */
+.o_nova_grid .o_nova_grid_totalcol {
+    position: sticky;
+    right: 0;
+    z-index: 2;
+    width: 76px;
+    border-left: 1px solid var(--ng-border);
+}
+.o_nova_grid thead .o_nova_grid_totalcol {
+    z-index: 4;
+    background: var(--ng-surface-2);
+}
+.o_nova_grid tbody .o_nova_grid_totalcol {
+    background: var(--ng-surface);
+}
+.o_nova_grid tfoot .o_nova_grid_totalcol {
+    background: var(--ng-surface-2);
+    z-index: 2;
+}
+.o_nova_grid_rowhead .o_rowhead_title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ng-muted);
+}
+.o_nova_grid_cell {
+    min-width: 72px;
+    height: 38px;
+    cursor: pointer;
+    border-left: 1px solid transparent;
+}
+.o_nova_grid_cell:hover {
+    outline: 2px solid color-mix(in srgb, var(--ng-accent) 45%, transparent);
+    outline-offset: -2px;
+    border-radius: 6px;
+}
+.o_nova_grid_cell:hover .o_empty_dot {
+    color: var(--ng-accent);
+    opacity: 1;
+}
+/* Today: a quiet column tint in the body, one accent rule in the header.
+   (Tinting every cell's top edge reads as ladder stripes, not a column.) */
+.o_nova_grid_cell.o_today {
+    background-color: color-mix(in srgb, var(--ng-accent) 7%, transparent);
+}
+.o_nova_grid_colhead.o_today {
+    box-shadow: inset 0 2px 0 0 var(--ng-accent), 0 1px 0 var(--ng-border);
+}
+.o_nova_grid_cell.o_weekend, .o_nova_grid_colhead.o_weekend {
+    background-color: var(--ng-weekend);
+}
+.o_nova_grid_colhead.o_today .o_col_main {
+    color: var(--ng-accent);
+    font-weight: 800;
+}
+.o_nova_grid_colhead.o_today .o_col_top {
+    color: var(--ng-accent);
+}
+.o_nova_grid_value {
+    height: 32px;
+    margin: 3px 4px;
+    width: calc(100% - 8px);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    background: transparent;
+    border-radius: 8px;
+}
+/* Value chip: tinted pill that reads like a modern timesheet entry. */
+.o_nova_grid_value.o_has_value {
+    font-weight: 600;
+    font-size: 14px;
+    background: color-mix(in srgb, var(--ng-accent) var(--ng-heat, 0%), transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+    .o_nova_grid_wrap table.o_nova_grid {
+        animation: none;
+    }
+    .o_nova_grid_cell, .o_nova_grid_value, .o_nova_kpis .o_kpi_ring_fill {
+        transition: none;
+    }
+}
+@media print {
+    .o_nova_grid_toolbar, .o_nova_kpis {
+        display: none;
+    }
+    .o_nova_grid_wrap {
+        max-height: none;
+        overflow: visible;
+        border: none;
+        box-shadow: none;
+    }
+}
+.o_nova_grid tbody tr.o_nova_grid_row:hover {
+    background: var(--ng-hover);
+}
+.o_nova_grid_input {
+    height: 36px;
+    margin: 1px 4px;
+    width: calc(100% - 8px);
+    font-weight: 600;
+    border-color: var(--ng-accent);
+}
+/* Section band: tinted, with an accent edge + avatar chip. */
+.o_nova_grid_section td {
+    background: color-mix(in srgb, var(--ng-accent) 7%, transparent);
+    box-shadow: inset 3px 0 0 var(--ng-accent);
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+.o_nova_grid .o_section_label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.25;
+    white-space: nowrap;
+}
+.o_nova_grid .o_section_chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    color: var(--ng-muted);
+    font-size: 14px;
+    line-height: 1;
+}
+.o_nova_grid .o_section_avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 800;
+}
+.o_nova_grid .o_section_name {
+    font-size: 14px;
+}
+.o_nova_grid_linetotal, .o_nova_grid tfoot th {
+    font-variant-numeric: tabular-nums;
+}
+/* Totals: pinned to the bottom edge while the body scrolls. */
+.o_nova_grid tfoot tr {
+    border-top: 2px solid var(--ng-border);
+    background: var(--ng-surface-2);
+}
+.o_nova_grid tfoot th,
+.o_nova_grid tfoot td {
+    position: sticky;
+    bottom: 0;
+    background: var(--ng-surface-2);
+    background-clip: padding-box;
+    z-index: 2;
+}
+.o_nova_grid tfoot th {
+    font-weight: 700;
+}
+.o_nova_grid tfoot th.o_nova_grid_rowhead,
+.o_nova_grid tfoot .o_nova_grid_totalcol {
+    background: var(--ng-surface-2);
+    z-index: 3;
+}
+/* The sticky row-head rule is more specific, so restate the footer surface. */
+.o_nova_grid_wrap .o_nova_grid tfoot th.o_nova_grid_rowhead {
+    background: var(--ng-surface-2);
+}
+.o_nova_grid_empty {
+    background: var(--ng-surface);
+}
+/* KPI strip: hero numbers above the grid. */
+.o_nova_kpis {
+    display: flex;
+    align-items: stretch;
+    gap: 27px;
+    padding: 12px 20px;
+    margin: 0 0 8px 0;
+    background: var(--ng-surface);
+    background: color-mix(in srgb, var(--ng-accent) 3%, var(--ng-surface));
+    border: 1px solid var(--ng-border);
+    border-radius: 12px;
+}
+.o_nova_kpis .o_kpi {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.o_nova_kpis .o_kpi:not(:first-child) {
+    border-left: 1px solid var(--ng-border);
+    padding-left: 27px;
+}
+.o_nova_kpis .o_kpi_value {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+}
+.o_nova_kpis .o_kpi_label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ng-muted);
+}
+.o_nova_kpis .o_kpi_capacity {
+    margin-left: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+.o_nova_kpis .o_kpi_ring {
+    flex: 0 0 auto;
+}
+.o_nova_kpis .o_kpi_ring_track {
+    fill: none;
+    stroke: color-mix(in srgb, var(--ng-accent) 16%, transparent);
+    stroke-width: 6;
+}
+.o_nova_kpis .o_kpi_ring_fill {
+    fill: none;
+    stroke: var(--ng-accent);
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 250ms ease;
+}
+.o_nova_kpis .o_kpi_cap_text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+/* Overtime marker: small warm dot on >8h day cells (timesheets only). */
+.o_nova_grid_value {
+    position: relative;
+}
+.o_nova_grid_value.o_overtime::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #dc2626;
+}
+/* Scroll depth: stronger shadows once the grid actually scrolls. */
+.o_nova_grid_wrap.o_scrolled_x .o_nova_grid_rowhead,
+.o_nova_grid_wrap.o_scrolled_x .o_nova_grid_totalcol {
+    box-shadow: 6px 0 10px -6px var(--ng-sticky-shadow);
+}
+.o_nova_grid_wrap.o_scrolled_y .o_nova_grid thead th {
+    box-shadow: 0 6px 10px -6px var(--ng-sticky-shadow);
+}
+/* Muted zeros: totals of 0 stay readable but recede. */
+.o_nova_grid .o_zero {
+    color: var(--ng-muted);
+    font-weight: 400;
+}
+.o_nova_grid_grandtotal {
+    color: var(--ng-accent);
+    font-size: 15px;
+}
+.o_nova_grid_grandtotal.o_zero {
+    color: var(--ng-muted);
+}
+/* Collapsible section headers. */
+.o_nova_grid_section {
+    cursor: pointer;
+    user-select: none;
+}
+/* Empty-cell affordance: dot brightens, then becomes an accent "+" on hover. */
+.o_nova_grid .o_empty_dot {
+    opacity: 0.45;
+}
+.o_nova_grid_cell:not(.o_readonly):hover .o_empty_dot {
+    font-size: 0;
+    opacity: 1;
+}
+.o_nova_grid_cell:not(.o_readonly):hover .o_empty_dot::after {
+    content: "+";
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ng-accent);
+}
+.o_nova_grid_cell:focus-within {
+    outline: 2px solid color-mix(in srgb, var(--ng-accent) 45%, transparent);
+    outline-offset: -2px;
+    border-radius: 6px;
+}
+/* Gentle mount transition so period navigation feels instant, not jumpy. */
+@keyframes oNovaGridIn {
+    from { opacity: 0; transform: translateY(3px); }
+    to { opacity: 1; transform: none; }
+}
+.o_nova_grid_wrap table.o_nova_grid {
+    animation: oNovaGridIn 140ms ease-out;
+}
+.o_nova_grid_toolbar .o_nova_grid_period {
+    font-size: 13px;
+    white-space: nowrap;
+}
+/* Compact density for wide ranges (month): narrower columns, tighter type. */
+.o_nova_grid_wrap.o_compact .o_nova_grid_cell {
+    min-width: 56px;
+    height: 34px;
+}
+.o_nova_grid_wrap.o_compact .o_nova_grid_value {
+    height: 28px;
+    font-size: 12px;
+    margin: 3px;
+    width: calc(100% - 6px);
+}
+.o_nova_grid_wrap.o_compact .o_nova_grid thead th {
+    padding: 5px 3px 6px;
+}
+.o_nova_grid_wrap.o_compact .o_col_main {
+    font-size: 12px;
+}
+.o_nova_grid_wrap.o_compact .o_nova_grid_rowhead {
+    min-width: 170px;
+}
+@media (max-width: 768px) {
+    .o_nova_grid_rowhead {
+        min-width: 150px;
+    }
+    .o_nova_grid_cell {
+        min-width: 60px;
+    }
+}

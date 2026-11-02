@@ -1,0 +1,1512 @@
+///
+/// Nova AI drawer — the chat instrument panel. Status strip, typed
+/// transcript, confirm cards with hard edges. Light values here; one
+/// accent, tabular numerals, rules over shadows.
+///
+
+.nova_ai {
+    display: contents;
+}
+
+// Systray spark: same 34px circle language as the toast bell.
+.nova_ai_btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid $o-border-color;
+    background: $o-view-background-color;
+    color: $nova-action-active;
+    cursor: pointer;
+    transition: background $nova-dur-fast $o-easing-enter, border-color $nova-dur-fast $o-easing-enter;
+
+    .nova_ai_mark {
+        font-size: 14px;
+        line-height: 1;
+        display: inline-flex;
+    }
+
+    .nova_ai_glyph {
+        width: 1em;
+        height: 1em;
+        display: block;
+    }
+
+    &:hover {
+        background: $o-gray-100;
+        border-color: $nova-border-strong;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+// The drawer: fixed right rail, rule edge, calm card.
+.nova_ai_drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 420px;
+    max-width: 94vw;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    background: $o-view-background-color;
+    border-left: 1px solid $o-border-color;
+    box-shadow: $nova-shadow-lg;
+    font-size: 13px;
+    line-height: 1.55;
+
+    @media (prefers-reduced-motion: no-preference) {
+        animation: nova_ai_in $nova-dur-base $o-easing-enter;
+    }
+}
+
+@keyframes nova_ai_in {
+    from {
+        transform: translateX(12px);
+        opacity: 0.4;
+    }
+
+    to {
+        transform: none;
+        opacity: 1;
+    }
+}
+
+// Status strip: 40px, agent + model + tier on one line.
+.nova_ai_head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 48px;
+    padding: 4px 12px;
+    background: $o-gray-100;
+    border-bottom: 1px solid $o-border-color;
+}
+
+.nova_ai_identity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.nova_ai_avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    border-radius: 50%;
+    background: $nova-action;
+    color: $nova-on-action;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.nova_ai_who {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.3;
+
+    strong {
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.nova_ai_sub {
+    font-size: 11px;
+    color: $nova-ink-muted;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-variant-numeric: tabular-nums;
+}
+
+// Labeled action strip: every conversation action says what it does.
+// Icon-only glyphs tested as inscrutable; this is the instrument panel.
+.nova_ai_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px 12px;
+    border-bottom: 1px solid $o-border-color;
+    background: $o-view-background-color;
+}
+
+.nova_ai_action {
+    border: 1px solid transparent;
+    border-radius: $o-border-radius-sm;
+    background: transparent;
+    color: $nova-ink-muted;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    &:hover {
+        background: $o-gray-100;
+        color: $nova-ink;
+    }
+
+    &[aria-pressed="true"] {
+        background: $nova-action-soft;
+        border-color: $nova-action;
+        color: $nova-action-active;
+        font-weight: 600;
+    }
+
+    &:disabled {
+        opacity: 0.45;
+        cursor: default;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.nova_ai_more {
+    position: relative;
+}
+
+.nova_ai_menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+    padding: 4px;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-sm;
+    background: $o-view-background-color;
+}
+
+.nova_ai_menuitem {
+    border: none;
+    border-radius: $o-border-radius-sm;
+    background: transparent;
+    color: $nova-ink;
+    font-size: 12px;
+    text-align: left;
+    padding: 6px 8px;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+
+    &:disabled {
+        opacity: 0.45;
+        cursor: default;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+// Conversation history: a quiet list under the header.
+.nova_ai_history {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid $o-border-color;
+    background: $o-view-background-color;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.nova_ai_histbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-bottom: 1px solid $o-border-color;
+}
+
+.nova_ai_histfilter {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-sm;
+    background: $o-view-background-color;
+    color: $nova-ink;
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+.nova_ai_histcount {
+    font-size: 11px;
+    color: $nova-ink-muted;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.nova_ai_history_row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid $o-border-color;
+}
+
+.nova_ai_history_item {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: $nova-ink;
+    text-align: left;
+    font-size: 12px;
+    padding: 8px 4px 8px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: -2px;
+    }
+
+    .nova_ai_dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: $nova-action;
+        margin-right: 6px;
+        vertical-align: 1px;
+    }
+}
+
+.nova_ai_rename {
+    display: flex;
+    gap: 4px;
+    padding: 4px 12px 8px;
+}
+
+.nova_ai_rename_input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 1px solid $nova-action;
+    border-radius: $o-border-radius-sm;
+    font-size: 12px;
+    padding: 4px 8px;
+    color: $nova-ink;
+}
+
+.nova_ai_history_empty {
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: $nova-ink-muted;
+}
+
+.nova_ai_iconbtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    min-height: 28px;
+    border-radius: $o-border-radius-sm;
+    border: 1px solid transparent;
+    background: transparent;
+    color: $nova-ink-muted;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+        background: $o-gray-200;
+        color: $nova-ink;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+// Agent rail: one scrollable line, never a wrapping stack. The
+// active agent reads first by position, not by hunting.
+.nova_ai_agents {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding: 8px 12px 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.nova_ai_agent {
+    flex: 0 0 auto;
+    border: 1px solid $o-border-color;
+    border-radius: 999px;
+    background: $o-view-background-color;
+    color: $nova-ink;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+        border-color: $nova-border-strong;
+    }
+
+    &.nova_ai_agent_on {
+        background: $nova-action-soft;
+        border-color: $nova-action;
+        color: $nova-action-active;
+        font-weight: 600;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+// Pinned context: the record this conversation is about.
+.nova_ai_contextrow {
+    padding: 8px 12px 0;
+
+    &:empty {
+        display: none;
+    }
+}
+
+.nova_ai_pin {
+    border: 1px dashed $nova-border-strong;
+    border-radius: $o-border-radius-sm;
+    background: transparent;
+    color: $nova-ink-muted;
+    font-size: 12px;
+    padding: 4px 10px;
+    cursor: pointer;
+
+    &:hover {
+        color: $nova-action-active;
+        border-color: $nova-action;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.nova_ai_pinned {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-sm;
+    background: $o-gray-100;
+    color: $nova-ink;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 6px 3px 10px;
+    font-variant-numeric: tabular-nums;
+}
+
+.nova_ai_unpin {
+    border: 0;
+    background: transparent;
+    color: $nova-ink-muted;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 4px;
+
+    &:hover {
+        color: $nova-ink;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+// Transcript: agent cards left, user turns right on the soft fill.
+.nova_ai_body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.nova_ai_empty {
+    color: $nova-ink-muted;
+    font-size: 12px;
+    text-align: center;
+    margin: 24px 8px;
+}
+
+.nova_ai_turn {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 100%;
+}
+
+.nova_ai_bubble {
+    border-radius: $o-border-radius-sm;
+    padding: 8px 10px;
+    overflow-wrap: anywhere;
+
+    p {
+        margin: 0 0 6px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    ul {
+        margin: 0 0 6px;
+        padding-left: 18px;
+    }
+
+    .nova_ai_twrap {
+        overflow-x: auto;
+        margin: 0 0 8px;
+        border: 1px solid $o-border-color;
+        border-radius: $o-border-radius-sm;
+        max-width: 100%;
+        background: $o-view-background-color;
+    }
+
+    table.nova_ai_table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        font-size: 12px;
+        font-variant-numeric: tabular-nums;
+
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        th {
+            // Micro-labels: uppercase column names read as structure,
+            // not sentences, and never wrap mid-word.
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: $o-white;
+            background: $nova-action-active;
+            padding: 6px 10px;
+        }
+
+        td {
+            padding: 5px 10px;
+            vertical-align: top;
+            // Data never wraps mid-token in a 420px rail (INV/2026/
+            // 00001 splitting across lines reads broken): the wrap
+            // scrolls instead.
+            white-space: nowrap;
+            border-top: 1px solid $o-border-color;
+        }
+
+        tbody tr:nth-child(even) td {
+            background: $o-gray-100;
+        }
+
+        tbody tr:hover td {
+            background: $nova-action-soft;
+        }
+
+        td.nova_ai_num {
+            text-align: right;
+        }
+
+        td.nova_ai_st_green,
+        td.nova_ai_st_amber,
+        td.nova_ai_st_red {
+            font-weight: 700;
+        }
+
+        td.nova_ai_st_green {
+            color: #166534;
+        }
+
+        td.nova_ai_st_amber {
+            color: #92400e;
+        }
+
+        td.nova_ai_st_red {
+            color: #991b1b;
+        }
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 0 6px;
+        font-size: 12px;
+        font-variant-numeric: tabular-nums;
+
+        th {
+            text-align: left;
+            font-weight: 700;
+            color: $nova-ink;
+            border-bottom: 1px solid $nova-border-strong;
+            padding: 4px 6px;
+            overflow-wrap: anywhere;
+        }
+
+        td {
+            border-top: 1px solid $o-border-color;
+            padding: 4px 6px;
+            vertical-align: top;
+            overflow-wrap: anywhere;
+        }
+
+        tbody tr:first-child td {
+            border-top: 0;
+        }
+    }
+
+    hr {
+        border: 0;
+        border-top: 1px solid $o-border-color;
+        margin: 6px 0;
+    }
+
+    code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12px;
+        background: $o-gray-100;
+        border-radius: $o-border-radius-sm;
+        padding: 0 4px;
+    }
+
+    pre.nova_ai_code {
+        background: $nova-ink;
+        color: $o-white;
+        border-radius: $o-border-radius-sm;
+        padding: 8px 10px;
+        overflow-x: auto;
+        margin: 0 0 6px;
+
+        code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+    }
+
+    a {
+        color: $nova-action-active;
+    }
+
+    blockquote {
+        margin: 0 0 6px;
+        padding: 4px 0 4px 10px;
+        border-left: 3px solid $nova-action;
+        color: $nova-ink;
+    }
+
+    .nova_ai_h1, .nova_ai_h2, .nova_ai_h3 {
+        font-weight: 700;
+        margin: 0 0 6px;
+    }
+
+    .nova_ai_h1 {
+        font-size: 15px;
+    }
+
+    .nova_ai_h2 {
+        font-size: 14px;
+    }
+
+    .nova_ai_h3 {
+        font-size: 13px;
+    }
+}
+
+.nova_ai_assistant .nova_ai_bubble {
+    background: $o-gray-100;
+    align-self: flex-start;
+    max-width: 100%;
+}
+
+.nova_ai_user {
+    align-items: flex-end;
+}
+
+.nova_ai_user .nova_ai_bubble {
+    background: $nova-action-soft;
+    align-self: flex-end;
+    max-width: 92%;
+}
+
+// Steps: collapsed to a one-line summary per finished turn; the
+// full list opens on tap. While running, the Thinking line ticks.
+.nova_ai_steps {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 2px;
+}
+
+.nova_ai_steps_sum {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 6px;
+    border: 0;
+    background: transparent;
+    color: $nova-ink-muted;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    padding: 2px 0;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+        color: $nova-ink;
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+.nova_ai_step {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: $nova-ink-muted;
+}
+
+.nova_ai_dot {
+    width: 6px;
+    height: 6px;
+    flex: 0 0 6px;
+    border-radius: 50%;
+    background: $nova-action;
+}
+
+.nova_ai_thinking {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: $nova-ink-muted;
+}
+
+// Live activity dot: gentle opacity pulse while a turn runs, so a
+// long turn reads as working, not stuck. Still under reduced motion.
+.nova_ai_live {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: $nova-action;
+}
+
+.nova_ai_elapsed {
+    font-variant-numeric: tabular-nums;
+    color: $nova-ink-muted;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .nova_ai_live {
+        animation: nova_ai_live 1.2s ease-in-out infinite;
+    }
+}
+
+@keyframes nova_ai_live {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.35;
+    }
+}
+
+// Errors read danger, stay in flow.
+.nova_ai_error {
+    border-left: 3px solid $o-danger;
+    background: rgba($o-danger, 0.06);
+    color: $nova-ink;
+    font-size: 12px;
+    border-radius: $o-border-radius-sm;
+    padding: 8px 10px;
+    margin: 0;
+}
+
+.nova_ai_retry {
+    margin-left: 8px;
+    background: none;
+    border: 1px solid $nova-border-strong;
+    border-radius: $o-border-radius-sm;
+    padding: 1px 8px;
+    font-size: 11px;
+    color: $nova-ink;
+    cursor: pointer;
+}
+
+// Skeleton placeholder lines while a turn runs: shimmer under
+// motion, static bars under reduced motion.
+.nova_ai_skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 4px 0;
+
+    span {
+        display: block;
+        height: 10px;
+        border-radius: 5px;
+        background: $o-gray-100;
+    }
+
+    span:nth-child(1) {
+        width: 82%;
+    }
+
+    span:nth-child(2) {
+        width: 64%;
+    }
+
+    span:nth-child(3) {
+        width: 74%;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .nova_ai_skeleton span {
+        background: linear-gradient(90deg, $o-gray-100 25%, $o-view-background-color 50%, $o-gray-100 75%);
+        background-size: 200% 100%;
+        animation: nova_ai_shimmer 1.4s linear infinite;
+    }
+}
+
+@keyframes nova_ai_shimmer {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+// Confirm cards: hard border, no fill; Approve teal, Dismiss quiet.
+.nova_ai_cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nova_ai_card {
+    border: 1px solid $nova-border-strong;
+    border-radius: $o-border-radius-sm;
+    background: $o-view-background-color;
+    padding: 12px;
+
+    strong {
+        font-size: 13px;
+    }
+
+    p {
+        margin: 6px 0 0;
+        font-size: 12px;
+        color: $nova-ink-muted;
+    }
+}
+
+.nova_ai_preview {
+    margin: 4px 0 0;
+    padding-left: 16px;
+    font-size: 12px;
+    color: $nova-ink-muted;
+    font-variant-numeric: tabular-nums;
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+    }
+}
+
+.nova_ai_pv_v {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.nova_ai_kind {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $nova-action-active;
+    border: 1px solid $nova-action;
+    border-radius: 999px;
+    padding: 0 6px;
+    margin-right: 4px;
+    vertical-align: 1px;
+}
+
+.nova_ai_card_stale {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: $nova-favorite-fill;
+}
+
+.nova_ai_card_chain {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: $nova-action-active;
+}
+
+.nova_ai_nudge {
+    margin: 0 0 6px;
+    font-size: 12px;
+    color: $nova-favorite-fill;
+}
+
+.nova_ai_nudge_go {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 12px;
+    color: $nova-action;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.nova_ai_abort {
+    margin-left: 8px;
+    background: none;
+    border: 1px solid $nova-border-strong;
+    border-radius: $o-border-radius-sm;
+    padding: 1px 8px;
+    font-size: 11px;
+    color: $nova-ink-muted;
+    cursor: pointer;
+}
+
+.nova_ai_unfold {
+    background: none;
+    border: none;
+    padding: 2px 0 0;
+    font-size: 11px;
+    color: $nova-action-active;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+.nova_ai_unread {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: $nova-action-active;
+
+    span {
+        flex: 1 1 auto;
+        height: 1px;
+        background: $nova-action;
+    }
+}
+
+.nova_ai_card_err {
+    color: map-get($o-theme-text-colors, "danger");
+}
+
+.nova_ai_card_ok {
+    color: $nova-action-active;
+    font-weight: 600;
+}
+
+// Editable pending text: the user owns the words that land on the record.
+.nova_ai_card_edit {
+    display: block;
+    width: 100%;
+    min-height: 52px;
+    margin-top: 6px;
+    border: 1px solid $nova-border-strong;
+    border-radius: $o-border-radius-sm;
+    background: $o-view-background-color;
+    color: $nova-ink;
+    font: inherit;
+    font-size: 12px;
+    padding: 6px 8px;
+    resize: vertical;
+
+    &:focus {
+        outline: none;
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.18);
+    }
+
+    &.nova_ai_card_edit_locked {
+        background: $o-gray-100;
+        color: $nova-ink-muted;
+    }
+}
+
+// Sources: cited knowledge chips under a grounded reply.
+.nova_ai_sources {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.nova_ai_sources_label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $nova-ink-muted;
+}
+
+.nova_ai_source {
+    border: 1px solid $o-border-color;
+    border-radius: 999px;
+    background: $o-gray-100;
+    color: $nova-ink;
+    font-size: 11px;
+    padding: 2px 8px;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// A citation is a link: the answer can open the record it came from.
+.nova_ai_source_link {
+    cursor: pointer;
+    font-family: inherit;
+    transition: background $nova-dur-fast $o-easing-enter,
+        border-color $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $nova-action-soft;
+        border-color: $nova-action;
+        color: $nova-action-active;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.nova_ai_applied {
+    margin: 0;
+    font-size: 12px;
+    color: $nova-action-active;
+    font-weight: 600;
+}
+
+.nova_ai_cardrow {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.nova_ai_approve {
+    border: 1px solid $nova-action;
+    border-radius: $o-border-radius-sm;
+    background: $nova-action;
+    color: $nova-on-action;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    cursor: pointer;
+
+    &:hover {
+        background: $nova-action-hover;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.nova_ai_dismiss {
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-sm;
+    background: $o-view-background-color;
+    color: $nova-ink;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    cursor: pointer;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.nova_ai_open {
+    align-self: flex-start;
+    border: 0;
+    background: transparent;
+    color: $nova-action-active;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+// Voice mode: waveform, state line, big talk button.
+.nova_ai_voice {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 12px;
+    border-bottom: 1px solid $o-border-color;
+    background: $o-view-background-color;
+}
+
+.nova_ai_wave {
+    width: 100%;
+    height: 36px;
+}
+
+.nova_ai_voice_row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nova_ai_voice_mid {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.nova_ai_voice_state {
+    font-size: 12px;
+    color: $nova-ink;
+}
+
+.nova_ai_voice_hint {
+    margin: 2px 0 0;
+    font-size: 11px;
+    color: $nova-ink-muted;
+}
+
+.nova_ai_voice_err {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: $o-danger;
+}
+
+.nova_ai_talk {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid $nova-action;
+    background: $o-view-background-color;
+    color: $nova-action-active;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+        background: $nova-action-soft;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+
+    &:disabled {
+        opacity: 0.45;
+        cursor: default;
+    }
+}
+
+.nova_ai_talk_on {
+    color: $o-white;
+    background: $o-danger;
+    border-color: $o-danger;
+    animation: nova_ai_pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nova_ai_talk_on {
+        animation: none;
+    }
+}
+
+// Bulk approvals: one row when several cards wait at once.
+.nova_ai_bulk {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 8px;
+    border-top: 1px solid $o-border-color;
+    font-size: 12px;
+}
+
+.nova_ai_bulk_n {
+    flex: 1 1 auto;
+    color: $nova-ink-muted;
+}
+
+// Per-turn toolbar: one horizontal pill rail per reply. Labels stay
+// visible (icon-only tested inscrutable); the rail scrolls instead
+// of stacking five naked links down the transcript.
+.nova_ai_tools {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 2px 0 4px;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.nova_ai_tools_user {
+    justify-content: flex-end;
+}
+
+// Each action is a quiet pill: hairline border at rest, soft fill
+// on hover, instant feedback per the motion system (fast only).
+.nova_ai_copy {
+    flex: 0 0 auto;
+    border: 1px solid $o-border-color;
+    border-radius: 999px;
+    background: $o-view-background-color;
+    color: $nova-ink-muted;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 12px;
+    // 24px floor: WCAG 2.5.8 target size on fine pointers too.
+    min-height: 24px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter, border-color $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+        border-color: $nova-border-strong;
+        color: $nova-ink;
+        text-decoration: none;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+// Answer options: one tap answers a clarifying question. Same
+// quiet-pill language as the toolbar, accent border on hover to
+// signal they reply, not just copy.
+.nova_ai_options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 2px 0 4px;
+}
+
+.nova_ai_option {
+    flex: 0 1 auto;
+    border: 1px solid $nova-border-strong;
+    border-radius: 999px;
+    background: $o-view-background-color;
+    color: $nova-ink;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    min-height: 28px;
+    cursor: pointer;
+    white-space: normal;
+    text-align: left;
+    transition: background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter, border-color $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $nova-action-soft;
+        border-color: $nova-action;
+        color: $nova-action-active;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+// Suggestions: launcher chip metrics.
+.nova_ai_suggest {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    padding: 0 12px 8px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+}
+
+.nova_ai_chip {
+    border: 1px solid $o-border-color;
+    border-radius: 999px;
+    background: $o-view-background-color;
+    color: $nova-ink;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 10px;
+    cursor: pointer;
+    max-width: 24ch;
+    flex: 0 0 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+        border-color: $nova-action;
+        color: $nova-action-active;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 1px;
+    }
+}
+
+
+// Composer: boxed input + solid send.
+.nova_ai_foot {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px 12px;
+    border-top: 1px solid $o-border-color;
+}
+
+.nova_ai_input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 1px solid $nova-border-strong;
+    border-radius: $o-border-radius-sm;
+    background: $o-view-background-color;
+    color: $nova-ink;
+    font-size: 13px;
+    padding: 7px 10px;
+    resize: none;
+    max-height: 120px;
+    overflow-y: auto;
+    line-height: 1.4;
+
+    &:focus {
+        outline: none;
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.18);
+    }
+}
+
+.nova_ai_send {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    border-radius: $o-border-radius-sm;
+    border: 1px solid $nova-action;
+    background: $nova-action;
+    color: $nova-on-action;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background: $nova-action-hover;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+@media (forced-colors: active) {
+    .nova_ai_drawer,
+    .nova_ai_card,
+    .nova_ai_input,
+    .nova_ai_send,
+    .nova_ai_approve,
+    .nova_ai_dismiss {
+        forced-color-adjust: auto;
+    }
+
+    .nova_tier,
+    .nova_ai_avatar {
+        forced-color-adjust: none;
+    }
+}
+
+// Coarse pointers get full 44px targets.
+@media (pointer: coarse) {
+    .nova_ai_iconbtn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .nova_ai_agent,
+    .nova_ai_chip,
+    .nova_ai_pin,
+    .nova_ai_unpin,
+    .nova_ai_open,
+    .nova_ai_copy,
+    .nova_ai_talk,
+    .nova_ai_action,
+    .nova_ai_history_item {
+        min-height: 44px;
+    }
+
+    .nova_ai_unpin,
+    .nova_ai_open,
+    .nova_ai_copy {
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nova_ai_approve,
+    .nova_ai_dismiss {
+        min-height: 44px;
+        padding: 8px 16px;
+    }
+
+    .nova_ai_menuitem,
+    .nova_ai_unfold,
+    .nova_ai_nudge_go,
+    .nova_ai_retry,
+    .nova_ai_abort,
+    .nova_ai_histfilter,
+    .nova_ai_rename_input {
+        min-height: 44px;
+    }
+
+    .nova_ai_send {
+        flex-basis: 44px;
+        width: 44px;
+        height: 44px;
+    }
+}
+
+// Narrow phones: full-bleed drawer, full-width approval buttons.
+@media (max-width: 480px) {
+    .nova_ai_drawer {
+        width: 100vw;
+        max-width: 100vw;
+    }
+
+    .nova_ai_cardrow {
+        display: flex;
+        gap: 8px;
+
+        .nova_ai_approve,
+        .nova_ai_dismiss {
+            flex: 1 1 0;
+        }
+    }
+}
+
+// Reduced motion: no transitions anywhere in the drawer (animations
+// are already gated individually; this covers the rest).
+@media (prefers-reduced-motion: reduce) {
+    .nova_ai_drawer,
+    .nova_ai_drawer * {
+        transition: none !important;
+    }
+}
+
+// Slice batch: tone select, @-mentions popup, saved views, snapshots.
+// All reuse the action/menu/history tokens above.
+.nova_ai_tone {
+    max-width: 110px;
+    text-overflow: ellipsis;
+}
+.nova_ai_views_label {
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.7;
+    margin: 2px 0 4px;
+}
+.nova_ai_mentions {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px;
+    border-top: 1px solid $o-border-color;
+}
+.nova_ai_mention {
+    text-align: left;
+    padding: 6px 8px;
+    border-radius: 6px;
+    &:hover {
+        background: $o-gray-100;
+    }
+}

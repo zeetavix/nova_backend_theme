@@ -1,0 +1,73 @@
+///
+/// Nova AI editor prompt dialog (dark).
+///
+
+.nova_ai_prompt_selection {
+    background: rgba(255, 255, 255, 0.05);
+    border-left-color: $nova-action;
+}
+
+.nova_ai_prompt_sel_label {
+    color: $nova-ink-muted;
+}
+
+.nova_ai_prompt_sel_body {
+    color: $nova-ink;
+}
+
+.nova_ai_prompt_input {
+    background-color: $nova-paper-deep;
+    color: $nova-ink;
+
+    &:hover {
+        border-color: $nova-paper-border;
+    }
+
+    &:focus {
+        border-color: $nova-action;
+        background-color: $nova-paper-deep;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.22);
+    }
+
+    &::placeholder {
+        color: $nova-ink-muted;
+    }
+}
+
+.nova_ai_prompt_chip {
+    background: transparent;
+    border-color: $o-border-color;
+    color: $nova-ink-muted;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: $nova-ink;
+        border-color: $nova-border-strong;
+    }
+
+    &.nova_ai_prompt_chip_on {
+        background: $nova-action-soft;
+        border-color: $nova-action;
+        color: $nova-action-hover;
+    }
+}
+
+.nova_ai_prompt_error {
+    background: rgba($o-danger, 0.12);
+    color: $o-danger;
+}
+
+.nova_ai_prompt_preview {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+}
+
+.nova_ai_prompt_prev_label {
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom-color: $o-border-color;
+    color: $nova-ink-muted;
+}
+
+.nova_ai_prompt_prev_body {
+    color: $nova-ink;
+}

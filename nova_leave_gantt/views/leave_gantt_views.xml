@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Leave Gantt: section employee, one bar per leave request.
+             Own action ("Who's Out" under Reporting): the stock approval
+             queue filters to requests awaiting *your* approval, which is the
+             wrong dataset for a coverage timeline. -->
+        <record id="view_nova_leave_gantt" model="ir.ui.view">
+            <field name="name">hr.leave.grid.gantt</field>
+            <field name="model">hr.leave</field>
+            <field name="arch" type="xml">
+                <gantt string="Who's Out" date_start="request_date_from" date_stop="request_date_to"
+                       editable="1" kpi_unit="d">
+                    <field name="employee_id" type="row" section="1" string="Employee"/>
+                    <field name="work_entry_type_id" type="row" string="Type"/>
+                    <range name="month" string="Month" span="month" step="day" default="1"/>
+                    <range name="quarter" string="Quarter" span="quarter" step="day"/>
+                </gantt>
+            </field>
+        </record>
+
+        <record id="nova_leave_gantt_action_who_is_out" model="ir.actions.act_window">
+            <field name="name">Who's Out</field>
+            <field name="res_model">hr.leave</field>
+            <field name="view_mode">gantt,list,form,calendar</field>
+            <field name="domain">[("state", "not in", ("draft", "cancel", "refuse"))]</field>
+            <field name="context">{"search_default_current_year": 1}</field>
+            <field name="search_view_id" ref="hr_holidays.hr_leave_view_search_manager"/>
+        </record>
+
+        <record id="nova_gantt_in_who_is_out" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">gantt</field>
+            <field name="view_id" ref="view_nova_leave_gantt"/>
+            <field name="act_window_id" ref="nova_leave_gantt_action_who_is_out"/>
+        </record>
+
+        <menuitem id="nova_leave_gantt_menu_who_is_out"
+            name="Who's Out"
+            parent="hr_holidays.menu_hr_holidays_report"
+            action="nova_leave_gantt_action_who_is_out"
+            sequence="5"/>
+    </data>
+</odoo>

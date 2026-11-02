@@ -1,0 +1,25 @@
+///
+/// Launcher digest (dark): card matches the dark KPI tiles; badge keeps
+/// the teal; chips sit one step above the card surface.
+///
+
+.nova_ai_digest {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    box-shadow: none;
+}
+
+.nova_ai_digest_badge {
+    background: $nova-action-soft;
+    color: $nova-action-hover;
+}
+
+.nova_ai_digest_text {
+    color: $nova-ink;
+}
+
+.nova_ai_digest_chip {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: $o-border-color;
+    color: $nova-ink-muted;
+}

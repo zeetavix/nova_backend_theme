@@ -1,0 +1,69 @@
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<templates>
+    <t t-name="nova_gantt.GanttView" owl="1">
+        <div t-att-class="this.props.className" t-ref="this.rootRef">
+            <Layout className="this.model.useSampleModel ? 'o_view_sample_data' : ''" display="this.props.display">
+                <t t-set-slot="control-panel-additional-actions">
+                    <CogMenu/>
+                </t>
+                <t t-set-slot="control-panel-actions">
+                    <SearchBar toggler="this.searchBarToggler"/>
+                </t>
+                <t t-set-slot="control-panel-navigation-additional">
+                    <t t-component="this.searchBarToggler.component" t-props="this.searchBarToggler.props"/>
+                </t>
+                <t t-set-slot="default">
+                    <div class="o_nova_gantt_toolbar d-flex align-items-center gap-2 flex-wrap px-3 pt-2">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Period navigation">
+                            <button class="btn btn-secondary o_nova_gantt_prev" t-on-click="this.onPrev" title="Previous period">‹</button>
+                            <button class="btn btn-secondary o_nova_gantt_today" t-on-click="this.onToday">Today</button>
+                            <button class="btn btn-secondary o_nova_gantt_next" t-on-click="this.onNext" title="Next period">›</button>
+                        </div>
+                        <span class="o_nova_gantt_period fw-semibold text-muted"><t t-out="this.model.navigation?.label || ''"/></span>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Range">
+                            <t t-foreach="this.rangeEntries" t-as="range" t-key="range.name">
+                                <button
+                                    t-attf-class="btn {{ this.activeRangeName === range.name ? 'btn-primary' : 'btn-secondary' }}"
+                                    t-on-click="() => this.onRangeChange(range.name)"
+                                ><t t-out="range.description"/></button>
+                            </t>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm" t-on-click="this.onToggleWeekend">
+                            <t t-if="this.model.showWeekend">Hide weekends</t>
+                            <t t-else="">Show weekends</t>
+                        </button>
+                        <div class="ms-auto d-flex gap-2">
+                            <button class="btn btn-outline-secondary btn-sm" t-on-click="this.onExportCsv">Export CSV</button>
+                        </div>
+                    </div>
+                    <t t-if="this.showEmpty">
+                        <ActionHelper noContentHelp="this.props.info.noContentHelp"/>
+                    </t>
+                    <div class="o_nova_kpis o_nova_gantt_kpis" t-if="this.showContent">
+                        <div class="o_kpi">
+                            <span class="o_kpi_value"><t t-out="this.fmt(this.model.totalBars)"/></span>
+                            <span class="o_kpi_label">Total</span>
+                        </div>
+                        <div class="o_kpi">
+                            <span class="o_kpi_value"><t t-out="this.fmt(this.model.startingCount)"/></span>
+                            <span class="o_kpi_label">Starting</span>
+                        </div>
+                        <div class="o_kpi">
+                            <span class="o_kpi_value"><t t-out="this.model.lanesArray.length"/></span>
+                            <span class="o_kpi_label">Lanes</span>
+                        </div>
+                        <div class="o_kpi">
+                            <span class="o_kpi_value"><t t-out="this.fmt(this.model.avgDays)"/><t t-out="this.unitSuffix"/></span>
+                            <span class="o_kpi_label">Avg days</span>
+                        </div>
+                    </div>
+                    <t t-if="this.showContent" t-component="this.props.Renderer" t-props="this.rendererProps"/>
+                </t>
+            </Layout>
+        </div>
+    </t>
+    <t t-name="nova_gantt.GanttView.Buttons" owl="1">
+        <div class="d-flex gap-1">
+        </div>
+    </t>
+</templates>

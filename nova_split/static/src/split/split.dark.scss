@@ -1,0 +1,14 @@
+// Part of Nova. See LICENSE file for full copyright and licensing details.
+$o-nova-split-panel-shadow-dark: -12px 0 24px -18px rgba(0, 0, 0, 0.8);
+
+.o_nova_split_view {
+    .o_nova_split_panel {
+        background: var(--o-view-background, #111827);
+        box-shadow: $o-nova-split-panel-shadow-dark;
+    }
+
+    .o_data_row.o_nova_split_active {
+        background-color: rgba(113, 75, 103, 0.25);
+        background-color: color-mix(in srgb, var(--nova-accent, var(--bs-primary, #714b67)) 18%, transparent);
+    }
+}

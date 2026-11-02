@@ -1,0 +1,283 @@
+///
+/// Nova AI drawer (dark). Surfaces rest, the accent carries the signals.
+///
+
+.nova_ai_btn {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    color: $nova-action-hover;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: $nova-border-strong;
+    }
+}
+
+.nova_ai_drawer {
+    background: $o-view-background-color;
+    border-left-color: $o-border-color;
+    box-shadow: none;
+}
+
+.nova_ai_head {
+    background: $o-gray-100;
+    border-bottom-color: $o-border-color;
+}
+
+.nova_ai_avatar {
+    background: $nova-action;
+    color: $nova-on-action;
+}
+
+.nova_ai_sub {
+    color: $nova-ink-muted;
+}
+
+.nova_ai_iconbtn {
+    color: $nova-ink-muted;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: $nova-ink;
+    }
+}
+
+.nova_ai_agent {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    color: $nova-ink;
+
+    &.nova_ai_agent_on {
+        background: $nova-action-soft;
+        border-color: $nova-action;
+        color: $nova-action-active;
+    }
+}
+
+.nova_ai_pin {
+    color: $nova-ink-muted;
+    border-color: $nova-border-strong;
+
+    &:hover {
+        color: $nova-action-hover;
+        border-color: $nova-action;
+    }
+}
+
+.nova_ai_pinned {
+    background: $o-gray-100;
+    border-color: $o-border-color;
+    color: $nova-ink;
+}
+
+.nova_ai_empty,
+.nova_ai_step,
+.nova_ai_thinking {
+    color: $nova-ink-muted;
+}
+
+.nova_ai_assistant .nova_ai_bubble {
+    background: $o-gray-100;
+}
+
+.nova_ai_user .nova_ai_bubble {
+    background: $nova-action-soft;
+}
+
+.nova_ai_bubble {
+    table td {
+        border-top-color: $o-border-color;
+    }
+
+    code {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    pre.nova_ai_code {
+        background: $o-gray-100;
+        color: $nova-ink;
+    }
+
+    a {
+        color: $nova-action-hover;
+    }
+}
+
+// Tables: the light sheet must not leak here. Zebra elevates by
+// lightening (theme HIG), status inks lighten for charcoal.
+.nova_ai_twrap {
+    border-color: $o-border-color;
+    background: $o-view-background-color;
+}
+
+.nova_ai_table {
+    th {
+        background: $nova-action;
+        color: $o-white;
+    }
+
+    td {
+        border-top-color: $o-border-color;
+        color: $nova-ink;
+    }
+
+    tbody tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    tbody tr:hover td {
+        background: rgba(255, 255, 255, 0.07);
+    }
+
+    td.nova_ai_st_green {
+        color: #6ee7a0;
+    }
+
+    td.nova_ai_st_amber {
+        color: #fcd34d;
+    }
+
+    td.nova_ai_st_red {
+        color: #fca5a5;
+    }
+}
+
+// Toolbar pills on charcoal.
+.nova_ai_copy {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    color: $nova-ink-muted;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: $nova-border-strong;
+        color: $nova-ink;
+    }
+}
+
+.nova_ai_steps_sum {
+    color: $nova-ink-muted;
+
+    &:hover {
+        color: $nova-ink;
+    }
+}
+
+.nova_ai_live {
+    background: $nova-action-hover;
+}
+
+.nova_ai_elapsed {
+    color: $nova-ink-muted;
+}
+
+.nova_ai_error {
+    background: rgba($o-danger, 0.10);
+    color: $nova-ink;
+}
+
+.nova_ai_card {
+    background: $o-view-background-color;
+    border-color: $nova-border-strong;
+
+    p {
+        color: $nova-ink-muted;
+    }
+}
+
+.nova_ai_card_ok {
+    color: $nova-action-hover;
+}
+
+.nova_ai_card_chain {
+    color: $nova-action-hover;
+}
+
+.nova_ai_card_edit {
+    background: $o-view-background-color;
+    border-color: $nova-border-strong;
+    color: $nova-ink;
+
+    &:focus {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.25);
+    }
+
+    &.nova_ai_card_edit_locked {
+        background: $o-gray-100;
+        color: $nova-ink-muted;
+    }
+}
+
+.nova_ai_source {
+    background: $o-gray-100;
+    border-color: $o-border-color;
+    color: $nova-ink;
+}
+
+.nova_ai_sources_label {
+    color: $nova-ink-muted;
+}
+
+.nova_ai_applied {
+    color: $nova-action-hover;
+}
+
+.nova_ai_option {
+    background: $o-view-background-color;
+    border-color: $nova-border-strong;
+    color: $nova-ink;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: $nova-action;
+        color: $nova-action-hover;
+    }
+}
+
+.nova_ai_chip {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    color: $nova-ink;
+
+    &:hover {
+        border-color: $nova-action;
+        color: $nova-action-hover;
+    }
+}
+
+.nova_ai_input {
+    background: $o-view-background-color;
+    border-color: $nova-border-strong;
+    color: $nova-ink;
+
+    &:focus {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.25);
+    }
+}
+
+.nova_ai_send,
+.nova_ai_approve {
+    background: $nova-action;
+    border-color: $nova-action;
+    color: $nova-on-action;
+
+    &:hover:not(:disabled) {
+        background: $nova-action-hover;
+    }
+}
+
+.nova_ai_dismiss {
+    background: $o-view-background-color;
+    border-color: $o-border-color;
+    color: $nova-ink;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+}
+
+.nova_ai_open {
+    color: $nova-action-hover;
+}

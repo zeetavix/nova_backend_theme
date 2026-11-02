@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="nova_split.SplitView">
+        <div t-att-class="'o_nova_split_view ' + this.className" t-ref="this.rootRef">
+            <Layout className="this.model.useSampleModel ? 'o_view_sample_data' : ''" display="this.display">
+                <t t-set-slot="control-panel-buttons">
+                    <t t-call="{{ this.props.buttonTemplate }}"/>
+                    <t t-foreach="this.archInfo.headerButtons" t-as="button" t-key="button.id" t-if="!this.evalViewModifier(button.invisible)">
+                        <MultiRecordViewButton
+                            t-if="button.display === 'always'"
+                            list="this.model.root"
+                            className="button.className"
+                            clickParams="button.clickParams"
+                            defaultRank="'btn-secondary'"
+                            domain="this.props.domain"
+                            icon="button.icon"
+                            iconClass="button.iconClass"
+                            string="button.string"
+                            title="button.title"
+                            attrs="button.attrs"
+                        />
+                    </t>
+                </t>
+
+                <t t-set-slot="control-panel-actions">
+                    <SearchBar t-if="!this.offlinePlugin.isOffline()" toggler="this.searchBarToggler" autofocus="this.firstLoad"/>
+                    <OfflineSearchBar t-else="" toggler="this.searchBarToggler" autofocus="this.firstLoad"/>
+                </t>
+                <t t-set-slot="control-panel-navigation-additional">
+                    <t t-if="!this.hasSelectedRecords">
+                        <t t-if="this.offlinePlugin.isOffline()" t-component="this.searchBarToggler.offlineComponent" t-props="this.searchBarToggler.props"/>
+                        <t t-else="" t-component="this.searchBarToggler.component" t-props="this.searchBarToggler.props"/>
+                    </t>
+                </t>
+
+                <t t-set-slot="control-panel-additional-actions">
+                    <CogMenu t-if="!this.hasSelectedRecords"/>
+                    <CogMenu t-elif="this.uiService.isSmall and (this.props.info.actionMenus or this.archInfo.headerButtons.length)" t-props="this.actionMenuProps" hasSelectedRecords="this.hasSelectedRecords">
+                        <t t-foreach="this.archInfo.headerButtons" t-as="button" t-key="button.id" t-if="!this.evalViewModifier(button.invisible)">
+                            <DropdownItem class="'o-dropdown-item-unstyled-button'">
+                                <MultiRecordViewButton
+                                    t-if="button.display !== 'always'"
+                                    list="this.model.root"
+                                    className="button.className"
+                                    clickParams="button.clickParams"
+                                    defaultRank="'btn-secondary'"
+                                    domain="this.props.domain"
+                                    icon="button.icon"
+                                    iconClass="button.iconClass"
+                                    string="button.string"
+                                    title="button.title"
+                                    attrs="button.attrs"
+                                />
+                            </DropdownItem>
+                        </t>
+                    </CogMenu>
+                </t>
+                <t t-set-slot="control-panel-selection-actions">
+                    <div t-if="this.hasSelectedRecords" class="o_selection_container m-1 m-md-0 d-flex gap-1">
+                        <SelectionBox root="this.model.root"/>
+                        <t t-if="!this.uiService.isSmall">
+                            <t t-foreach="this.archInfo.headerButtons" t-as="button" t-key="button.id" t-if="!this.evalViewModifier(button.invisible)">
+                                <MultiRecordViewButton
+                                    t-if="button.display !== 'always'"
+                                    list="this.model.root"
+                                    className="button.className"
+                                    clickParams="button.clickParams"
+                                    defaultRank="'btn-secondary'"
+                                    domain="this.props.domain"
+                                    icon="button.icon"
+                                    iconClass="button.iconClass"
+                                    string="button.string"
+                                    title="button.title"
+                                    attrs="button.attrs"
+                                />
+                            </t>
+                            <t t-if="this.props.info.actionMenus">
+                                <ActionMenus t-props="this.actionMenuProps"/>
+                            </t>
+                        </t>
+                    </div>
+                </t>
+                <div class="o_nova_split_body" t-att-class="{ o_nova_split_expanded: this.splitState.expanded }">
+                    <div t-if="!this.splitState.expanded" class="o_nova_split_list"
+                        tabindex="-1"
+                        t-on-keydown="this.onListKeyDown">
+                        <t t-component="this.props.Renderer" t-if="this.model.isReady()"
+                            list="this.model.root"
+                            activeActions="this.activeActions"
+                            archInfo="this.archInfo"
+                            allowSelectors="this.props.allowSelectors"
+                            editable="this.editable"
+                            onOpenFormView="this.onOpenFormView"
+                            hasOpenFormViewButton="this.hasOpenFormViewButton"
+                            openRecord.bind="this.openRecord"
+                            noContentHelp="this.props.info.noContentHelp"
+                            onAdd.bind="this.createRecord"
+                            optionalActiveFields="this.optionalActiveFields"
+                            readonly="this.props.readonly"
+                        />
+                        <t t-elif="this.model.couldNotLoadRootOffline">
+                            <OfflineActionHelper/>
+                        </t>
+                    </div>
+                    <div t-if="this.splitState.active and this.splitState.formReady"
+                        class="o_nova_split_divider"
+                        role="separator"
+                        tabindex="0"
+                        aria-orientation="vertical"
+                        aria-label="Resize preview panel"
+                        aria-valuemin="340"
+                        aria-valuemax="1600"
+                        t-att-aria-valuenow="this.splitState.width"
+                        t-on-pointerdown="this.onResizerPointerDown"
+                        t-on-dblclick="this.onResizerDoubleClick"
+                        t-on-keydown="this.onResizerKeyDown"
+                    >
+                        <button type="button"
+                            class="o_nova_split_close btn btn-light"
+                            t-on-click="() => this.closePanel()"
+                            data-tooltip="Close preview panel"
+                            aria-label="Close preview panel"
+                        >
+                            <i class="oi oi-fw" data-icon="close"/>
+                        </button>
+                        <button t-if="!this.splitState.expanded" type="button"
+                            class="o_nova_split_expand btn btn-light"
+                            t-on-click="() => this.toggleExpanded()"
+                            data-tooltip="Expand to full width"
+                            aria-label="Expand to full width"
+                        >
+                            <i class="oi oi-fw" data-icon="fullscreen"/>
+                        </button>
+                        <button t-if="this.splitState.expanded" type="button"
+                            class="o_nova_split_expand btn btn-light"
+                            t-on-click="() => this.toggleExpanded()"
+                            data-tooltip="Back to split view"
+                            aria-label="Back to split view"
+                        >
+                            <i class="oi oi-fw" data-icon="fullscreen_exit"/>
+                        </button>
+                    </div>
+                    <div t-if="this.splitState.active and this.splitState.formReady"
+                        class="o_nova_split_panel"
+                        t-attf-style="width: {{ this.splitState.width }}px"
+                    >
+                        <t t-if="this.splitState.resId === null">
+                            <div class="o_nova_split_empty">
+                                <p class="o_nova_split_empty_title">Nothing to preview</p>
+                                <p class="o_nova_split_empty_help">This list is empty. Create the first record to see it here.</p>
+                                <button t-if="this.activeActions.create" type="button" class="btn btn-primary" t-on-click="() => this.createPanelRecord()">New</button>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <SplitFormPanel
+                                bridge="this.panelBridge"
+                                resModel="this.props.resModel"
+                                resId="this.splitState.resId"
+                                resIds="this.splitState.resIds"
+                                viewId="this.formSide.viewId"
+                                arch="this.formSide.arch"
+                                archInfo="this.formSide.archInfo"
+                                fields="this.formSide.fields"
+                                relatedModels="this.formSide.relatedModels"
+                                context="this.props.context"
+                                domain="this.props.domain"
+                                groupBy="this.props.groupBy"
+                                orderBy="this.props.orderBy"
+                                searchMenuTypes="this.props.searchMenuTypes"
+                                useSampleModel="this.props.useSampleModel"
+                                display="this.panelDisplay"
+                                info="this.panelInfo"
+                                panelBreadcrumbs="this.panelBreadcrumbs"
+                                expanded="this.splitState.expanded"
+                                wide="this.splitState.wide"
+                                onSave.bind="this.onPanelSaved"
+                                onHistoryBack="() => this.onPanelHistoryBack()"
+                            />
+                        </t>
+                    </div>
+                </div>
+            </Layout>
+        </div>
+    </t>
+
+    <t t-name="nova_split.SplitView.Buttons">
+        <button t-if="!this.env.inDialog and !this.editedRecord and this.activeActions.create" type="button" class="btn btn-primary o_list_button_add" t-att-data-available-offline="this.isNewButtonAvailableOffline" data-hotkey="c" t-on-click="this.onClickCreate" data-bounce-button="">
+            New
+        </button>
+        <button t-if="this.editedRecord" type="button" class="btn btn-primary o_list_button_save" data-hotkey="s" t-on-click.stop="this.onClickSave">
+            Save
+        </button>
+        <button t-if="this.editedRecord" type="button" class="btn btn-secondary o_list_button_discard" data-hotkey="j" t-on-click.stop="this.onClickDiscard" t-on-mousedown="this.onMouseDownDiscard">
+            Discard
+        </button>
+        <button t-if="this.splitState.formReady" type="button" class="btn btn-secondary o_nova_split_toggle" t-att-class="{ active: this.splitState.active }" t-on-click="() => this.togglePanel()" data-tooltip="Toggle side preview panel" aria-label="Toggle side preview panel">
+            <i class="oi oi-fw" data-icon="view_column"/>
+        </button>
+    </t>
+
+</templates>

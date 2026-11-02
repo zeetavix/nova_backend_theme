@@ -1,0 +1,264 @@
+/* Part of Nova. See LICENSE file for full copyright and licensing details. */
+/* Nova Gantt — calm, dense, professional timeline. Sticky lanes + header. */
+/* Accent token: lives on every Nova root (grid wrap, toolbar, KPI strip)
+   so all three resolve it — CSS vars do not cross into siblings. */
+.o_nova_gantt_wrap, .o_nova_gantt_toolbar, .o_nova_kpis {
+    /* Self-contained palette: Odoo 20 emits almost no --bs-* runtime vars,
+       and the Nova backend theme swaps palettes by loading a separate dark
+       bundle. Defining our own tokens lets the light file stay in charge of
+       structure while nova_gantt.dark.scss only swaps the palette. */
+    --ng-accent: var(--nova-accent, #2563eb);
+    --o-nova-accent: var(--ng-accent);
+    --ng-surface: #ffffff;
+    --ng-surface-2: #f8fafc;
+    --ng-border: #e5e7eb;
+    --ng-border-strong: #cbd5e1;
+    --ng-ink: #0f172a;
+    --ng-muted: #5c6a7d;
+    --ng-weekend: rgba(100, 116, 139, 0.07);
+    --ng-hover: rgba(100, 116, 139, 0.05);
+    --ng-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    --ng-sticky-shadow: rgba(16, 24, 40, 0.28);
+    --ng-bar-ink: #ffffff;
+    color: var(--ng-ink);
+}
+.o_nova_gantt_wrap {
+    overflow: auto;
+    max-height: calc(100vh - 220px);
+    border: 1px solid var(--ng-border);
+    border-radius: 12px;
+    background: var(--ng-surface);
+    box-shadow: var(--ng-shadow);
+}
+/* A little air below the card, like Odoo's own list renderer. */
+.o_content:has(> .o_nova_gantt_wrap) {
+    padding-bottom: 12px;
+}
+.o_nova_gantt_grid {
+    display: grid;
+    min-width: 760px;
+    border-collapse: separate;
+}
+.o_nova_gantt_grid > div {
+    min-width: 0;
+}
+.o_nova_gantt_colhead {
+    position: sticky;
+    top: 0;
+    background: var(--ng-surface-2);
+    background-clip: padding-box;
+    z-index: 3;
+    padding: 6px 2px 7px;
+    border-bottom: 1px solid var(--ng-border);
+    box-shadow: 0 1px 0 var(--ng-border);
+    text-align: center;
+    overflow: hidden;
+}
+/* Structured day header: weekday eyebrow + big day number. */
+.o_nova_gantt_grid .o_col_top {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    color: var(--ng-muted);
+    line-height: 1.2;
+    min-height: 12px;
+    white-space: nowrap;
+}
+.o_nova_gantt_grid .o_col_main {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
+}
+.o_nova_gantt_wrap .o_nova_gantt_corner,
+.o_nova_gantt_wrap .o_nova_gantt_rowhead {
+    position: sticky;
+    left: 0;
+    background: var(--ng-surface);
+    background-clip: padding-box;
+    z-index: 2;
+    padding-left: 14px;
+    border-right: 1px solid var(--ng-border);
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    overflow: hidden;
+}
+.o_nova_gantt_wrap .o_nova_gantt_corner {
+    z-index: 4;
+    background: var(--ng-surface-2);
+    background-clip: padding-box;
+}
+.o_nova_gantt_rowhead .o_rowhead_title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ng-muted);
+}
+/* Today: one accent rule in the header, a quiet column line on tracks. */
+.o_nova_gantt_colhead.o_today {
+    box-shadow: inset 0 2px 0 0 var(--ng-accent), 0 1px 0 var(--ng-border);
+}
+.o_nova_gantt_colhead.o_today .o_col_main {
+    color: var(--ng-accent);
+}
+.o_nova_gantt_colhead.o_weekend {
+    background-color: var(--ng-weekend);
+}
+/* Section band: full-width grouping strip with avatar chip. */
+.o_nova_gantt_section {
+    grid-column: 1 / -1;
+    background: color-mix(in srgb, var(--ng-accent) 6%, transparent);
+    border-top: 1px solid var(--ng-border);
+    border-bottom: 1px solid var(--ng-border);
+    padding: 6px 12px;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+.o_nova_gantt_section .o_section_label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.o_nova_gantt_section .o_section_avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 800;
+}
+.o_nova_gantt_section .o_section_name {
+    font-size: 14px;
+}
+/* Lane track: position context for absolutely-placed bars, spanning all
+   day columns so percentage-based bars line up with the header. */
+.o_nova_gantt_track {
+    grid-column: 2 / -1;
+    position: relative;
+    min-height: 40px;
+    border-bottom: 1px solid var(--ng-border);
+    background-repeat: no-repeat;
+}
+/* Bars: uniform accent pills, one day or one quarter — labels always win. */
+.o_nova_gantt_bar {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: stretch;
+    gap: 0;
+    background: color-mix(in srgb, var(--ng-accent) 78%, transparent);
+    border: 1px solid color-mix(in srgb, var(--ng-accent) 85%, black);
+    border-radius: 7px;
+    color: var(--ng-bar-ink);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+    padding: 0 2px;
+    cursor: grab;
+    overflow: hidden;
+    white-space: nowrap;
+    box-shadow: var(--ng-shadow);
+}
+.o_nova_gantt_bar:hover {
+    outline: 2px solid color-mix(in srgb, var(--ng-accent) 45%, transparent);
+    outline-offset: 0;
+}
+.o_nova_gantt_bar:active {
+    cursor: grabbing;
+}
+.o_nova_gantt_bar:focus-visible {
+    outline: 2px solid var(--ng-accent);
+    outline-offset: 1px;
+}
+.o_nova_gantt_bar .o_nova_gantt_label {
+    flex: 1 1 auto;
+    padding: 0 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.o_nova_gantt_bar .o_nova_gantt_handle {
+    flex: 0 0 auto;
+    width: 10px;
+    align-self: stretch;
+    cursor: ew-resize;
+    border-radius: 4px;
+}
+.o_nova_gantt_bar .o_nova_gantt_handle:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+.o_nova_gantt_bar.o_compact .o_nova_gantt_label {
+    display: none;
+}
+.o_nova_gantt_todayline {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    margin-left: -1px;
+    background: var(--ng-accent);
+    opacity: 0.85;
+    pointer-events: none;
+}
+/* Muted zeros: totals of 0 stay readable but recede. */
+.o_nova_gantt_wrap .o_zero {
+    color: var(--ng-muted);
+}
+/* KPI strip: hero numbers above the timeline. */
+.o_nova_kpis {
+    display: flex;
+    align-items: stretch;
+    gap: 27px;
+    padding: 12px 20px;
+    margin: 0 0 8px 0;
+    background: var(--ng-surface);
+    background: color-mix(in srgb, var(--ng-accent) 3%, var(--ng-surface));
+    border: 1px solid var(--ng-border);
+    border-radius: 12px;
+}
+.o_nova_kpis .o_kpi {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.o_nova_kpis .o_kpi_value {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+}
+.o_nova_kpis .o_kpi_label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ng-muted);
+}
+@media (prefers-reduced-motion: reduce) {
+    .o_nova_gantt_wrap .o_nova_gantt_grid {
+        animation: none;
+    }
+    .o_nova_gantt_bar {
+        transition: none;
+    }
+}
+@media (max-width: 768px) {
+    .o_nova_gantt_wrap .o_nova_gantt_rowhead {
+        min-width: 140px;
+    }
+}
+@media print {
+    .o_nova_gantt_toolbar, .o_nova_kpis {
+        display: none;
+    }
+    .o_nova_gantt_wrap {
+        max-height: none;
+        overflow: visible;
+    }
+}

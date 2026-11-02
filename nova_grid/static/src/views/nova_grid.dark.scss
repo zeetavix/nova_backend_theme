@@ -1,0 +1,64 @@
+/* Part of Nova. See LICENSE file for full copyright and licensing details. */
+/* Dark palette for the Nova backend theme (and any future dark bundle).
+   Loaded through web.assets_web_dark, right after the light grid styles,
+   so swapping tokens here is enough to re-skin the whole view. */
+.o_nova_grid_wrap, .o_nova_grid_toolbar, .o_nova_kpis {
+    --ng-accent: var(--nova-accent, #60a5fa);
+    --ng-surface: #1b1c1f;
+    --ng-surface-2: #232529;
+    --ng-border: #33363b;
+    --ng-border-strong: #454a50;
+    --ng-ink: #e6e8eb;
+    --ng-muted: #9aa1a9;
+    --ng-weekend: rgba(0, 0, 0, 0.22);
+    --ng-hover: rgba(255, 255, 255, 0.045);
+    --ng-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    --ng-sticky-shadow: rgba(0, 0, 0, 0.55);
+}
+/* Heatmap pills: the tint that reads as a hint on white turns into a
+   solid block on near-black, so damp the fill and keep the number crisp. */
+.o_nova_grid .o_nova_grid_value.o_has_value {
+    background: color-mix(in srgb, var(--ng-accent) calc(var(--ng-heat, 0%) * 0.55), transparent);
+}
+.o_nova_grid_value,
+.o_nova_grid .o_nova_grid_value.o_has_value {
+    color: var(--ng-ink);
+}
+/* Weekend columns recede in the body, but the header stays on the elevated
+   band: a notch there reads as a hole in the header rather than a weekend. */
+.o_nova_grid .o_nova_grid_colhead.o_weekend {
+    background-color: var(--ng-surface-2);
+}
+/* Section band: on dark it needs a touch more presence to separate rows. */
+.o_nova_grid_section td {
+    background: color-mix(in srgb, var(--ng-accent) 10%, transparent);
+}
+/* Editable input follows the surface instead of the browser default. */
+.o_nova_grid_input {
+    background: var(--ng-surface-2);
+    color: var(--ng-ink);
+}
+.o_nova_grid_input::placeholder {
+    color: var(--ng-muted);
+}
+/* Sticky edges get a darker lip so columns do not bleed together. */
+.o_nova_grid_wrap .o_nova_grid th.o_nova_grid_rowhead,
+.o_nova_grid_wrap .o_nova_grid td.o_nova_grid_rowhead {
+    border-right-color: var(--ng-border-strong);
+}
+.o_nova_grid .o_nova_grid_totalcol {
+    border-left-color: var(--ng-border-strong);
+}
+/* Empty state and click-to-add affordance. */
+.o_nova_grid_empty {
+    background: var(--ng-surface);
+    color: var(--ng-muted);
+}
+.o_nova_grid .o_empty_dot {
+    opacity: 0.3;
+}
+/* Focus ring stays visible on dark surfaces. */
+.o_nova_grid_cell:hover,
+.o_nova_grid_cell:focus-within {
+    outline-color: color-mix(in srgb, var(--ng-accent) 70%, transparent);
+}

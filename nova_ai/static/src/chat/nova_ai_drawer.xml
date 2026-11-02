@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<templates xml:space="preserve">
+    <t t-name="nova_ai.NovaAiDrawer" owl="1">
+        <div class="nova_ai" t-on-keydown="(ev) => this.onDrawerKey(ev)">
+            <button type="button" class="nova_ai_btn"
+                    t-on-click="() => this.toggle()"
+                    aria-label="Ask Nova"
+                    t-att-aria-expanded="this.state.open ? 'true' : 'false'"
+                    title="Ask Nova">
+                <span class="nova_ai_mark" aria-hidden="true"><svg class="nova_ai_glyph" width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c.7 4.6 3 6.9 7.6 7.6-4.6.7-6.9 3-7.6 7.6-.7-4.6-3-6.9-7.6-7.6 4.6-.7 6.9-3 7.6-7.6Z" fill="currentColor"/><circle cx="19" cy="5.5" r="1.7" fill="currentColor"/><circle cx="5" cy="18.5" r="1.7" fill="currentColor"/></svg></span>
+            </button>
+            <div t-if="this.state.open" class="nova_ai_drawer" role="dialog" aria-label="Ask Nova">
+                <div class="nova_ai_head">
+                    <div class="nova_ai_identity">
+                        <span class="nova_ai_avatar" aria-hidden="true"><t t-out="this.agent ? this.agent.initials : 'N'"/></span>
+                        <div class="nova_ai_who">
+                            <strong><t t-out="this.agent ? this.agent.name : 'Ask Nova'"/></strong>
+                            <span class="nova_ai_sub"><t t-out="this.subLine"/></span>
+                        </div>
+                    </div>
+                    <span t-if="this.agent" t-att-class="'nova_tier ' + (this.agent.tier === 't3' ? 'nova_tier-t3' : this.agent.tier === 't2' ? 'nova_tier-t2' : 'nova_tier-t1')"><t t-out="this.tierLabel"/></span>
+                    <button type="button" class="nova_ai_iconbtn" t-on-click="() => this.close()" aria-label="Close" title="Close">×</button>
+                </div>
+                <div class="nova_ai_actions" role="toolbar" aria-label="Conversation actions">
+                    <button type="button" class="nova_ai_action" t-on-click="() => this.toggleVoiceMode()"
+                            t-att-aria-pressed="this.state.voiceMode ? 'true' : 'false'">Voice</button>
+                    <button type="button" class="nova_ai_action" t-on-click="() => this.toggleHistory()"
+                            t-att-aria-expanded="this.state.showHistory ? 'true' : 'false'">History</button>
+                    <button type="button" class="nova_ai_action" t-on-click="() => this.newChat()">New chat</button>
+                    <select class="nova_ai_action nova_ai_tone" t-on-change="(ev) => this.setTone(ev)" t-att-value="this.state.tone"
+                            aria-label="Reply tone" title="Reply tone: neutral, concise, friendly or formal">
+                        <option value="">Neutral</option>
+                        <option value="concise">Concise</option>
+                        <option value="friendly">Friendly</option>
+                        <option value="formal">Formal</option>
+                    </select>
+                    <div class="nova_ai_more">
+                        <button type="button" class="nova_ai_action" t-on-click="() => this.toggleMore()"
+                                t-att-aria-expanded="this.state.showMore ? 'true' : 'false'" aria-label="More actions" title="More actions">···</button>
+                        <div t-if="this.state.showMore" class="nova_ai_menu" role="menu">
+                            <button type="button" class="nova_ai_menuitem" role="menuitem" t-on-click="() => this.menuRegenerate()"
+                                    t-att-disabled="this.state.canRegenerate ? false : 'disabled'">Regenerate</button>
+                            <button type="button" class="nova_ai_menuitem" role="menuitem" t-on-click="() => this.undoLast()">Undo last change</button>
+                            <button type="button" class="nova_ai_menuitem" role="menuitem" t-on-click="() => this.saveAsView()">Save as view</button>
+                            <button type="button" class="nova_ai_menuitem" role="menuitem" t-on-click="() => this.toggleSnapshots()">Snapshots</button>
+                            <button type="button" class="nova_ai_menuitem" role="menuitem" t-on-click="() => this.menuExport()">Export</button>
+                            <button type="button" class="nova_ai_menuitem" role="menuitem" t-on-click="() => this.menuExportCsv()">Export CSV</button>
+                            <button type="button" class="nova_ai_menuitem" role="menuitem" t-on-click="() => this.emailAnswer()">Email answer</button>
+                            <button t-if="this.state.canSpeak" type="button" class="nova_ai_menuitem" role="menuitem"
+                                    t-on-click="() => this.menuReadAloud()" t-att-aria-pressed="this.state.readAloud ? 'true' : 'false'">Read aloud</button>
+                        </div>
+                    </div>
+                </div>
+                    <div t-if="this.state.showHistory" class="nova_ai_history" role="listbox" aria-label="Recent conversations">
+                        <div t-if="this.filteredViews().length" class="nova_ai_views" role="group" aria-label="Saved views">
+                            <p class="nova_ai_views_label">Views</p>
+                            <t t-foreach="this.filteredViews()" t-as="row" t-key="'v' + row.id">
+                                <div class="nova_ai_history_row">
+                                    <button type="button" class="nova_ai_history_item"
+                                            t-on-click="() => this.pickSession(row.id)"
+                                            role="option" t-att-aria-selected="row.id === this.state.sessionId ? 'true' : 'false'">
+                                        <span aria-hidden="true">▦ </span><t t-out="this.sessionLabel(row)"/>
+                                    </button>
+                                </div>
+                            </t>
+                        </div>
+                        <p t-if="this.staleNudges().length" class="nova_ai_nudge">
+                            <t t-out="this.staleNudges().reduce((n, r) => n + r.waiting, 0)"/> approval(s) waited over a day —
+                            <button type="button" class="nova_ai_nudge_go" t-on-click="() => this.pickSession(this.staleNudges()[0].id)">review oldest</button>
+                        </p>
+                        <div class="nova_ai_histbar">
+                            <input type="text" class="nova_ai_histfilter" placeholder="Filter…" aria-label="Filter conversations"
+                                   t-att-value="this.state.histFilter" t-on-input="(ev) => this.setHistFilter(ev)"/>
+                            <span class="nova_ai_histcount"><t t-out="this.filteredHistory().length"/> saved</span>
+                        </div>
+                        <p t-if="!this.state.history.length" class="nova_ai_history_empty">No conversations yet — recent chats appear here. <button type="button" class="nova_ai_nudge_go" t-on-click="() => this.historyCTA()">Start chatting</button></p>
+                        <t t-foreach="this.filteredHistory()" t-as="row" t-key="row.id">
+                            <div class="nova_ai_history_row">
+                                <button type="button" class="nova_ai_history_item"
+                                        t-on-click="() => this.pickSession(row.id)"
+                                        role="option" t-att-aria-selected="row.id === this.state.sessionId ? 'true' : 'false'">
+                                    <span t-if="row.pending and row.pending.length" class="nova_ai_dot" aria-label="Approvals waiting"/>
+                                    <t t-out="this.sessionLabel(row)"/>
+                                </button>
+                                <button type="button" class="nova_ai_iconbtn" t-on-click="() => this.startRename(row.id, row.title)"
+                                        aria-label="Rename conversation" title="Rename">✎</button>
+                            </div>
+                            <div t-if="this.state.renaming === row.id" class="nova_ai_rename">
+                                <input type="text" class="nova_ai_rename_input" t-att-value="this.state.renameText"
+                                       t-on-input="(ev) => this.setRenameText(ev)" aria-label="Conversation name"
+                                       t-on-keydown="(ev) => this.onRenameKey(ev, row.id)"/>
+                                <button type="button" class="nova_ai_action" t-on-click="() => this.saveRename(row.id)">Save</button>
+                                <button type="button" class="nova_ai_action" t-on-click="() => this.cancelRename()">Cancel</button>
+                            </div>
+                        </t>
+                    </div>
+                    <div t-if="this.state.showSnapshots" class="nova_ai_history" role="group" aria-label="Snapshots">
+                        <div class="nova_ai_histbar">
+                            <input type="text" class="nova_ai_histfilter" placeholder="Snapshot name…" aria-label="Snapshot name"
+                                   t-att-value="this.state.snapName" t-on-input="(ev) => this.setSnapName(ev)"/>
+                            <button type="button" class="nova_ai_action" t-on-click="() => this.saveSnapshot()"
+                                    t-att-disabled="this.state.snapName ? false : 'disabled'">Save</button>
+                        </div>
+                        <p t-if="!this.state.snapshots.length" class="nova_ai_history_empty">No snapshots — freezing this chat saves its queue here.</p>
+                        <t t-foreach="this.state.snapshots" t-as="snap" t-key="snap.id">
+                            <div class="nova_ai_history_row">
+                                <button type="button" class="nova_ai_history_item"
+                                        t-on-click="() => this.restoreSnapshot(snap.id)"
+                                        t-att-title="snap.pending + ' card(s) waiting'">
+                                    <t t-out="snap.name"/>
+                                </button>
+                                <button type="button" class="nova_ai_iconbtn" t-on-click="() => this.deleteSnapshot(snap.id)"
+                                        aria-label="Delete snapshot" title="Delete">×</button>
+                            </div>
+                        </t>
+                    </div>
+                <div t-if="this.state.agents.length > 1" class="nova_ai_agents">
+                    <t t-foreach="this.state.agents" t-as="item" t-key="item.id">
+                        <button type="button"
+                                t-att-class="'nova_ai_agent' + (item.id === this.state.agentId ? ' nova_ai_agent_on' : '')"
+                                t-on-click="() => this.pickAgent(item.id)"
+                                t-att-aria-pressed="item.id === this.state.agentId ? 'true' : 'false'">
+                            <t t-out="item.name"/>
+                        </button>
+                    </t>
+                </div>
+                <div class="nova_ai_contextrow">
+                    <button t-if="!this.state.context" type="button" class="nova_ai_pin" t-on-click="() => this.pinCurrent()" title="Use the record on screen as context">Pin current record</button>
+                    <span t-else="" class="nova_ai_pinned">
+                        <t t-if="this.state.context.res_id" t-out="this.state.context.name || (this.state.context.model + ' #' + this.state.context.res_id)"/>
+                        <t t-else="" t-out="this.state.context.model + ' (filtered)'"/>
+                        <button type="button" class="nova_ai_unpin" t-on-click="() => this.unpin()" aria-label="Remove pinned record">×</button>
+                    </span>
+                </div>
+                <div t-if="this.state.voiceMode" class="nova_ai_voice" role="group" aria-label="Hands-free voice mode">
+                    <canvas class="nova_ai_wave" width="220" height="36" aria-hidden="true"/>
+                    <div class="nova_ai_voice_row">
+                    <div class="nova_ai_voice_mid">
+                        <strong class="nova_ai_voice_state"><t t-out="this.vStateLabel()"/></strong>
+                        <p t-if="this.vHint()" class="nova_ai_voice_hint"><t t-out="this.vHint()"/></p>
+                        <p t-if="this.state.vError" class="nova_ai_voice_err" role="alert"><t t-out="this.state.vError"/> <button type="button" class="nova_ai_retry" t-on-click="() => this.retryVoice()">Try again</button></p>
+                    </div>
+                    <button type="button" class="nova_ai_iconbtn" t-on-click="() => this.toggleWake()"
+                            t-att-aria-pressed="this.state.wake ? 'true' : 'false'"
+                            t-att-title="'Wake phrase: ' + this.state.wakePhrase + ' (listens continuously)'"
+                            aria-label="Toggle wake phrase listening">◌</button>
+                    <button type="button"
+                            t-att-class="'nova_ai_talk' + (this.state.vState === 'listening' ? ' nova_ai_talk_on' : '')"
+                            t-on-click="() => this.toggleTalk()"
+                            t-att-disabled="this.state.vState === 'thinking' || this.state.vState === 'transcribing' || this.state.vState === 'checking' ? 'disabled' : false"
+                            t-att-aria-label="this.state.vState === 'listening' ? 'Stop listening' : 'Push to talk'">◉</button>
+                    </div>
+                </div>
+                <div class="nova_ai_body">
+                    <p t-if="!this.state.messages.length and !this.state.error" class="nova_ai_empty">
+                        Ask about your records, or pin the record on screen first.
+                    </p>
+                    <t t-foreach="this.state.messages" t-as="message" t-key="message_index">
+                            <div t-if="this.state.unreadFrom === message_index" class="nova_ai_unread"><span aria-hidden="true"/>New</div>
+                            <div t-att-class="'nova_ai_turn nova_ai_' + message.role">
+                            <div class="nova_ai_bubble"><t t-out="message.html"/></div>
+                            <div t-if="message.role === 'user'" class="nova_ai_tools nova_ai_tools_user">
+                                <button type="button" class="nova_ai_copy"
+                                        t-on-click="() => this.editResend(message_index)"
+                                        aria-label="Edit and resend">Edit</button>
+                            </div>
+                            <div t-if="message.role === 'assistant'" class="nova_ai_tools">
+                                <button type="button" class="nova_ai_copy"
+                                        t-on-click="() => this.copyMessage(message_index)"
+                                        t-att-aria-label="this.state.copied === message_index ? 'Copied' : 'Copy reply'">
+                                    <t t-if="this.state.copied === message_index">Copied ✓</t>
+                                    <t t-else="">Copy</t>
+                                </button>
+                                <button type="button" class="nova_ai_copy"
+                                        t-on-click="() => this.rateTurn(message_index, 1)"
+                                        t-att-aria-pressed="this.state.rated[message_index] === 1 ? 'true' : 'false'"
+                                        t-att-disabled="this.state.rated[message_index] ? 'disabled' : false"
+                                        aria-label="Good answer" title="Good answer">👍</button>
+                                <button type="button" class="nova_ai_copy"
+                                        t-on-click="() => this.rateTurn(message_index, -1)"
+                                        t-att-aria-pressed="this.state.rated[message_index] === -1 ? 'true' : 'false'"
+                                        t-att-disabled="this.state.rated[message_index] ? 'disabled' : false"
+                                        aria-label="Bad answer" title="Bad answer">👎</button>
+                                <button type="button" class="nova_ai_copy"
+                                        t-on-click="() => this.noteTurn(message_index)"
+                                        aria-label="Log turn to record chatter" title="Log turn to record chatter">Chatter</button>
+                                <button type="button" class="nova_ai_copy"
+                                        t-on-click="() => this.branchTurn(message_index)"
+                                        aria-label="Branch from here" title="Branch from here">Branch</button>
+                                <button type="button" class="nova_ai_copy"
+                                        t-on-click="() => this.reportMessage(message_index)"
+                                        aria-label="Download this reply as a branded PDF" title="Download this reply as a branded PDF">PDF</button>
+                                <button type="button" class="nova_ai_copy"
+                                        t-on-click="() => this.reportMessage(message_index, 'png')"
+                                        aria-label="Download this reply's table as a branded PNG" title="Download this reply's table as a branded PNG">PNG</button>
+                            </div>
+                            <div t-if="message.steps and message.steps.length" class="nova_ai_steps">
+                                <button t-if="!message.unfolded" type="button" class="nova_ai_steps_sum" t-on-click="() => this.toggleSteps(message_index)" t-att-title="'Show tool calls'">
+                                    <span class="nova_ai_dot" aria-hidden="true"/> <t t-out="this.stepsSummary(message_index)"/>
+                                </button>
+                                <t t-if="message.unfolded">
+                                    <t t-foreach="message.steps" t-as="step" t-key="step_index">
+                                        <span class="nova_ai_step" t-att-title="this.stepTip(step)"><span class="nova_ai_dot" aria-hidden="true"/> <t t-out="this.stepLabel(step)"/></span>
+                                    </t>
+                                    <button type="button" class="nova_ai_unfold" t-on-click="() => this.toggleSteps(message_index)">Show less</button>
+                                </t>
+                            </div>
+                            <t t-foreach="message.steps || []" t-as="step" t-key="'ask' + step_index">
+                                <div t-if="step.asked and step.options and step.options.length" class="nova_ai_options" role="group" aria-label="Suggested answers">
+                                    <t t-foreach="step.options" t-as="opt" t-key="opt_index">
+                                        <button type="button" class="nova_ai_option" t-on-click="() => this.answerOption(opt)"
+                                                t-att-title="this.optTitle(opt)"><t t-out="this.optLabel(opt)"/></button>
+                                    </t>
+                                </div>
+                            </t>
+                            <div t-if="message.cards and message.cards.length" class="nova_ai_cards">
+                                <t t-foreach="message.cards" t-as="card" t-key="card.token">
+                                    <div class="nova_ai_card">
+                                        <strong><span class="nova_ai_kind"><t t-out="this.kindLabel(card.kind)"/></span> <t t-out="card.title"/></strong>
+                                        <textarea t-if="card.kind === 'log_note' or card.kind === 'schedule_activity'"
+                                                  t-att-class="'nova_ai_card_edit' + (card.state !== 'open' ? ' nova_ai_card_edit_locked' : '')"
+                                                  t-att-disabled="card.state !== 'open' ? 'disabled' : false"
+                                                  t-att-value="card.edit !== undefined ? card.edit : card.summary"
+                                                  t-on-input="(ev) => this.editCard(message_index, card_index, ev.target.value)"
+                                                  t-att-aria-label="'Edit before approving: ' + (card.title || '')" />
+                                        <p t-else=""><t t-out="card.summary"/></p>
+                                        <ul t-if="card.preview and card.preview.length" class="nova_ai_preview">
+                                            <t t-foreach="card.preview" t-as="line" t-key="line_index">
+                                                <li><span><t t-out="this.previewParts(line)[0]"/></span><span class="nova_ai_pv_v"><t t-out="this.previewParts(line)[1]"/></span></li>
+                                            </t>
+                                        </ul>
+                                        <p t-if="card.after and card.after.kind" class="nova_ai_card_chain">Queued after <t t-out="card.after.kind"/> — approving it fills this card in.</p>
+                                        <p t-if="card.state === 'failed'" class="nova_ai_card_err"><t t-out="card.error"/> <button type="button" class="nova_ai_retry" t-on-click="() => this.retryConfirm(message_index, card_index)">Retry</button></p>
+                                        <p t-if="card.stale" class="nova_ai_card_stale">May be stale — <t t-out="card.stale"/>.</p>
+                                        <p t-if="card.state === 'done'" class="nova_ai_card_ok">Saved.<button t-if="card.result and card.result.res_id" type="button" class="nova_ai_nudge_go" t-on-click="() => this.openRecord(card.result)"> Open</button></p>
+                                        <div class="nova_ai_cardrow">
+                                            <button t-if="card.state === 'open'" type="button" class="nova_ai_approve" t-on-click="() => this.confirmCard(message_index, card_index)">Approve</button>
+                                            <button t-if="card.state === 'open'" type="button" class="nova_ai_dismiss" t-on-click="() => this.dismissCard(message_index, card_index)">Dismiss</button>
+                                            <span t-if="card.state === 'working'">Working…</span>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            <div t-if="message.sources and message.sources.length" class="nova_ai_sources">
+                                <span class="nova_ai_sources_label">Sources</span>
+                                <t t-foreach="message.sources" t-as="src" t-key="src_index">
+                                    <button t-if="src.model and src.res_id" type="button" class="nova_ai_source nova_ai_source_link"
+                                            t-on-click="() => this.openSource(src)"
+                                            t-att-title="src.excerpt || src.title || src.name">
+                                        <t t-out="src.title || src.name"/>
+                                    </button>
+                                    <a t-elif="src.source and src.source.indexOf('http') === 0" class="nova_ai_source nova_ai_source_link"
+                                       t-att-href="src.source" target="_blank" rel="noopener"
+                                       t-att-title="src.excerpt || src.title || src.name">
+                                        <t t-out="src.title || src.name"/>
+                                    </a>
+                                    <button t-elif="src.source and src.source.indexOf('nova://') === 0" type="button" class="nova_ai_source nova_ai_source_link"
+                                            t-on-click="() => this.openSource(src)"
+                                            t-att-title="src.excerpt || src.title || src.name">
+                                        <t t-out="src.title || src.name"/>
+                                    </button>
+                                    <span t-else="" class="nova_ai_source" t-att-title="src.excerpt || src.title || src.name"><t t-out="src.title || src.name"/></span>
+                                </t>
+                            </div>
+                            <p t-if="message.applied and message.applied.length" class="nova_ai_applied">
+                                Applied automatically (agent in auto mode).
+                            </p>
+                            <button t-if="message.openRecord and message.openRecord.model and message.openRecord.res_id" type="button" class="nova_ai_open" t-on-click="() => this.openRecord(message.openRecord)">Open <t t-out="message.openRecord.display_name"/></button>
+                        </div>
+                    </t>
+                    <p t-if="this.state.sending" class="nova_ai_thinking" role="status"><span class="nova_ai_live" aria-hidden="true"/> <t t-out="this.state.stage ? this.state.stage + '…' : 'Thinking…'"/><span class="nova_ai_elapsed" t-if="this._elapsed() > 0"> · <t t-out="this._elapsed()"/>s</span> <button type="button" class="nova_ai_abort" t-on-click="() => this.abortTurn()">Stop</button></p>
+                    <div t-if="this.state.sending" class="nova_ai_skeleton" aria-hidden="true"><span/><span/><span/></div>
+                    <p t-if="this.state.error" class="nova_ai_error" role="alert"><t t-out="this.state.error"/> <button type="button" class="nova_ai_retry" t-on-click="() => this.retryLast()">Retry</button></p>
+                    <p t-if="this.state.notice" class="nova_ai_card_ok" role="status"><t t-out="this.state.notice"/></p>
+                </div>
+                <div t-if="!this.state.messages.length or this.state.error" class="nova_ai_suggest">
+                    <t t-foreach="this.suggestions" t-as="chip" t-key="chip_index">
+                        <button type="button" class="nova_ai_chip" t-on-click="() => this.useSuggestion(chip.body)" t-att-title="chip.body"><t t-out="chip.name"/></button>
+                    </t>
+                </div>
+                <div t-if="this.followups().length and !this.state.sending and !this.state.error" class="nova_ai_suggest nova_ai_followups" aria-label="Follow-up questions">
+                    <t t-foreach="this.followups()" t-as="follow" t-key="follow_index">
+                        <button type="button" class="nova_ai_chip" t-on-click="() => this.useSuggestion(follow)" t-att-title="follow"><t t-out="follow"/></button>
+                    </t>
+                </div>
+                <div t-if="this.state.openCardCount > 1" class="nova_ai_bulk" role="group" aria-label="Pending approvals">
+                    <span class="nova_ai_bulk_n"><t t-out="this.state.openCardCount"/> approvals waiting</span>
+                    <button type="button" class="nova_ai_approve" t-on-click="() => this.approveAllOpen()">Approve all</button>
+                    <button type="button" class="nova_ai_dismiss" t-on-click="() => this.dismissAllOpen()">Dismiss all</button>
+                </div>
+                    <div t-if="this.state.mentionOpen and this.state.mentionItems.length" class="nova_ai_mentions" role="listbox" aria-label="Mention someone or something">
+                        <t t-foreach="this.state.mentionItems" t-as="item" t-key="item.label">
+                            <button type="button" class="nova_ai_mention" t-on-click="() => this.pickMention(item)"
+                                    role="option"><t t-out="item.label"/></button>
+                        </t>
+                    </div>
+                    <div class="nova_ai_foot">
+                    <textarea class="nova_ai_input" rows="1"
+                           t-att-value="this.state.input"
+                           t-on-input="(ev) => this.setInput(ev)"
+                           t-on-keydown="(ev) => this.onComposerKey(ev)"
+                           placeholder="Ask about your records…" aria-label="Ask Nova"
+                           title="Send with Enter, new line with Shift+Enter" aria-keyshortcuts="Enter"/>
+                    <button type="button" class="nova_ai_send"
+                            t-on-click="() => this.send()"
+                            t-att-disabled="this.state.sending ? 'disabled' : false"
+                            aria-label="Send">↑</button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
+

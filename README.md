@@ -1,71 +1,58 @@
-# Nova Backend Theme
+# Nova — free Odoo 20 Community addons by Zeetavix
 
-Zeetavix Odoo addons for **Odoo 20 Community**: a calm, accessible,
-white-label backend theme, plus two auto-installed bridges.
+Backend theme, 2D grid/Gantt/split views, per-app use-cases, and a
+model-agnostic AI agent layer. Every addon in this repo is **free**
+(price `0.0`, OPL-1).
 
-| Addon | What it does | Price |
-|---|---|---|
-| `nova_backend_theme` | The theme: appearance controls, white-label branding, dark mode, every view restyled, branded login page | **$10.00 USD** |
-| `nova_backend_theme_mail` | Auto-installed bridge: renames the stock Discuss menus to "Messages" when `mail` is present | free companion |
-| `nova_backend_theme_portal` | Auto-installed bridge: exposes the company accent as `--nova-accent` on the customer portal when `portal` is present | free companion |
+| Addon | What it does |
+|---|---|
+| `nova_backend_theme` | Calm, accessible, white-label backend theme + dark mode + branded login |
+| `nova_backend_theme_mail` | Free bridge: renames stock Discuss menus to Messages when `mail` is present |
+| `nova_backend_theme_portal` | Free bridge: syncs the company accent to the customer portal |
+| `nova_grid` | Generic `&lt;grid&gt;` view engine: rows, date/selection/many2one columns, inline editing, totals, heatmap, dark mode |
+| `nova_gantt` | Generic `&lt;gantt&gt;` view engine: lanes, drag-to-move, edge-resize, today line, dialogs |
+| `nova_split` | Split view: list left, form panel right, zero per-model work |
+| `nova_attendance_grid` | My Attendance grid (`hr_attendance`) |
+| `nova_leave_grid` | Leave grid (`hr_holidays`) |
+| `nova_timesheet_grid` | Timesheet grid with KPI dashboard (`hr_timesheet`, `project`) |
+| `nova_project_workload_grid` | Project workload grid (`project`) |
+| `nova_event_gantt` | Events Gantt (`event`) |
+| `nova_leave_gantt` | Who-is-out Gantt (`hr_holidays`) |
+| `nova_project_gantt` | Project portfolio Gantt (`project`) |
+| `nova_ai` | AI agents: tiers, Studio control room, 29 library flows with node canvas, knowledge, schedules, chat drawer, offline voice |
 
-The two bridges exist so the core theme never depends on `mail` or `portal`;
-they install themselves only when both parents are installed.
-
-## Highlights
-
-- **One accent, yours** — six presets or any brand hex. Hover, active, soft and
-  readable-foreground tones are derived automatically, so a light accent flips
-  button text to dark instead of failing contrast.
-- **White-label branding** — brand name, contact email, login logo and favicon
-  per company. Oversized uploads are downscaled, wide wordmarks are laid out
-  without squashing, dark logos get a light plate, favicons are squared
-  automatically.
-- **A real dark theme** — charcoal surfaces with elevation by lightness,
-  desaturated state colours and re-tinted charts. Per user, or follow the OS.
-- **Comfort controls** — density, corner radius and an opt-in column spotlight,
-  each with a company default and a per-user override.
-- **Every view, one language** — list, form, kanban, calendar, activity, pivot,
-  graph, board, spreadsheet, chatter, Discuss, settings, toasts, the command
-  palette and the login page.
-- **Accessible by default** — visible focus rings, 44px touch targets,
-  reduced-motion and forced-colors support, contrast-checked accents.
+The use-case grid/Gantt modules depend on their engine, so installing one
+pulls the engine in automatically. `nova_ai` needs the backend theme.
 
 ## Requirements
 
 | | |
 |---|---|
 | Odoo | 20.0 Community |
-| Core dependency | `web` only |
 | License | OPL-1 (Odoo Proprietary License v1.0) |
-| Price | $10.00 USD for `nova_backend_theme` |
+| Price | Free — all modules, `0.0` USD |
 
-No Enterprise code is used or required.
+No Enterprise code is copied or required.
 
 ## Installation
 
 1. Copy the addon folders you need into your addons path.
 2. Update the apps list (`-u base` or the Apps menu).
-3. Install **Nova Backend Theme**. The two bridges install themselves.
-
-## Configuration
-
-- **Settings › Appearance** — accent (preset or custom hex), density, corners,
-  column spotlight.
-- **Settings › Appearance › Branding** — brand name, contact email, login logo,
-  favicon, with live previews of the current assets.
-- Dark mode is toggled from the user menu and remembered per user.
+3. Install the addons you want (theme first if you use `nova_ai`).
+4. Theme: Settings › Appearance. AI: Settings › Nova AI.
 
 ## Layout
 
 ```
-nova_backend_theme/           the theme (paid)
-nova_backend_theme_mail/      free bridge for mail
-nova_backend_theme_portal/    free bridge for portal
+nova_backend_theme*         theme + two free bridges
+nova_grid / nova_gantt      base view engines
+nova_split                  split view
+nova_*_grid / nova_*_gantt  one use-case module per app
+nova_ai                     the agent layer
 ```
 
 ## License
 
 Odoo Proprietary License v1.0 (OPL-1) — see [LICENSE](LICENSE).
-A valid purchased license is required; buy via Odoo Apps or contact
-support@zeetavix.com.
+Free of charge; a license file ships with every addon.
+Support: support@zeetavix.com — https://zeetavix.com

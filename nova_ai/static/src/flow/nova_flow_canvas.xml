@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<templates xml:space="preserve">
+    <t t-name="nova_ai.NovaFlowCanvas">
+        <div class="nova_flow">
+            <div class="nova_flow_top">
+                <button class="btn btn-secondary" t-on-click="this.backToStudio">← Studio</button>
+                <div class="nova_flow_title">
+                    <strong t-out="this.flow and this.flow.name or 'Workflows'"/>
+                    <span class="nova_flow_ver" t-if="this.flow">v<t t-out="this.flow.version"/> · <t t-out="this.flow.trigger_type"/></span>
+                    <label class="nova_flow_active">Active
+                        <input type="checkbox" t-att-checked="this.flow and this.flow.active ? 'checked' : false"
+                               t-on-change="this.toggleActive"/>
+                    </label>
+                </div>
+                <div class="nova_flow_actions">
+                    <button class="btn btn-secondary" aria-label="Zoom in" t-on-click="() => this.zoom(0.1)">+</button>
+                    <button class="btn btn-secondary" aria-label="Zoom out" t-on-click="() => this.zoom(-0.1)">−</button>
+                    <button class="btn btn-secondary" t-on-click="() => this.doImport(false)">Import</button>
+                    <button class="btn btn-secondary" t-on-click="() => this.doImport(true)">Import n8n</button>
+                    <button class="btn btn-secondary" t-on-click="() => this.doExport(false)">Export</button>
+                    <button class="btn btn-secondary" t-on-click="() => this.doExport(true)">Export n8n</button>
+                    <button class="btn btn-secondary" t-on-click="this.toggleCopilot">✦ Nova copilot</button>
+                    <button class="btn btn-primary" t-on-click="this.save" t-att-disabled="this._busy() ? 'disabled' : false">Save</button>
+                    <button class="btn btn-primary" t-on-click="this.run" t-att-disabled="this._busy() ? 'disabled' : false">▶ Test workflow</button>
+                </div>
+            </div>
+            <div class="nova_flow_hookbar" t-if="this.flow and this.flow.webhook_url">
+                <span>Webhook:</span><code t-out="this.flow.webhook_url"/>
+            </div>
+            <div class="nova_flow_alert alert alert-danger" t-if="this._error()"> <t t-out="this._error()"/> </div>
+            <div class="nova_flow_alert alert alert-success" t-if="this._notice()"> <t t-out="this._notice()"/> </div>
+            <div class="nova_flow_body">
+                <aside class="nova_flow_palette">
+                    <input class="form-control" aria-label="Search nodes" placeholder="Search nodes…"
+                           t-att-value="this._query()" t-on-input="(ev) => this._query.set(ev.target.value)"/>
+                    <t t-foreach="this.palette or []" t-as="group" t-key="group.group">
+                        <div class="nova_flow_group" t-out="group.group"/>
+                        <t t-foreach="(group and group.items) or []" t-as="item" t-key="item.type + ':' + item.label">
+                            <button class="nova_flow_pal" t-on-click="() => this.addNode(item.type, item.preset || {})">
+                                <span class="nova_flow_dot" t-att-style="'background:' + this.nodeColor(item.type)"/>
+                                <span><t t-out="item.label"/><small t-out="item.hint"/></span>
+                            </button>
+                        </t>
+                    </t>
+                    <div class="nova_flow_tip">Click to add. Shift-click a node, then shift-click another, to wire. Click a wire to delete it. IF ports: true / false / error.</div>
+                </aside>
+                <div class="nova_flow_stage">
+                    <div class="nova_flow_legacy" t-if="this._hasLegacy()">
+                        <span>This flow uses classic steps, so the canvas is empty.</span>
+                        <button class="btn btn-sm btn-primary" t-on-click="this.convertToGraph" t-att-disabled="this._busy() ? 'disabled' : false">Convert to graph</button>
+                    </div>
+                    <div class="nova_flow_zoom" t-att-style="this.zoomBox">
+                    <svg class="nova_flow_wires">
+                        <t t-foreach="this.edges or []" t-as="edge" t-key="edge.id">
+                            <g>
+                                <path t-att-d="this.edgePath(edge)" class="nova_flow_wire"
+                                      t-att-class="'nova_flow_wire_' + (edge.source_handle || 'default')"/>
+                                <text t-if="this.edgeLabel(edge)" class="nova_flow_wirelabel">
+                                    <textPath t-att-href="'#' + edge.id" startOffset="50%">
+                                        <t t-out="this.edgeLabel(edge)"/>
+                                    </textPath>
+                                </text>
+                                <path t-att-id="edge.id" t-att-d="this.edgePath(edge)" class="nova_flow_wirehit"
+                                      t-on-click="() => this.removeEdge(edge.id)"/>
+                            </g>
+                        </t>
+                    </svg>
+                    <t t-foreach="this.nodes or []" t-as="node" t-key="node.id">
+                        <div class="nova_flow_node" t-att-class="this._sel() === node.id ? 'is_sel' : ''"
+                             t-att-style="'left:' + (node.position.x || 0) + 'px;top:' + (node.position.y || 0) + 'px;--nc:' + this.nodeColor(node.type)"
+                             t-on-click="(ev) => this.clickNode(node.id, ev)"
+                             t-on-pointerdown="(ev) => this.startDrag(node, ev)">
+                            <div class="nova_flow_nhead">
+                                <span class="nova_flow_ntype" t-out="node.type"/>
+                                <span class="nova_flow_nio" t-if="this._runDetail() and this.nodeIO(node.id, 'output') !== null">●</span>
+                            </div>
+                            <div class="nova_flow_nname" t-out="node.name or node.id"/>
+                            <div class="nova_flow_nops">
+                                <button aria-label="Wire from here" title="Wire from here — then click the target node" t-on-click.stop="() => this.armWire(node.id)">⤳</button>
+                                <button aria-label="Wire true branch" title="Wire the true branch" t-on-click.stop="() => this.armWire(node.id, 'true')">T</button>
+                                <button aria-label="Wire false branch" title="Wire the false branch" t-on-click.stop="() => this.armWire(node.id, 'false')">F</button>
+                                <button aria-label="Wire error branch" title="Wire the error branch" t-on-click.stop="() => this.armWire(node.id, 'error')">E</button>
+                                <button aria-label="Delete node" title="Delete" t-on-click.stop="() => this.removeNode(node.id)">✕</button>
+                            </div>
+                        </div>
+                    </t>
+                    </div>
+                </div>
+                <aside class="nova_flow_inspector" t-if="this.selected">
+                    <h4><t t-out="this.selected.name"/></h4>
+                    <div class="nova_flow_nid"><t t-out="this.selected.type"/> · <t t-out="this.selected.id"/></div>
+                    <div class="nova_flow_tabs" role="tablist" aria-label="Inspector tabs">
+                        <button role="tab" t-att-aria-selected="this._tab() === 'params' ? 'true' : 'false'" t-att-class="this._tab() === 'params' ? 'on' : ''" t-on-click="() => this._tab.set('params')">Parameters</button>
+                        <button role="tab" t-att-aria-selected="this._tab() === 'code' ? 'true' : 'false'" t-att-class="this._tab() === 'code' ? 'on' : ''" t-on-click="() => this._tab.set('code')">Code</button>
+                        <button role="tab" t-att-aria-selected="this._tab() === 'input' ? 'true' : 'false'" t-att-class="this._tab() === 'input' ? 'on' : ''" t-on-click="() => this._tab.set('input')">Input</button>
+                        <button role="tab" t-att-aria-selected="this._tab() === 'output' ? 'true' : 'false'" t-att-class="this._tab() === 'output' ? 'on' : ''" t-on-click="() => this._tab.set('output')">Output</button>
+                    </div>
+                    <t t-if="this._tab() === 'params'">
+                        <label>Name</label>
+                        <input class="form-control" t-att-value="this.selected.name"
+                               t-on-change="(ev) => this.setNodeField('name', ev)"/>
+                        <t t-if="this.guided()">
+                            <div class="nova_flow_guided">
+                                <t t-if="this.selected.type === 'trigger' or this.selected.type === 'start'">
+                                    <label>How does it start?</label>
+                                    <select class="form-control" t-att-value="this.flow.trigger_type"
+                                            t-on-change="(ev) => { this._flow.set({ ...this.flow, trigger_type: ev.target.value }); }">
+                                        <option value="manual" t-att-selected="this.flow.trigger_type === 'manual' ? 'selected' : false">Manual / Test button</option>
+                                        <option value="chat" t-att-selected="this.flow.trigger_type === 'chat' ? 'selected' : false">Chat (“run …”)</option>
+                                        <option value="webhook" t-att-selected="this.flow.trigger_type === 'webhook' ? 'selected' : false">Webhook (external app)</option>
+                                        <option value="schedule" t-att-selected="this.flow.trigger_type === 'schedule' ? 'selected' : false">Schedule (cron)</option>
+                                        <option value="record" t-att-selected="this.flow.trigger_type === 'record' ? 'selected' : false">Record event (create/update)</option>
+                                    </select>
+                                    <t t-if="this.flow.trigger_type === 'schedule'">
+                                        <label>Cron (e.g. 0 8 * * *)</label>
+                                        <input class="form-control" t-att-value="(this.flow.trigger_config || {}).cron || ''"
+                                               t-on-change="(ev) => this._flow.set({ ...this.flow, trigger_config: { ...(this.flow.trigger_config || {}), cron: ev.target.value } })"/>
+                                    </t>
+                                    <t t-if="this.flow.trigger_type === 'record'">
+                                        <label>Model (e.g. sale.order)</label>
+                                        <input class="form-control" t-att-value="(this.flow.trigger_config || {}).model || ''"
+                                               t-on-change="(ev) => this._flow.set({ ...this.flow, trigger_config: { ...(this.flow.trigger_config || {}), model: ev.target.value } })"/>
+                                        <label>Event</label>
+                                        <select class="form-control" t-att-value="(this.flow.trigger_config || {}).event || 'create'"
+                                                t-on-change="(ev) => this._flow.set({ ...this.flow, trigger_config: { ...(this.flow.trigger_config || {}), event: ev.target.value } })">
+                                            <option value="create">On create</option>
+                                            <option value="write">On update</option>
+                                            <option value="all">Create + update</option>
+                                        </select>
+                                    </t>
+                                    <div class="nova_flow_hint">Webhook URL appears in the top bar once saved.</div>
+                                </t>
+                                <t t-if="this.selected.type.startsWith('odoo.')">
+                                    <label>Model</label>
+                                    <input class="form-control" aria-label="Search models" placeholder="Search models…" t-att-value="this._modelsQuery()"
+                                           t-on-input="this.searchModels"/>
+                                    <div class="nova_flow_hint" t-if="this._describeBusy()">Loading catalog…</div>
+                                    <select class="form-control" t-on-change="this.onModelChange"
+                                            t-att-value="this.selected.config?.args?.model || this.selected.config?.model || ''">
+                                        <option value="">— pick a model —</option>
+                                        <t t-foreach="this._models()" t-as="m" t-key="m.model">
+                                            <option t-att-value="m.model" t-att-selected="m.model === (this.selected.config?.args?.model || this.selected.config?.model || '') ? 'selected' : false"><t t-out="m.label"/> (<t t-out="m.model"/>)</option>
+                                        </t>
+                                    </select>
+                                    <t t-if="this.selected.type === 'odoo.search'">
+                                        <label>Conditions (all must match)</label>
+                                        <t t-foreach="this.domainRows()" t-as="row" t-key="'d' + row_index + '_' + row[0]">
+                                            <div class="nova_flow_row3">
+                                                <input class="form-control" placeholder="field" t-att-value="row[0]"
+                                                       t-on-change="(ev) => this.domainSet(row_index, 0, ev)"/>
+                                                <select class="form-control" t-att-value="row[1]"
+                                                        t-on-change="(ev) => this.domainSet(row_index, 1, ev)">
+                                                    <option t-att-selected="row[1] === '=' ? 'selected' : false">=</option><option t-att-selected="row[1] === '!=' ? 'selected' : false">!=</option>
+                                                    <option t-att-selected="row[1] === '&gt;' ? 'selected' : false">&gt;</option><option t-att-selected="row[1] === '&gt;=' ? 'selected' : false">&gt;=</option>
+                                                    <option t-att-selected="row[1] === '&lt;' ? 'selected' : false">&lt;</option><option t-att-selected="row[1] === '&lt;=' ? 'selected' : false">&lt;=</option>
+                                                    <option t-att-selected="row[1] === 'ilike' ? 'selected' : false">ilike</option><option t-att-selected="row[1] === 'not ilike' ? 'selected' : false">not ilike</option>
+                                                    <option t-att-selected="row[1] === 'in' ? 'selected' : false">in</option><option t-att-selected="row[1] === 'not in' ? 'selected' : false">not in</option>
+                                                </select>
+                                                <input class="form-control" placeholder="value or ${var}" t-att-value="row[2]"
+                                                       t-on-change="(ev) => this.domainSet(row_index, 2, ev)"/>
+                                                <button class="btn btn-sm btn-secondary" aria-label="Delete condition" t-on-click="() => this.domainDel(row_index)">✕</button>
+                                            </div>
+                                        </t>
+                                        <button class="btn btn-sm btn-secondary" t-on-click="this.domainAdd">+ condition</button>
+                                        <label>Limit</label>
+<input class="form-control" t-att-value="this.selected.config?.args?.limit ?? 25"
+t-on-change="(ev) => this.cfgSetObj({ args: { ...(this.selected.config?.args || {}), limit: +ev.target.value || 25 } })"/>
+                                    </t>
+                                    <t t-if="this.selected.type === 'odoo.read'">
+                                        <label>Record id (number or ${var})</label>
+                                        <input class="form-control" t-att-value="this.selected.config?.args?.res_id ?? ''"
+                                               t-on-change="(ev) => this.cfgSetObj({ args: { ...(this.selected.config?.args || {}), res_id: ev.target.value } })"/>
+                                    </t>
+                                    <t t-if="this.selected.type === 'odoo.count'">
+                                        <label>Conditions (all must match)</label>
+                                        <t t-foreach="this.domainRows()" t-as="row" t-key="'d' + row_index + '_' + row[0]">
+                                            <div class="nova_flow_row3">
+                                                <input class="form-control" placeholder="field" t-att-value="row[0]"
+                                                       t-on-change="(ev) => this.domainSet(row_index, 0, ev)"/>
+                                                <select class="form-control" t-att-value="row[1]"
+                                                        t-on-change="(ev) => this.domainSet(row_index, 1, ev)">
+                                                    <option t-att-selected="row[1] === '=' ? 'selected' : false">=</option><option t-att-selected="row[1] === '!=' ? 'selected' : false">!=</option>
+                                                    <option t-att-selected="row[1] === '&gt;' ? 'selected' : false">&gt;</option><option t-att-selected="row[1] === '&gt;=' ? 'selected' : false">&gt;=</option>
+                                                    <option t-att-selected="row[1] === '&lt;' ? 'selected' : false">&lt;</option><option t-att-selected="row[1] === '&lt;=' ? 'selected' : false">&lt;=</option>
+                                                    <option t-att-selected="row[1] === 'ilike' ? 'selected' : false">ilike</option><option t-att-selected="row[1] === 'in' ? 'selected' : false">in</option>
+                                                </select>
+                                                <input class="form-control" placeholder="value or ${var}" t-att-value="row[2]"
+                                                       t-on-change="(ev) => this.domainSet(row_index, 2, ev)"/>
+                                                <button class="btn btn-sm btn-secondary" aria-label="Delete condition" t-on-click="() => this.domainDel(row_index)">✕</button>
+                                            </div>
+                                        </t>
+                                        <button class="btn btn-sm btn-secondary" t-on-click="this.domainAdd">+ condition</button>
+                                    </t>
+                                    <t t-if="this.selected.type === 'odoo.group'">
+                                        <label>Group by (comma fields, e.g. stage_id)</label>
+                                        <input class="form-control" t-att-value="(this.selected.config?.args?.groupby || []).join(', ')"
+                                               t-on-change="(ev) => this.cfgSetObj({ args: { ...(this.selected.config?.args || {}), groupby: ev.target.value.split(',').map((s) => s.trim()).filter(Boolean) } })"/>
+                                        <label>Measures (e.g. __count, amount_total)</label>
+                                        <input class="form-control" t-att-value="(this.selected.config?.args?.fields || []).join(', ')"
+                                               t-on-change="(ev) => this.cfgSetObj({ args: { ...(this.selected.config?.args || {}), fields: ev.target.value.split(',').map((s) => s.trim()).filter(Boolean) } })"/>
+                                    </t>
+                                    <t t-if="this.selected.type === 'odoo.email'">
+                                        <label>To (email or ${var})</label>
+                                        <input class="form-control" t-att-value="this.selected.config?.to || ''"
+                                               t-on-change="(ev) => this.cfgSet('to', ev)"/>
+                                        <label>Subject</label>
+                                        <input class="form-control" t-att-value="this.selected.config?.subject || ''"
+                                               t-on-change="(ev) => this.cfgSet('subject', ev)"/>
+                                        <label>Body (use ${vars} from earlier nodes)</label>
+                                        <textarea class="form-control" rows="4" t-att-value="this.selected.config?.body || ''"
+                                                  t-on-change="(ev) => this.cfgSet('body', ev)"/>
+                                        <div class="nova_flow_hint">Approve the card to send — never sends silently.</div>
+                                    </t>
+                                    <t t-if="this.selected.type === 'odoo.create' or this.selected.type === 'odoo.write'">
+                                        <t t-if="this.selected.type === 'odoo.write'">
+                                            <label>Record id (number or ${var})</label>
+                                            <input class="form-control" t-att-value="this.selected.config?.res_id ?? ''"
+                                                   t-on-change="(ev) => this.cfgSet('res_id', ev)"/>
+                                        </t>
+                                        <label>Values (field = value or ${var})</label>
+                                        <t t-foreach="this.valueRows()" t-as="pair" t-key="'v' + pair_index + '_' + pair[0]">
+                                            <div class="nova_flow_row3">
+                                                <input class="form-control" placeholder="field" aria-label="Field name" t-att-value="pair[0]" list="nova_fields"
+                                                       t-on-change="(ev) => this.valueSetRow(pair_index, 0, ev)"/>
+                                                <input class="form-control" placeholder="value" aria-label="Field value" t-att-value="pair[1]"
+                                                       t-on-change="(ev) => this.valueSetRow(pair_index, 1, ev)"/>
+                                                <button class="btn btn-sm btn-secondary" aria-label="Delete value row" t-on-click="() => this.valueDelRow(pair_index)">✕</button>
+                                            </div>
+                                        </t>
+                                        <button class="btn btn-sm btn-secondary" t-on-click="() => this.valueAddRow()">+ field</button>
+                                        <datalist id="nova_fields">
+                                            <t t-foreach="this._fields()" t-as="f" t-key="f.name">
+                                                <option t-att-value="f.name"><t t-out="f.label"/></option>
+                                            </t>
+                                        </datalist>
+                                        <div class="nova_flow_hint">Writes queue an approval card — nothing lands without Approve.</div>
+                                    </t>
+                                    <t t-if="this.selected.type === 'odoo.method'">
+                                        <label>Method (business button)</label>
+                                        <select class="form-control" t-att-value="this.selected.config?.method || ''"
+                                                t-on-change="(ev) => this.cfgSet('method', ev)">
+                                        <option value="">— pick —</option>
+                                        <t t-foreach="this._methods()" t-as="mm" t-key="'m:' + mm">
+                                            <option t-att-value="mm" t-att-selected="mm === (this.selected.config?.method || '') ? 'selected' : false"><t t-out="mm"/></option>
+                                        </t>
+                                        </select>
+                                    </t>
+                                </t>
+                                <t t-if="this.selected.type === 'if'">
+                                    <label>Condition (e.g. ${total} &gt; 100)</label>
+                                    <input class="form-control" t-att-value="this.selected.config?.condition || ''"
+                                           t-on-change="(ev) => this.cfgSet('condition', ev)"/>
+                                    <div class="nova_flow_hint">True → green wire, False → red wire.</div>
+                                </t>
+                                <t t-if="this.selected.type === 'switch'">
+                                    <label>Value to route (e.g. ${state})</label>
+                                    <input class="form-control" t-att-value="this.selected.config?.value || ''"
+                                           t-on-change="(ev) => this.cfgSet('value', ev)"/>
+                                    <label>Fallback port when nothing matches</label>
+                                    <input class="form-control" placeholder="fallback" t-att-value="this.selected.config?.fallback || ''"
+                                           t-on-change="(ev) => this.cfgSet('fallback', ev)"/>
+                                    <div class="nova_flow_hint">Rules with operators + named outputs live in Advanced JSON (cases: [{value, operator: equals|contains|regex|empty|not_empty, output}]).</div>
+                                </t>
+                                <t t-if="this.selected.type === 'merge'">
+                                    <label>Mode</label>
+                                    <select class="form-control" t-att-value="this.selected.config?.mode || 'append'"
+                                            t-on-change="(ev) => this.cfgSet('mode', ev)">
+                                        <option value="append" t-att-selected="(this.selected.config?.mode || 'append') === 'append' ? 'selected' : false">Append — concatenate every branch</option>
+                                        <option value="first" t-att-selected="this.selected.config?.mode === 'first' ? 'selected' : false">First — first non-empty branch</option>
+                                        <option value="chooseBranch" t-att-selected="this.selected.config?.mode === 'chooseBranch' ? 'selected' : false">Choose branch — one branch by node id</option>
+                                    </select>
+                                    <t t-if="(this.selected.config?.mode || '') === 'chooseBranch'">
+                                        <label>Branch node id</label>
+                                        <input class="form-control" t-att-value="this.selected.config?.branch || ''"
+                                               t-on-change="(ev) => this.cfgSet('branch', ev)"/>
+                                    </t>
+                                </t>
+                                <t t-if="this.selected.type === 'set'">
+                                    <label>Values</label>
+                                    <t t-foreach="this.valueRows()" t-as="pair" t-key="'v' + pair_index + '_' + pair[0]">
+                                        <div class="nova_flow_row3">
+                                            <input class="form-control" aria-label="Field name" t-att-value="pair[0]"
+                                                   t-on-change="(ev) => this.valueSetRow(pair_index, 0, ev)"/>
+                                            <input class="form-control" aria-label="Value" t-att-value="pair[1]"
+                                                   t-on-change="(ev) => this.valueSetRow(pair_index, 1, ev)"/>
+                                            <button class="btn btn-sm btn-secondary" aria-label="Delete value row" t-on-click="() => this.valueDelRow(pair_index)">✕</button>
+                                        </div>
+                                    </t>
+                                    <button class="btn btn-sm btn-secondary" t-on-click="this.valueAddRow">+ value</button>
+                                </t>
+                                <t t-if="this.selected.type === 'loop.foreach'">
+                                    <label>Items (e.g. ${rows})</label>
+                                    <input class="form-control" t-att-value="this.selected.config?.items || ''"
+                                           t-on-change="(ev) => this.cfgSet('items', ev)"/>
+                                </t>
+                                <t t-if="this.selected.type === 'http'">
+                                    <label>URL (https)</label>
+                                    <input class="form-control" t-att-value="this.selected.config?.url || ''"
+                                           t-on-change="(ev) => this.cfgSet('url', ev)"/>
+                                </t>
+                                <t t-if="this.selected.type === 'ai.agent' or this.selected.type === 'ai.prompt'">
+                                    <label>Instruction (use ${vars} from earlier nodes)</label>
+                                    <textarea class="form-control" rows="4" t-att-value="this.selected.config?.instruction || this.selected.config?.prompt || ''"
+                                              t-on-change="(ev) => this.cfgSet(this.selected.type === 'ai.agent' ? 'instruction' : 'prompt', ev)"/>
+                                </t>
+                                <t t-if="this.selected.type === 'output' or this.selected.type === 'respond'">
+                                    <label>Final value (e.g. ${report})</label>
+                                    <input class="form-control" t-att-value="this.selected.config?.value || ''"
+                                           t-on-change="(ev) => this.cfgSet('value', ev)"/>
+                                </t>
+                                <t t-if="this.selected.type === 'subflow'">
+                                    <label>Flow name</label>
+                                    <input class="form-control" t-att-value="this.selected.config?.flow || ''"
+                                           t-on-change="(ev) => this.cfgSet('flow', ev)"/>
+                                </t>
+                                <t t-if="this.selected.type === 'wait'">
+                                    <label>Seconds (max 3600)</label>
+                                    <input class="form-control" t-att-value="this.selected.config?.seconds || 60"
+                                           t-on-change="(ev) => this.cfgSet('seconds', ev)"/>
+                                </t>
+                                <t t-if="this.selected.type === 'human.approval'">
+                                    <label>Title shown on the card</label>
+                                    <input class="form-control" t-att-value="this.selected.config?.title || ''"
+                                           t-on-change="(ev) => this.cfgSet('title', ev)"/>
+                                    <label>Message</label>
+                                    <textarea class="form-control" rows="3" t-att-value="this.selected.config?.message || ''"
+                                              t-on-change="(ev) => this.cfgSet('message', ev)"/>
+                                </t>
+                            </div>
+                        </t>
+                        <label>Advanced (JSON)</label>
+<textarea class="form-control nova_flow_json" rows="8"
+t-on-change="(ev) => this.setNodeConfig(ev.target.value)"><t t-out="this.JSON.stringify(this.selected.config || {}, null, 1)"/></textarea>
+                        <div class="nova_flow_hint">Writes queue approval cards. Branch handles: true / false / error. Loop items: ${rows}.</div>
+                    </t>
+                    <t t-elif="this._tab() === 'code'">
+                        <label>Code (python — set <code>result</code>, 8000 chars max)</label>
+                        <textarea class="form-control nova_flow_json" rows="8" spellcheck="false"
+                            t-att-value="this.selected.config?.code || ''"
+                            t-on-change="(ev) => this.setNodeCode(ev.target.value)"/>
+                        <div class="nova_flow_hint">Runs sandboxed (no imports). Use <code>result = …</code>. $input mirrors n8n.</div>
+                    </t>
+                    <t t-elif="this._tab() === 'input'">
+                        <pre class="nova_flow_io"><t t-out="this.JSON.stringify(this.nodeIO(this.selected.id, 'input') || {}, null, 1)"/></pre>
+                    </t>
+                    <t t-elif="this._tab() === 'output'">
+                        <pre class="nova_flow_io"><t t-out="this.JSON.stringify(this.nodeIO(this.selected.id, 'output') || {}, null, 1)"/></pre>
+                    </t>
+                    <div class="nova_flow_edges">
+                        <label>Outgoing</label>
+                        <t t-foreach="(this.edges or []).filter((e) => e.source === this.selected.id)" t-as="e" t-key="e.id">
+                            <div><t t-out="e.target"/> <small t-out="e.source_handle or ''"/> <button t-on-click="() => this.removeEdge(e.id)">✕</button></div>
+                        </t>
+                    </div>
+                </aside>
+                <aside class="nova_flow_inspector" t-if="!this.selected">
+                    <h4>Workflow</h4>
+                    <div>Nodes: <t t-out="this.nodes.length"/> · Edges: <t t-out="this.edges.length"/></div>
+                    <div t-if="this._problems().length" class="nova_flow_problems">
+                        <t t-foreach="this._problems()" t-as="p" t-key="'p'+p_index">
+                            <div>• <t t-out="p"/></div>
+                        </t>
+                    </div>
+                    <h4>Executions</h4>
+                    <t t-foreach="this._runs()" t-as="r" t-key="r.id">
+                        <div class="nova_flow_run" t-on-click="() => this.openRun(r.id)">
+                            <span t-out="r.status"/> · <span t-out="r.trigger"/> · <span t-out="r.at"/>
+                        </div>
+                    </t>
+                    <div t-if="!this._runs().length" class="text-muted">No executions — press Test workflow.</div>
+                    <t t-if="this._runDetail()">
+                        <h4>Last execution</h4>
+                        <div><t t-out="this._runDetail().status"/> · <t t-out="this._runDetail().at"/></div>
+                        <div class="text-danger" t-if="this._runDetail().error"><t t-out="this._runDetail().error"/></div>
+                        <pre class="nova_flow_io"><t t-out="this.JSON.stringify((this._runDetail().node_outputs || {}), null, 1).slice(0, 2000)"/></pre>
+                    </t>
+                </aside>
+                <aside class="nova_flow_copilot" t-if="this._copilot()">
+                    <h4>✦ Nova copilot</h4>
+                    <div class="nova_flow_chat">
+                        <t t-foreach="this._chat()" t-as="m" t-key="'m'+m_index">
+                            <div t-att-class="m.role === 'user' ? 'nova_flow_msg_u' : 'nova_flow_msg_n'"><t t-out="m.text"/></div>
+                        </t>
+                    </div>
+                    <t t-if="this._proposal()">
+                        <div class="nova_flow_proposal">
+                            <strong>Nova staged a graph update.</strong>
+                            <span>Review it, then Apply — your current canvas stays untouched until then.</span>
+                            <div>
+                                <button class="btn btn-sm btn-primary" t-on-click="this.applyProposal">Apply</button>
+                                <button class="btn btn-sm btn-secondary" t-on-click="this.discardProposal">Discard</button>
+                            </div>
+                        </div>
+                    </t>
+                    <div class="nova_flow_chatbar">
+                        <input class="form-control" aria-label="Ask Nova to build or change this flow" placeholder="Build or change this flow…"
+                               t-att-value="this._draft()" t-on-input="(ev) => this._draft.set(ev.target.value)"
+                               t-on-keydown="this.onCopilotKey"/>
+                        <button class="btn btn-primary" t-on-click="this.sendCopilot" t-att-disabled="this._busy() ? 'disabled' : false">Send</button>
+                    </div>
+                </aside>
+                <t t-if="this._importOpen()">
+                    <div class="nova_flow_import_backdrop" t-on-click="this.cancelImport"/>
+                    <div class="nova_flow_import" role="dialog" aria-modal="true" aria-label="Import workflow">
+                        <h4>Import workflow<t t-if="this._importN8n()"> <span class="nova_flow_tag">n8n JSON</span></t></h4>
+                        <p class="nova_flow_hint">Paste the workflow JSON below. It is validated before anything queues.</p>
+                        <textarea class="form-control nova_flow_import_text" rows="10" spellcheck="false"
+                            placeholder="{&quot;nodes&quot;: [...], &quot;edges&quot;: [...]}"
+                            t-att-value="this._importText()" t-on-input="(ev) => this._importText.set(ev.target.value)"/>
+                        <div class="nova_flow_import_bar">
+                            <button class="btn btn-secondary" t-on-click="this.cancelImport">Cancel</button>
+                            <button class="btn btn-primary" t-on-click="this.confirmImport" t-att-disabled="!this._importText() || this._busy() ? 'disabled' : false">Import</button>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>
+

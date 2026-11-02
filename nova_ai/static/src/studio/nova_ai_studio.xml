@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<templates xml:space="preserve">
+    <t t-name="nova_ai.NovaAiStudio" owl="1">
+        <div class="nova_studio">
+            <!-- ── head ────────────────────────────────────────────────── -->
+            <header class="nova_studio_head">
+                <div class="nova_studio_brand">
+                    <span class="nova_studio_mark" aria-hidden="true">
+                        <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none"><path d="M12 2.5c.7 4.6 3 6.9 7.6 7.6-4.6.7-6.9 3-7.6 7.6-.7-4.6-3-6.9-7.6-7.6 4.6-.7 6.9-3 7.6-7.6Z" fill="currentColor"/><circle cx="19" cy="5.5" r="1.7" fill="currentColor"/><circle cx="5" cy="18.5" r="1.7" fill="currentColor"/></svg>
+                    </span>
+                    <div class="nova_studio_brandtext">
+                        <strong>Nova Studio</strong>
+                        <span class="nova_studio_brandsub">the agent's control room</span>
+                    </div>
+                </div>
+                <div class="nova_studio_agent" t-if="this.agent.id">
+                    <span class="nova_studio_avatar" aria-hidden="true"><t t-out="this.agent.initials"/></span>
+                    <div class="nova_studio_who">
+                        <strong t-out="this.agent.name"/>
+                        <span class="nova_studio_who_sub">
+                            <t t-out="this.agent.model || 'no model'"/>
+                            <t t-if="this.agent.tier"> · <t t-out="this.tierLabel(this.agent.tier)"/></t>
+                        </span>
+                    </div>
+                    <span t-att-class="'nova_tier ' + this.tierClass(this.agent.tier)"><t t-out="this.tierLabel(this.agent.tier)"/></span>
+                </div>
+                <div class="nova_studio_headactions">
+                    <button type="button" class="nova_studio_btn" t-on-click="() => this.refresh()"
+                            t-att-disabled="this._loading() ? 'disabled' : false">
+                        <span t-if="this._loading()" class="nova_studio_spin" aria-hidden="true"/>
+                        <span t-else="" aria-hidden="true">⟳</span>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- ── body ────────────────────────────────────────────────── -->
+            <div class="nova_studio_body">
+                <nav class="nova_studio_rail" aria-label="Studio sections">
+                    <t t-foreach="this.sections" t-as="section" t-key="section.id">
+                        <button type="button"
+                                t-att-class="'nova_studio_railbtn' + (this._section() === section.id ? ' nova_studio_railbtn_on' : '')"
+                                t-on-click="() => this.setSection(section.id)"
+                                t-att-aria-current="this._section() === section.id ? 'true' : 'false'">
+                            <span class="nova_studio_railicon" aria-hidden="true"><t t-out="section.icon"/></span>
+                            <span class="nova_studio_raillabel"><t t-out="section.label"/></span>
+                            <span t-if="section.show" t-att-class="'nova_studio_railcount' + (section.alert ? ' nova_studio_railcount_alert' : '')"><t t-out="section.count"/></span>
+                        </button>
+                    </t>
+                </nav>
+
+                <main class="nova_studio_main" role="region" aria-live="polite">
+                    <p t-if="this._error()" class="nova_studio_error" role="alert">
+                        <t t-out="this._error()"/>
+                        <button type="button" class="nova_studio_linkbtn" t-on-click="() => this.load()">Retry</button>
+                    </p>
+                    <p t-if="this._notice()" class="nova_studio_notice" role="status">
+                        <t t-out="this._notice()"/>
+                        <button type="button" class="nova_studio_linkbtn" t-on-click="() => this._notice.set('')">Dismiss</button>
+                    </p>
+
+                    <div t-if="this._loading() and !this._data()" class="nova_studio_skeleton" aria-label="Loading">
+                        <span/><span/><span/><span/>
+                    </div>
+
+                    <!-- ══ OVERVIEW ══════════════════════════════════════════ -->
+                    <section t-if="this._section() === 'overview'" class="nova_studio_section">
+                        <div class="nova_studio_overview">
+                            <article class="nova_studio_panel nova_studio_hero">
+                                <header class="nova_studio_panelhead">
+                                    <h2>The agent</h2>
+                                </header>
+                                <div class="nova_studio_herobody">
+                                    <span class="nova_studio_avatar nova_studio_avatar_lg" aria-hidden="true"><t t-out="this.agent.initials"/></span>
+                                    <div class="nova_studio_heroinfo">
+                                        <h3><t t-out="this.agent.name || 'No agent'"/></h3>
+                                        <p class="nova_studio_herolines">
+                                            <span><em>Model</em> <t t-out="this.agent.model || '—'"/></span>
+                                            <span><em>Tier</em> <t t-out="this.tierLabel(this.agent.tier) || '—'"/></span>
+                                            <span><em>Tools</em> <t t-out="this.agent.tools || 0"/></span>
+                                            <span><em>Needs</em> <t t-if="(this.agent.requires || []).length"><t t-out="(this.agent.requires || []).join(', ')"/></t><t t-else="">nothing special</t></span>
+                                            <span><em>Auto-apply</em> <t t-out="this.agent.auto_apply ? 'on (writes apply without a card)' : 'off (every write waits for you)'"/></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="nova_studio_panelfoot">
+                                    <button type="button" class="nova_studio_btn nova_studio_btn_primary" t-on-click="() => this.askNova('')">Ask Nova</button>
+                                    <button type="button" class="nova_studio_btn" t-on-click="() => this.openKnowledge()">Open the brain</button>
+                                    <button type="button" class="nova_studio_btn" t-on-click="() => this.openTools()">Manage tools</button>
+                                </div>
+                            </article>
+
+                            <article class="nova_studio_panel">
+                                <header class="nova_studio_panelhead">
+                                    <h2>Waiting on you</h2>
+                                    <span t-if="this.stats.pending" class="nova_studio_pill nova_studio_pill_warn"><t t-out="this.stats.pending"/> approval(s)</span>
+                                </header>
+                                <div class="nova_studio_waiting">
+                                    <div class="nova_studio_waitrow">
+                                        <span class="nova_studio_waitnum"><t t-out="this.stats.proposals || 0"/></span>
+                                        <span class="nova_studio_waittext">
+                                            <strong>Concept proposals</strong>
+                                            <em>the agent drafted these; a human decides</em>
+                                        </span>
+                                        <button type="button" class="nova_studio_btn nova_studio_btn_small" t-on-click="() => this.setSection('proposals')"
+                                                t-att-disabled="(this.stats.proposals || 0) ? false : 'disabled'">Review</button>
+                                    </div>
+                                    <div class="nova_studio_waitrow">
+                                        <span class="nova_studio_waitnum"><t t-out="this.stats.pending || 0"/></span>
+                                        <span class="nova_studio_waittext">
+                                            <strong>Write cards</strong>
+                                            <em>nothing lands in your data until you approve</em>
+                                        </span>
+                                        <button type="button" class="nova_studio_btn nova_studio_btn_small" t-on-click="() => this.askNova('')">Open the chat</button>
+                                    </div>
+                                    <div class="nova_studio_waitrow">
+                                        <span class="nova_studio_waitnum"><t t-out="this.stats.stale || 0"/></span>
+                                        <span class="nova_studio_waittext">
+                                            <strong>Stale knowledge</strong>
+                                            <em>past its review date — the agent is told to re-check</em>
+                                        </span>
+                                        <button type="button" class="nova_studio_btn nova_studio_btn_small" t-on-click="() => this.setSection('brain')">See</button>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="nova_studio_panel nova_studio_span2">
+                                <header class="nova_studio_panelhead">
+                                    <h2>At a glance</h2>
+                                </header>
+                                <div class="nova_studio_stats">
+                                    <button type="button" class="nova_studio_stat" t-on-click="() => this.setSection('brain')">
+                                        <span class="nova_studio_statnum"><t t-out="this.stats.skills || 0"/></span>
+                                        <span class="nova_studio_statlabel">Skills</span>
+                                    </button>
+                                    <button type="button" class="nova_studio_stat" t-on-click="() => this.setSection('brain')">
+                                        <span class="nova_studio_statnum"><t t-out="this.stats.memories || 0"/></span>
+                                        <span class="nova_studio_statlabel">Memories</span>
+                                    </button>
+                                    <button type="button" class="nova_studio_stat" t-on-click="() => this.setSection('brain')">
+                                        <span class="nova_studio_statnum"><t t-out="this.stats.concepts || 0"/></span>
+                                        <span class="nova_studio_statlabel">Concepts</span>
+                                    </button>
+                                    <button type="button" class="nova_studio_stat" t-on-click="() => this.setSection('flows')">
+                                        <span class="nova_studio_statnum"><t t-out="this.stats.flows || 0"/></span>
+                                        <span class="nova_studio_statlabel">Flows</span>
+                                    </button>
+                                    <button type="button" class="nova_studio_stat" t-on-click="() => this.setSection('tools')">
+                                        <span class="nova_studio_statnum"><t t-out="this.stats.tools || 0"/></span>
+                                        <span class="nova_studio_statlabel">Tools</span>
+                                    </button>
+                                    <button type="button" class="nova_studio_stat" t-on-click="() => this.setSection('routing')">
+                                        <span class="nova_studio_statnum"><t t-out="(this.payload.models || []).length"/></span>
+                                        <span class="nova_studio_statlabel">Models</span>
+                                    </button>
+                                    <button type="button" class="nova_studio_stat" t-on-click="() => this.setSection('activity')">
+                                        <span class="nova_studio_statnum"><t t-out="this.stats.sessions || 0"/></span>
+                                        <span class="nova_studio_statlabel">Conversations</span>
+                                    </button>
+                                    <button type="button" class="nova_studio_stat" t-on-click="() => this.openLogs()">
+                                        <span class="nova_studio_statnum"><t t-out="(this.payload.activity || []).length"/></span>
+                                        <span class="nova_studio_statlabel">Recent calls</span>
+                                    </button>
+                                </div>
+                            </article>
+
+                            <article class="nova_studio_panel" t-if="this.providers.length">
+                                <header class="nova_studio_panelhead">
+                                    <h2>Providers</h2>
+                                </header>
+                                <ul class="nova_studio_plainlist">
+                                    <t t-foreach="this.providers" t-as="provider" t-key="provider.id">
+                                        <li>
+                                            <span t-att-class="'nova_studio_dot' + (provider.active ? ' nova_studio_dot_on' : '')"/>
+                                            <strong><t t-out="provider.name"/></strong>
+                                            <em><t t-out="provider.models"/> model(s)</em>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </article>
+
+                            <article class="nova_studio_panel">
+                                <header class="nova_studio_panelhead">
+                                    <h2>Just now</h2>
+                                    <span class="nova_studio_spacer"/>
+                                    <button type="button" class="nova_studio_linkbtn" t-on-click="() => this.setSection('activity')">See all</button>
+                                </header>
+                                <p t-if="!this.activity.length" class="nova_studio_lead">Nothing logged yet.</p>
+                                <ul class="nova_studio_plainlist" t-else="">
+                                    <t t-foreach="this.activity.slice(0, 6)" t-as="row" t-key="row.id">
+                                        <li>
+                                            <span t-att-class="'nova_studio_dot' + (row.ok ? ' nova_studio_dot_on' : ' nova_studio_dot_bad')"/>
+                                            <strong><t t-out="row.tool or row.kind"/></strong>
+                                            <em><t t-out="this.age(row.at)"/> · <t t-out="row.model or 'no model'"/></em>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </article>
+                        </div>
+                    </section>
+
+                    <!-- ══ BRAIN ═════════════════════════════════════════════ -->
+                    <section t-if="this._section() === 'brain'" class="nova_studio_section">
+                        <div class="nova_studio_toolbar">
+                            <div class="nova_studio_search">
+                                <span aria-hidden="true">⌕</span>
+                                <input type="text" class="nova_studio_input" t-att-value="this._query()"
+                                       t-on-input="(ev) => this.setQuery(ev)"
+                                       placeholder="Search concepts, skills and memories…"
+                                       aria-label="Search the agent's knowledge"/>
+                            </div>
+                            <div class="nova_studio_filters" role="group" aria-label="Filter concepts">
+                                <button type="button" t-att-class="'nova_studio_chip' + (this._filter() === 'all' ? ' nova_studio_chip_on' : '')" t-on-click="() => this.setFilter('all')">All</button>
+                                <button type="button" t-att-class="'nova_studio_chip' + (this._filter() === 'skills' ? ' nova_studio_chip_on' : '')" t-on-click="() => this.setFilter('skills')">Skills</button>
+                                <button type="button" t-att-class="'nova_studio_chip' + (this._filter() === 'memory' ? ' nova_studio_chip_on' : '')" t-on-click="() => this.setFilter('memory')">Memories</button>
+                                <button type="button" t-att-class="'nova_studio_chip' + (this._filter() === 'wiki' ? ' nova_studio_chip_on' : '')" t-on-click="() => this.setFilter('wiki')">Wiki</button>
+                                <button type="button" t-att-class="'nova_studio_chip' + (this._filter() === 'reference' ? ' nova_studio_chip_on' : '')" t-on-click="() => this.setFilter('reference')">Reference</button>
+                                <button type="button" t-att-class="'nova_studio_chip' + (this._filter() === 'proposed' ? ' nova_studio_chip_on' : '')" t-on-click="() => this.setFilter('proposed')">Proposals</button>
+                                <button type="button" t-att-class="'nova_studio_chip' + (this._filter() === 'stale' ? ' nova_studio_chip_on' : '')" t-on-click="() => this.setFilter('stale')">Stale</button>
+                                <button type="button" t-att-class="'nova_studio_chip' + (this._filter() === 'trusted' ? ' nova_studio_chip_on' : '')" t-on-click="() => this.setFilter('trusted')">Reviewed</button>
+                            </div>
+                            <button type="button" class="nova_studio_btn nova_studio_btn_primary" t-on-click="() => this.openComposer()">Write a concept</button>
+                            <button t-if="this.isAdmin" type="button" class="nova_studio_btn" t-on-click="() => this.scanCodebase()"
+                                    t-att-disabled="this.busyConcept === 'scan' ? 'disabled' : false"
+                                    title="Read the custom modules into concepts - one per model, with its file as the source">Scan custom code</button>
+                        </div>
+
+                        <p t-if="!this.filteredKnowledge.length" class="nova_studio_empty">
+                            <t t-if="this.knowledge.length">Nothing matches that filter.</t>
+                            <t t-else="">The agent has no concepts yet. Write one, or let it propose one while you chat.</t>
+                        </p>
+
+                        <div class="nova_studio_cards">
+                            <t t-foreach="this.filteredKnowledge" t-as="concept" t-key="concept.id">
+                                <article class="nova_studio_card" t-att-class="concept.stale ? 'nova_studio_card_stale' : ''">
+                                    <header class="nova_studio_cardhead">
+                                        <span class="nova_studio_kind" t-att-class="'nova_studio_kind-' + concept.kind"><t t-out="this.kindLabel(concept.kind)"/></span>
+                                        <span class="nova_studio_trust" t-att-class="'nova_studio_trust-' + concept.trust"><t t-out="this.trustLabel(concept.trust)"/></span>
+                                        <span t-if="concept.stale" class="nova_studio_pill nova_studio_pill_warn">Stale</span>
+                                        <span t-if="concept.proposed" class="nova_studio_pill nova_studio_pill_info">Proposal</span>
+                                    </header>
+                                    <h3 t-on-click="() => this.openConcept(concept)" class="nova_studio_cardtitle"><t t-out="concept.name"/></h3>
+                                    <p class="nova_studio_carddesc"><t t-out="concept.description or 'No description — the agent matches on it, so it is worth writing.'"/></p>
+                                    <footer class="nova_studio_cardfoot">
+                                        <span class="nova_studio_meta" t-att-title="concept.code"><t t-out="concept.code"/></span>
+                                        <span class="nova_studio_meta" t-if="concept.use_count">used <t t-out="concept.use_count"/>×</span>
+                                        <span class="nova_studio_meta" t-if="concept.last_used_at"><t t-out="this.age(concept.last_used_at)"/></span>
+                                        <span class="nova_studio_spacer"/>
+                                        <button type="button" class="nova_studio_linkbtn" t-on-click="() => this.openConcept(concept)">Open</button>
+                                    </footer>
+                                </article>
+                            </t>
+                        </div>
+                    </section>
+
+                    <!-- ══ PROPOSALS ══════════════════════════════════════════ -->
+                    <section t-if="this._section() === 'proposals'" class="nova_studio_section">
+                        <p t-if="!this.proposals.length" class="nova_studio_empty">
+                            Nothing is waiting for a decision. When the agent learns something worth keeping, it proposes it here and a human accepts or rejects it.
+                        </p>
+                        <div class="nova_studio_cards nova_studio_cards_wide">
+                            <t t-foreach="this.proposals" t-as="concept" t-key="concept.id">
+                                <article class="nova_studio_card nova_studio_card_wide">
+                                    <header class="nova_studio_cardhead">
+                                        <span class="nova_studio_kind" t-att-class="'nova_studio_kind-' + concept.kind"><t t-out="this.kindLabel(concept.kind)"/></span>
+                                        <span class="nova_studio_trust nova_studio_trust-unverified">Unverified</span>
+                                        <span class="nova_studio_spacer"/>
+                                        <span class="nova_studio_meta">proposed by <t t-out="concept.proposed_by or 'the agent'"/></span>
+                                    </header>
+                                    <h3 class="nova_studio_cardtitle"><t t-out="concept.name"/></h3>
+                                    <p class="nova_studio_carddesc" t-if="concept.description"><t t-out="concept.description"/></p>
+                                    <div class="nova_studio_prose" t-att-html="this.markdown(concept.body)"/>
+                                    <footer class="nova_studio_cardfoot">
+                                        <button type="button" class="nova_studio_btn nova_studio_btn_primary nova_studio_btn_small"
+                                                t-on-click="() => this.reviewConcept(concept, 'accept')"
+                                                t-att-disabled="this.busyConcept === 'knowledge:' + concept.id ? 'disabled' : false">Accept</button>
+                                        <button type="button" class="nova_studio_btn nova_studio_btn_small"
+                                                t-on-click="() => this.reviewConcept(concept, 'reject')"
+                                                t-att-disabled="this.busyConcept === 'knowledge:' + concept.id ? 'disabled' : false">Reject</button>
+                                        <span class="nova_studio_spacer"/>
+                                        <span class="nova_studio_meta" t-if="concept.generated_at">proposed <t t-out="this.age(concept.generated_at)"/></span>
+                                    </footer>
+                                </article>
+                            </t>
+                        </div>
+                    </section>
+
+                    <!-- ══ FLOWS ═════════════════════════════════════════════ -->
+                    <section t-if="this._section() === 'flows'" class="nova_studio_section">
+                        <div class="nova_studio_sectionhead">
+                            <p class="nova_studio_lead">A flow is a saved plan the agent can run in one call. Every write it reaches still lands as a confirmation card.</p>
+                            <button t-if="this.isAdmin" type="button" class="nova_studio_btn nova_studio_btn_primary" t-on-click="() => this.newFlow()">New flow</button>
+                            <button type="button" class="nova_studio_btn" t-on-click="() => this.openFlows()">Manage flows</button>
+                        </div>
+                        <p t-if="!this.flows.length" class="nova_studio_empty">No flows yet.</p>
+                        <div class="nova_studio_cards nova_studio_cards_wide">
+                            <t t-foreach="this.flows" t-as="flow" t-key="flow.id">
+                                <article class="nova_studio_card nova_studio_card_wide">
+                                    <header class="nova_studio_cardhead">
+                                        <span class="nova_studio_kind nova_studio_kind-flow">Flow</span>
+                                        <span t-if="!flow.valid" class="nova_studio_pill nova_studio_pill_warn">Needs fixing</span>
+                                        <span t-if="flow.active" class="nova_studio_pill nova_studio_pill_ok">Active</span>
+                                        <span class="nova_studio_spacer"/>
+                                        <span class="nova_studio_meta" t-if="flow.use_count">run <t t-out="flow.use_count"/>×</span>
+                                    </header>
+                                    <h3 class="nova_studio_cardtitle"><t t-out="flow.name"/></h3>
+                                    <p class="nova_studio_carddesc" t-if="flow.description"><t t-out="flow.description"/></p>
+                                    <ol class="nova_studio_steps">
+                                        <t t-foreach="flow.steps" t-as="step" t-key="step.n">
+                                            <li class="nova_studio_step">
+                                                <span class="nova_studio_stepicon" aria-hidden="true"><t t-out="this.stepIcon(step.type)"/></span>
+                                                <span class="nova_studio_stepbody">
+                                                    <strong t-out="step.label"/>
+                                                    <em t-if="step.detail" t-out="step.detail"/>
+                                                </span>
+                                                <span t-if="step.result" class="nova_studio_stepvar" t-att-title="'Stored as ' + step.result"><t t-out="step.result"/></span>
+                                            </li>
+                                        </t>
+                                    </ol>
+                                    <p t-if="flow.problems.length" class="nova_studio_flowproblem">
+                                        <t t-foreach="flow.problems" t-as="problem" t-key="problem"><t t-out="problem"/><br/></t>
+                                    </p>
+                                    <footer class="nova_studio_cardfoot">
+                                        <button type="button" class="nova_studio_btn nova_studio_btn_primary nova_studio_btn_small"
+                                                t-on-click="() => this.runFlow(flow)"
+                                                t-att-disabled="!flow.valid || this.busyConcept === 'flow:' + flow.id ? 'disabled' : false"
+                                                t-att-title="flow.valid ? 'Run this flow now' : 'Fix the problems first'">Run</button>
+                                        <button t-if="this.isAdmin" type="button" class="nova_studio_btn nova_studio_btn_small"
+                                                t-on-click="() => this.openEditor(flow)">Edit</button>
+                                        <span class="nova_studio_meta"><t t-out="flow.step_count"/> step(s)</span>
+                                        <span t-if="flow.agent" class="nova_studio_meta">· <t t-out="flow.agent"/></span>
+                                    </footer>
+                                </article>
+                            </t>
+                        </div>
+                    </section>
+
+                    <!-- ══ TOOLS ═════════════════════════════════════════════ -->
+                    <section t-if="this._section() === 'tools'" class="nova_studio_section">
+                        <div class="nova_studio_sectionhead">
+                            <p class="nova_studio_lead">The tools the agent may call. A write tool never lands on its own: it queues a card.</p>
+                            <button type="button" class="nova_studio_btn" t-on-click="() => this.openTools()">Manage tools</button>
+                        </div>
+                        <div class="nova_studio_tablewrap">
+                            <table class="nova_studio_table">
+                                <thead>
+                                    <tr>
+                                        <th>Tool</th>
+                                        <th>Minimum tier</th>
+                                        <th>Writes</th>
+                                        <th>This hour</th>
+                                        <th>What it does</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="this.tools" t-as="tool" t-key="tool.id">
+                                        <tr>
+                                            <td class="nova_studio_td_code"><t t-out="tool.code"/></td>
+                                            <td><span t-att-class="'nova_studio_tier' + (tool.tier === 't3' ? ' nova_studio_tier-t3' : tool.tier === 't2' ? ' nova_studio_tier-t2' : ' nova_studio_tier-t1')"><t t-out="tool.tier.toUpperCase()"/>+</span></td>
+                                            <td>
+                                                <span t-if="tool.write_kind === 'auto'" class="nova_studio_pill nova_studio_pill_warn" title="May apply without a card when the agent runs in auto mode">auto</span>
+                                                <span t-elif="tool.write_kind === 'confirm'" class="nova_studio_pill nova_studio_pill_info" title="Always waits for a card you approve">card</span>
+                                                <span t-else="" class="nova_studio_pill nova_studio_pill_ok" title="Reads only">read only</span>
+                                                <span t-if="tool.destructive" class="nova_studio_pill nova_studio_pill_danger">destructive</span>
+                                            </td>
+                                            <td class="nova_studio_td_num">
+                                                <span t-if="tool.rate_limit" t-att-title="'Limit: ' + tool.rate_limit + ' per hour'"><t t-out="tool.used"/> / <t t-out="tool.rate_limit"/></span>
+                                                <span t-else="" class="nova_studio_meta" title="No hourly limit">-</span>
+                                            </td>
+                                            <td class="nova_studio_td_desc"><t t-out="tool.description"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- ══ ROUTING ═══════════════════════════════════════════ -->
+                    <section t-if="this._section() === 'routing'" class="nova_studio_section">
+                        <div class="nova_studio_sectionhead">
+                            <p class="nova_studio_lead">The router picks the model that can do the job, then the cheapest one that can. A capability the step needs is never traded for a lower price.</p>
+                            <button type="button" class="nova_studio_btn" t-on-click="() => this.openModels()">Manage models</button>
+                        </div>
+
+                        <article class="nova_studio_panel">
+                            <header class="nova_studio_panelhead">
+                                <h2>What must the model do?</h2>
+                            </header>
+                            <div class="nova_studio_filters">
+                                <t t-foreach="this.capabilities" t-as="cap" t-key="cap.id">
+                                    <button type="button" class="nova_studio_chip"
+                                            t-att-class="this._requires().includes(cap.id) ? 'nova_studio_chip_on' : ''"
+                                            t-on-click="() => this.toggleRequirement(cap.id)"
+                                            t-att-pressed="this._requires().includes(cap.id) ? 'true' : 'false'"><t t-out="cap.label"/></button>
+                                </t>
+                            </div>
+                            <p class="nova_studio_chosen">
+                                <span class="nova_studio_chosenlabel">Chosen</span>
+                                <strong t-if="this.chosenName"><t t-out="this.chosenName"/></strong>
+                                <span t-else="" class="nova_studio_chosen_none">no model covers this combination</span>
+                            </p>
+                        </article>
+
+                        <article class="nova_studio_panel">
+                            <header class="nova_studio_panelhead">
+                                <h2>The table</h2>
+                                <span t-if="this._routingBusy()" class="nova_studio_pill">working…</span>
+                                <span class="nova_studio_spacer"/>
+                                <span class="nova_studio_meta"><t t-out="this.routingRows.length"/> model(s) — eligible first</span>
+                            </header>
+                            <div class="nova_studio_tablewrap nova_studio_tablewrap_scroll">
+                                <table class="nova_studio_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Model</th>
+                                            <th>Tier</th>
+                                            <th>Can do</th>
+                                            <th>In / Out per Mtok</th>
+                                            <th>Reliability</th>
+                                            <th>Latency</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="this.routingRows" t-as="model" t-key="model.id">
+                                            <tr t-att-class="model.eligible ? '' : 'nova_studio_row_out'">
+                                                <td class="nova_studio_td_code">
+                                                    <t t-out="model.name"/>
+                                                    <span t-if="model.id === (this._routing() || {}).chosen" class="nova_studio_pill nova_studio_pill_info">chosen</span>
+                                                </td>
+                                                <td><span t-att-class="'nova_studio_tier' + (model.tier === 't3' ? ' nova_studio_tier-t3' : model.tier === 't2' ? ' nova_studio_tier-t2' : ' nova_studio_tier-t1')"><t t-out="(model.tier || '').toUpperCase()"/></span></td>
+                                                <td>
+                                                    <t t-if="model.missing and model.missing.length" class="nova_studio_missing">missing <t t-out="model.missing.join(', ')"/></t>
+                                                    <t t-else="" class="nova_studio_caps">
+                                                        <span t-foreach="model.capabilities || []" t-as="cap" t-key="cap" class="nova_studio_cap"><t t-out="cap"/></span>
+                                                    </t>
+                                                </td>
+                                                <td class="nova_studio_td_num"><t t-out="this.costPair(model)"/></td>
+                                                <td>
+                                                    <span class="nova_studio_relbar" role="img" t-att-aria-label="this.percent(model.reliability)">
+                                                        <span t-att-class="this.reliabilityClass(model.reliability)" t-att-style="'width:' + Math.round((model.reliability || 0) * 100) + '%'"/>
+                                                    </span>
+                                                    <span class="nova_studio_relnum"><t t-out="this.percent(model.reliability)"/></span>
+                                                </td>
+                                                <td class="nova_studio_td_num"><t t-out="this.latency(model.latency_hint_ms)"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
+
+                        <article class="nova_studio_panel">
+                            <header class="nova_studio_panelhead">
+                                <h2>Which skill would fire?</h2>
+                            </header>
+                            <div class="nova_studio_sim">
+                                <div class="nova_studio_search nova_studio_search_wide">
+                                    <span aria-hidden="true">⌕</span>
+                                    <input type="text" class="nova_studio_input" t-att-value="this._skillQuery()"
+                                           t-on-input="(ev) => this.setSkillQuery(ev)"
+                                           t-on-keydown="(ev) => this.onSkillKey(ev)"
+                                           placeholder="Type a request, e.g. “invoice the customer for the March order”"
+                                           aria-label="Simulate the skill router"/>
+                                    <button type="button" class="nova_studio_btn nova_studio_btn_small" t-on-click="() => this.explainSkills()">Simulate</button>
+                                </div>
+                                <ol t-if="this._skillRows().length" class="nova_studio_skillrows">
+                                    <t t-foreach="this._skillRows()" t-as="row" t-key="row.id">
+                                        <li>
+                                            <span class="nova_studio_skillbar" aria-hidden="true"><span t-att-style="'width:' + Math.round((row.score || 0) * 100) + '%'"/></span>
+                                            <span class="nova_studio_skillname"><t t-out="row.name"/></span>
+                                            <span class="nova_studio_skillscore"><t t-out="this.num(row.score, 2)"/></span>
+                                        </li>
+                                    </t>
+                                </ol>
+                                <p t-elif="this._skillQuery()" class="nova_studio_lead">No skill scores on that request — the agent answers from the tools alone.</p>
+                            </div>
+                        </article>
+                    </section>
+
+                    <!-- ══ ACTIVITY ═════════════════════════════════════════ -->
+                    <section t-if="this._section() === 'activity'" class="nova_studio_section">
+                        <div class="nova_studio_sectionhead">
+                            <p class="nova_studio_lead">Every provider call and every tool call is logged. This is the audit trail, newest first.</p>
+                            <button type="button" class="nova_studio_btn" t-on-click="() => this.openLogs()">Open the full log</button>
+                        </div>
+                        <p t-if="!this.activity.length" class="nova_studio_empty">Nothing logged yet.</p>
+                        <div class="nova_studio_tablewrap">
+                            <table class="nova_studio_table">
+                                <thead>
+                                    <tr>
+                                        <th>When</th>
+                                        <th>Kind</th>
+                                        <th>What</th>
+                                        <th>Model</th>
+                                        <th>By</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="this.activity" t-as="row" t-key="row.id">
+                                        <tr t-att-class="row.ok ? '' : 'nova_studio_row_bad'">
+                                            <td class="nova_studio_td_when"><t t-out="this.age(row.at)"/></td>
+                                            <td>
+                                                <span t-if="row.kind === 'tool'" class="nova_studio_pill">tool</span>
+                                                <span t-elif="row.kind === 'model'" class="nova_studio_pill">model</span>
+                                                <span t-else="" class="nova_studio_pill"><t t-out="row.kind"/></span>
+                                            </td>
+                                            <td class="nova_studio_td_code">
+                                                <t t-out="row.tool or row.kind"/>
+                                                <span t-if="row.error" class="nova_studio_errtext" t-out="row.error"/>
+                                            </td>
+                                            <td class="nova_studio_td_desc"><t t-out="row.model or '—'"/></td>
+                                            <td class="nova_studio_td_desc"><t t-out="row.user or '—'"/></td>
+                                            <td class="nova_studio_td_num"><t t-out="this.latency(row.latency_ms)"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </main>
+            </div>
+
+            <!-- ── concept detail ────────────────────────────────────── -->
+            <div t-if="this.selected" class="nova_studio_sheet" role="dialog" aria-modal="true" aria-label="Concept">
+                <div class="nova_studio_sheetpanel">
+                    <header class="nova_studio_sheethead">
+                        <div>
+                            <span class="nova_studio_kind" t-att-class="'nova_studio_kind-' + this.selected.kind"><t t-out="this.kindLabel(this.selected.kind)"/></span>
+                            <h2><t t-out="this.selected.name"/></h2>
+                            <p class="nova_studio_sheetcode"><t t-out="this.selected.code"/></p>
+                        </div>
+                        <button type="button" class="nova_studio_iconbtn" t-on-click="() => this.closeConcept()" aria-label="Close">×</button>
+                    </header>
+                    <div class="nova_studio_sheetbody">
+                        <p class="nova_studio_lead" t-if="this.selected.description"><t t-out="this.selected.description"/></p>
+                        <div class="nova_studio_prose" t-att-html="this.markdown(this.selected.body)"/>
+                        <h3 class="nova_studio_subhead">Provenance</h3>
+                        <dl class="nova_studio_dl">
+                            <dt>Written by</dt><dd><t t-out="this.selected.generated_by or 'unknown'"/></dd>
+                            <dt>Written at</dt><dd><t t-out="this.selected.generated_at or '—'"/></dd>
+                            <dt>Reviewed by</dt><dd><t t-out="this.selected.verified_by or 'nobody yet'"/></dd>
+                            <dt>Trust</dt><dd><t t-out="this.trustLabel(this.selected.trust)"/></dd>
+                            <dt>Status</dt><dd><t t-out="this.selected.status"/></dd>
+                            <dt>Used</dt><dd><t t-out="this.selected.use_count"/> time(s)<t t-if="this.selected.last_used_at"> · last <t t-out="this.age(this.selected.last_used_at)"/></t></dd>
+                            <dt t-if="this.selected.stale_after">Stale after</dt>
+                            <dd t-if="this.selected.stale_after"><t t-out="this.selected.stale_after"/></dd>
+                        </dl>
+                        <t t-if="this.selected.sources and this.selected.sources.length">
+                            <h3 class="nova_studio_subhead">Sources</h3>
+                            <ul class="nova_studio_plainlist">
+                                <t t-foreach="this.selected.sources" t-as="source" t-key="source_index">
+                                    <li><strong t-out="source.title or source.resource or source.id or 'source'"/><em t-out="source.resource or ''"/></li>
+                                </t>
+                            </ul>
+                        </t>
+                    </div>
+                    <footer class="nova_studio_sheetfoot">
+                        <button t-if="!this.selected.verified_by" type="button" class="nova_studio_btn nova_studio_btn_small"
+                                t-on-click="() => this.reviewConcept(this.selected, 'verify')">Mark reviewed</button>
+                        <button t-if="this.selected.proposed" type="button" class="nova_studio_btn nova_studio_btn_primary nova_studio_btn_small"
+                                t-on-click="() => this.reviewConcept(this.selected, 'accept')">Accept</button>
+                        <button t-if="this.selected.proposed" type="button" class="nova_studio_btn nova_studio_btn_small"
+                                t-on-click="() => this.reviewConcept(this.selected, 'reject')">Reject</button>
+                        <span class="nova_studio_spacer"/>
+                        <button type="button" class="nova_studio_btn" t-on-click="() => this.closeConcept()">Close</button>
+                    </footer>
+                </div>
+            </div>
+
+            <!-- ── the concept composer ───────────────────────────────── -->
+            <div t-if="this._composer()" class="nova_studio_sheet" role="dialog" aria-modal="true" aria-label="Write a concept">
+                <div class="nova_studio_sheetpanel nova_studio_sheetpanel_narrow">
+                    <header class="nova_studio_sheethead">
+                        <div>
+                            <h2>Write a concept</h2>
+                            <p class="nova_studio_sheetcode">A human-written concept is trusted from the start.</p>
+                        </div>
+                        <button type="button" class="nova_studio_iconbtn" t-on-click="() => this.closeComposer()" aria-label="Close">×</button>
+                    </header>
+                    <div class="nova_studio_sheetbody">
+                        <label class="nova_studio_label">Title</label>
+                        <input type="text" class="nova_studio_input nova_studio_input_block" t-att-value="this._draft().name"
+                               t-on-input="(ev) => this.setDraftField('name', ev)" placeholder="Create a product"/>
+                        <label class="nova_studio_label">When does this apply?</label>
+                        <input type="text" class="nova_studio_input nova_studio_input_block" t-att-value="this._draft().description"
+                               t-on-input="(ev) => this.setDraftField('description', ev)" placeholder="The agent matches on this line — keep it under 150 characters."/>
+                        <label class="nova_studio_label">Kind</label>
+                        <select class="nova_studio_input nova_studio_input_block" t-att-value="this._draft().kind" t-on-change="(ev) => this.setDraftKind(ev)">
+                            <option value="memory">Memory — a durable fact</option>
+                            <option value="skill">Skill — a procedure to follow</option>
+                            <option value="wiki">Wiki — a concept it maintains</option>
+                            <option value="reference">Reference — documentation</option>
+                        </select>
+                        <label class="nova_studio_label">Body</label>
+                        <textarea class="nova_studio_input nova_studio_input_block nova_studio_textarea" rows="10" t-att-value="this._draft().body"
+                                  t-on-input="(ev) => this.setDraftField('body', ev)" placeholder="Markdown. For a skill, this is the procedure to follow."/>
+                        <p class="nova_studio_hint">Credentials and instructions aimed at the model are refused by the server — knowledge is for people.</p>
+                    </div>
+                    <footer class="nova_studio_sheetfoot">
+                        <button type="button" class="nova_studio_btn nova_studio_btn_primary"
+                                t-on-click="() => this.saveConcept()"
+                                t-att-disabled="this.busyConcept === 'compose' ? 'disabled' : false">Save</button>
+                        <button type="button" class="nova_studio_btn" t-on-click="() => this.closeComposer()">Cancel</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+<!-- the flow editor -->
+<div t-if="this.editing" class="nova_studio_sheet" role="dialog" aria-modal="true" aria-label="Edit flow">
+    <div class="nova_studio_sheetpanel nova_studio_sheetpanel_wide">
+        <header class="nova_studio_sheethead">
+            <div>
+                <span class="nova_studio_kind nova_studio_kind-flow">Flow</span>
+                <h2><t t-out="this.editing.name || 'Untitled flow'"/></h2>
+                <p class="nova_studio_sheetcode">steps run in order; every write queues a card</p>
+            </div>
+            <button type="button" class="nova_studio_iconbtn" t-on-click="() => this.closeEditor()" aria-label="Close">x</button>
+        </header>
+        <div class="nova_studio_sheetbody">
+            <label class="nova_studio_label">Name</label>
+            <input type="text" class="nova_studio_input nova_studio_input_block" t-att-value="this.editing.name"
+                   t-on-input="(ev) => this.setEditor('name', ev)" placeholder="Chase overdue invoices"/>
+            <label class="nova_studio_label">What it does</label>
+            <input type="text" class="nova_studio_input nova_studio_input_block" t-att-value="this.editing.description"
+                   t-on-input="(ev) => this.setEditor('description', ev)"
+                   placeholder="Shown to the agent when it lists flows - keep it one line."/>
+            <label class="nova_studio_check"><input type="checkbox" t-att-checked="this.editing.active ? 'checked' : false"
+                   t-on-change="(ev) => this.setEditorCheck('active', ev)"/> Active</label>
+
+            <p t-if="this._editError()" class="nova_studio_error" role="alert"><t t-out="this._editError()"/></p>
+            <div t-if="this._editProblems().length" class="nova_studio_flowproblem">
+                <strong>Needs fixing</strong>
+                <ul class="nova_studio_problemlist">
+                    <t t-foreach="this._editProblems()" t-as="problem" t-key="problem"><li><t t-out="problem"/></li></t>
+                </ul>
+            </div>
+
+            <h3 class="nova_studio_subhead">Steps (<t t-out="this.editing.steps.length"/>)</h3>
+            <t t-foreach="this.editing.steps" t-as="wstep" t-key="wstep_index">
+                <div class="nova_studio_estep">
+                    <div class="nova_studio_estephead">
+                        <span class="nova_studio_stepicon" aria-hidden="true"><t t-out="this.stepIcon(wstep.type)"/></span>
+                        <strong t-out="this.workingLabel(wstep, wstep_index)"/>
+                        <span class="nova_studio_spacer"/>
+                        <button type="button" class="nova_studio_iconbtn nova_studio_iconbtn_small"
+                                t-on-click="() => this.moveStep(wstep_index, -1)"
+                                t-att-disabled="wstep_index === 0 ? 'disabled' : false"
+                                aria-label="Move step up">&#8593;</button>
+                        <button type="button" class="nova_studio_iconbtn nova_studio_iconbtn_small"
+                                t-on-click="() => this.moveStep(wstep_index, 1)"
+                                t-att-disabled="wstep_index + 1 >= this.editing.steps.length ? 'disabled' : false"
+                                aria-label="Move step down">&#8595;</button>
+                        <button type="button" class="nova_studio_iconbtn nova_studio_iconbtn_small"
+                                t-on-click="() => this.removeStep(wstep_index)"
+                                aria-label="Remove step">x</button>
+                    </div>
+                    <div class="nova_studio_estepbody">
+                        <div class="nova_studio_erow">
+                            <label class="nova_studio_label">Block</label>
+                            <select class="nova_studio_input" t-att-value="wstep.type"
+                                    t-on-change="(ev) => this.setStepType(wstep_index, ev)"
+                                    aria-label="Step type">
+                                <option value="">-- pick a block --</option>
+                                <t t-foreach="this.flowStepTypes()" t-as="st" t-key="st.id">
+                                    <option t-att-value="st.id" t-att-selected="st.id === wstep.type"><t t-out="st.label"/></option>
+                                </t>
+                            </select>
+                        </div>
+
+                        <div t-if="wstep.type === 'start'">
+                            <p class="nova_studio_hint">The inputs the flow asks for when it runs.</p>
+                            <t t-foreach="wstep.variables" t-as="var" t-key="var_index">
+                                <div class="nova_studio_evarrow">
+                                    <input type="text" class="nova_studio_input" t-att-value="var.name"
+                                           t-on-input="(ev) => this.setFlowVar(wstep_index, var_index, 'name', ev)"
+                                           placeholder="days" aria-label="Variable name"/>
+                                    <select class="nova_studio_input" t-att-value="var.vartype"
+                                            t-on-change="(ev) => this.setFlowVar(wstep_index, var_index, 'vartype', ev)"
+                                            aria-label="Variable kind">
+                                        <option value="required" t-att-selected="var.vartype === 'required'">required</option>
+                                        <option value="optional" t-att-selected="var.vartype === 'optional'">optional</option>
+                                    </select>
+                                    <input type="text" class="nova_studio_input" t-att-value="var.description"
+                                           t-on-input="(ev) => this.setFlowVar(wstep_index, var_index, 'description', ev)"
+                                           placeholder="Only invoices due more than this many days ago" aria-label="Variable description"/>
+                                    <button type="button" class="nova_studio_iconbtn nova_studio_iconbtn_small"
+                                            t-on-click="() => this.removeFlowVar(wstep_index, var_index)"
+                                            aria-label="Remove variable">x</button>
+                                </div>
+                            </t>
+                            <button type="button" class="nova_studio_btn nova_studio_btn_small" t-on-click="() => this.addFlowVar(wstep_index)">Add input</button>
+                        </div>
+
+                        <div t-if="wstep.type === 'search'">
+                            <div class="nova_studio_erow">
+                                <label class="nova_studio_label">Model</label>
+                                <input type="text" class="nova_studio_input" t-att-value="wstep.model"
+                                       t-on-input="(ev) => this.setStepField(wstep_index, 'model', ev)"
+                                       placeholder="account.move" aria-label="Model"/>
+                            </div>
+                            <div class="nova_studio_erow">
+                                <label class="nova_studio_label">Domain (JSON)</label>
+                                <textarea class="nova_studio_input nova_studio_textarea nova_studio_textarea_small" rows="2"
+                                          t-att-value="wstep.domainText"
+                                          t-on-input="(ev) => this.setStepField(wstep_index, 'domainText', ev)"
+                                          aria-label="Domain as JSON">[["move_type", "=", "out_invoice"]]</textarea>
+                            </div>
+                            <div class="nova_studio_erow3">
+                                <div><label class="nova_studio_label">Fields</label>
+                                <input type="text" class="nova_studio_input" t-att-value="wstep.fieldsText"
+                                       t-on-input="(ev) => this.setStepField(wstep_index, 'fieldsText', ev)"
+                                       placeholder="name, partner_id, amount_total" aria-label="Fields, comma separated"/></div>
+                                <div><label class="nova_studio_label">Limit</label>
+                                <input type="text" class="nova_studio_input" t-att-value="wstep.limitText"
+                                       t-on-input="(ev) => this.setStepField(wstep_index, 'limitText', ev)"
+                                       inputmode="numeric" aria-label="Limit"/></div>
+                                <div><label class="nova_studio_label">Order</label>
+                                <input type="text" class="nova_studio_input" t-att-value="wstep.orderText"
+                                       t-on-input="(ev) => this.setStepField(wstep_index, 'orderText', ev)"
+                                       placeholder="invoice_date_due asc" aria-label="Order"/></div>
+                            </div>
+                        </div>
+
+                        <div t-if="wstep.type === 'read'">
+                            <div class="nova_studio_erow2">
+                                <div><label class="nova_studio_label">Model</label>
+                                <input type="text" class="nova_studio_input" t-att-value="wstep.model"
+                                       t-on-input="(ev) => this.setStepField(wstep_index, 'model', ev)"
+                                       aria-label="Model"/></div>
+                                <div><label class="nova_studio_label">Record id</label>
+                                <input type="text" class="nova_studio_input" t-att-value="wstep.resIdText"
+                                       t-on-input="(ev) => this.setStepField(wstep_index, 'resIdText', ev)"
+                                       inputmode="numeric" aria-label="Record id"/></div>
+                            </div>
+                        </div>
+
+                        <div t-if="wstep.type === 'create'">
+                            <div class="nova_studio_erow">
+                                <label class="nova_studio_label">Model</label>
+                                <input type="text" class="nova_studio_input" t-att-value="wstep.model"
+                                       t-on-input="(ev) => this.setStepField(wstep_index, 'model', ev)"
+                                       aria-label="Model"/>
+                            </div>
+                            <div class="nova_studio_erow">
+                                <label class="nova_studio_label">Values (JSON)</label>
+                                <textarea class="nova_studio_input nova_studio_textarea nova_studio_textarea_small" rows="2"
+                                          t-att-value="wstep.valuesText"
+                                          t-on-input="(ev) => this.setStepField(wstep_index, 'valuesText', ev)"
+                                          aria-label="Values as JSON">{"name": ""}</textarea>
+                            </div>
+                        </div>
+
+                        <div t-if="wstep.type === 'tool'">
+                            <div class="nova_studio_erow">
+                                <label class="nova_studio_label">Tool</label>
+                                <select class="nova_studio_input" t-att-value="wstep.tool"
+                                        t-on-change="(ev) => this.setStepTool(wstep_index, ev)"
+                                        aria-label="Tool">
+                                    <option value="">-- pick a tool --</option>
+                                    <t t-foreach="this.tools" t-as="tool" t-key="tool.id">
+                                        <option t-att-value="tool.code" t-att-selected="tool.code === wstep.tool"><t t-out="tool.code"/> - <t t-out="tool.name"/></option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="nova_studio_erow">
+                                <label class="nova_studio_label">Arguments (JSON)</label>
+                                <textarea class="nova_studio_input nova_studio_textarea nova_studio_textarea_small" rows="2"
+                                          t-att-value="wstep.argsText"
+                                          t-on-input="(ev) => this.setStepField(wstep_index, 'argsText', ev)"
+                                          aria-label="Arguments as JSON">{}</textarea>
+                            </div>
+                        </div>
+
+                        <div t-if="wstep.type === 'agent'">
+                            <div class="nova_studio_erow">
+                                <label class="nova_studio_label">Agent</label>
+                                <select class="nova_studio_input" t-att-value="wstep.agentId"
+                                        t-on-change="(ev) => this.setStepAgent(wstep_index, ev)"
+                                        aria-label="Agent">
+                                    <option value="0" t-att-selected="!wstep.agentId">This flow's own agent</option>
+                                    <t t-foreach="this.agentsList" t-as="agent" t-key="agent.id">
+                                        <option t-att-value="agent.id" t-att-selected="agent.id === wstep.agentId"><t t-out="agent.name"/></option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="nova_studio_erow">
+                                <label class="nova_studio_label">Instruction</label>
+                                <textarea class="nova_studio_input nova_studio_textarea nova_studio_textarea_small" rows="2"
+                                          t-att-value="wstep.instruction"
+                                          t-on-input="(ev) => this.setStepField(wstep_index, 'instruction', ev)"
+                                          placeholder="Write a short reminder for each overdue invoice in ${overdue}."
+                                          aria-label="Instruction"></textarea>
+                            </div>
+                        </div>
+
+                        <div t-if="wstep.type === 'note'">
+                            <div class="nova_studio_erow">
+                                <label class="nova_studio_label">Note</label>
+                                <textarea class="nova_studio_input nova_studio_textarea nova_studio_textarea_small" rows="2"
+                                          t-att-value="wstep.body"
+                                          t-on-input="(ev) => this.setStepField(wstep_index, 'body', ev)"
+                                          aria-label="Note body"></textarea>
+                            </div>
+                        </div>
+
+                        <div t-if="wstep.type === 'output'">
+                            <div class="nova_studio_erow">
+                                <label class="nova_studio_label">Return this (use ${name} for a step's value)</label>
+                                <input type="text" class="nova_studio_input" t-att-value="wstep.valueText"
+                                       t-on-input="(ev) => this.setStepField(wstep_index, 'valueText', ev)"
+                                       aria-label="Output value"/>
+                            </div>
+                        </div>
+
+                        <div t-if="wstep.type" class="nova_studio_erow2">
+                            <div><label class="nova_studio_label">Store as</label>
+                            <input type="text" class="nova_studio_input" t-att-value="wstep.result"
+                                   t-on-input="(ev) => this.setStepField(wstep_index, 'result', ev)"
+                                   placeholder="rows" aria-label="Result variable name"/></div>
+                            <div class="nova_studio_echeck"><label class="nova_studio_check"><input type="checkbox"
+                                   t-att-checked="wstep.direct ? 'checked' : false"
+                                   t-on-change="(ev) => this.setStepCheck(wstep_index, 'direct', ev)"/>
+                                   Finish here with this value</label></div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+
+            <div class="nova_studio_epalette" role="group" aria-label="Add a step">
+                <span class="nova_studio_paletlabel">Add a block</span>
+                <t t-foreach="this.flowStepTypes()" t-as="st" t-key="st.id">
+                    <button type="button" class="nova_studio_btn nova_studio_btn_small"
+                            t-on-click="() => this.addStep(st.id)"><t t-out="st.label"/></button>
+                </t>
+            </div>
+        </div>
+        <footer class="nova_studio_sheetfoot">
+            <button type="button" class="nova_studio_btn nova_studio_btn_primary"
+                    t-on-click="() => this.saveFlow()"
+                    t-att-disabled="this.busyConcept ? 'disabled' : false">Save</button>
+            <button type="button" class="nova_studio_btn" t-on-click="() => this.closeEditor()">Close</button>
+        </footer>
+    </div>
+</div>
+
+<!-- the run-arguments sheet -->
+<div t-if="this._running()" class="nova_studio_sheet" role="dialog" aria-modal="true" aria-label="Run flow">
+    <div class="nova_studio_sheetpanel nova_studio_sheetpanel_narrow">
+        <header class="nova_studio_sheethead">
+            <div>
+                <span class="nova_studio_kind nova_studio_kind-flow">Flow</span>
+                <h2><t t-out="this._running().name"/></h2>
+                <p class="nova_studio_sheetcode">this run needs a few inputs</p>
+            </div>
+            <button type="button" class="nova_studio_iconbtn" t-on-click="() => this.closeRun()" aria-label="Close">x</button>
+        </header>
+        <div class="nova_studio_sheetbody">
+            <p t-if="this._runError()" class="nova_studio_error" role="alert"><t t-out="this._runError()"/></p>
+            <t t-foreach="this._running().vars" t-as="rv" t-key="rv_index">
+                <div class="nova_studio_erow">
+                    <label class="nova_studio_label"><t t-out="rv.name"/><t t-if="rv.required"> *</t></label>
+                    <input type="text" class="nova_studio_input nova_studio_input_block"
+                           t-att-value="rv.value"
+                           t-on-input="(ev) => this.setRunArg(rv_index, ev)"
+                           t-att-placeholder="rv.description" t-att-aria-label="rv.name"/>
+                    <p class="nova_studio_hint" t-if="rv.description"><t t-out="rv.description"/></p>
+                </div>
+            </t>
+        </div>
+        <footer class="nova_studio_sheetfoot">
+            <button type="button" class="nova_studio_btn nova_studio_btn_primary"
+                    t-on-click="() => this.confirmRunFlow()"
+                    t-att-disabled="this.busyConcept ? 'disabled' : false">Run</button>
+            <button type="button" class="nova_studio_btn" t-on-click="() => this.closeRun()">Cancel</button>
+        </footer>
+    </div>
+</div>
+    </t>
+</templates>

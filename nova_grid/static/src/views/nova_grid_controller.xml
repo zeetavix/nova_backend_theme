@@ -1,0 +1,83 @@
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<templates>
+    <t t-name="nova_grid.GridView" owl="1">
+        <div t-att-class="this.props.className" t-ref="this.rootRef">
+            <Layout className="this.model.useSampleModel ? 'o_view_sample_data' : ''" display="this.props.display">
+                <t t-set-slot="control-panel-additional-actions">
+                    <CogMenu/>
+                </t>
+                <t t-set-slot="control-panel-actions">
+                    <SearchBar toggler="this.searchBarToggler"/>
+                </t>
+                <t t-set-slot="control-panel-navigation-additional">
+                    <t t-component="this.searchBarToggler.component" t-props="this.searchBarToggler.props"/>
+                </t>
+                <t t-set-slot="default">
+                    <div class="o_nova_grid_toolbar d-flex align-items-center gap-2 flex-wrap px-3 pt-2">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Period navigation">
+                            <button class="btn btn-secondary o_nova_grid_prev" t-on-click="this.onPrev" title="Previous period">‹</button>
+                            <button class="btn btn-secondary o_nova_grid_today" t-on-click="this.onToday">Today</button>
+                            <button class="btn btn-secondary o_nova_grid_next" t-on-click="this.onNext" title="Next period">›</button>
+                        </div>
+                        <span class="o_nova_grid_period fw-semibold text-muted"><t t-out="this.model.navigation?.label || ''"/></span>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Range">
+                            <t t-foreach="this.rangeEntries" t-as="range" t-key="range.name">
+                                <button
+                                    t-attf-class="btn {{ this.activeRangeName === range.name ? 'btn-primary' : 'btn-secondary' }}"
+                                    t-on-click="() => this.onRangeChange(range.name)"
+                                ><t t-out="range.description"/></button>
+                            </t>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm" t-on-click="this.onToggleWeekend">
+                            <t t-if="this.model.showWeekend">Hide weekends</t>
+                            <t t-else="">Show weekends</t>
+                        </button>
+                        <div class="ms-auto d-flex gap-2">
+                            <button class="btn btn-outline-secondary btn-sm" t-on-click="this.onExportCsv">Export CSV</button>
+                            <button t-if="this.showCopyPrevious" class="btn btn-outline-primary btn-sm" t-on-click="this.onCopyPrevious" title="Seed this period with last period's rows">Copy previous</button>
+                        </div>
+                    </div>
+                    <t t-if="this.showEmpty">
+                        <ActionHelper noContentHelp="this.props.info.noContentHelp"/>
+                    </t>
+                    <div class="o_nova_kpis" t-if="this.showContent">
+                        <div class="o_kpi">
+                            <span class="o_kpi_value"><t t-out="this.fmt(this.weekTotal)"/><t t-out="this.unitSuffix"/></span>
+                            <span class="o_kpi_label">Total</span>
+                        </div>
+                        <div class="o_kpi">
+                            <span class="o_kpi_value"><t t-out="this.fmt(this.todayTotal)"/><t t-out="this.unitSuffix"/></span>
+                            <span class="o_kpi_label">Today</span>
+                        </div>
+                        <div class="o_kpi">
+                            <span class="o_kpi_value"><t t-out="this.activeDays"/></span>
+                            <span class="o_kpi_label">Active days</span>
+                        </div>
+                        <div class="o_kpi">
+                            <span class="o_kpi_value"><t t-out="this.fmt(this.dailyAvg)"/><t t-out="this.unitSuffix"/></span>
+                            <span class="o_kpi_label">Avg / day</span>
+                        </div>
+                        <div class="o_kpi o_kpi_capacity" t-if="this.showCapacity">
+                            <svg class="o_kpi_ring" width="60" height="60" viewBox="0 0 60 60" role="img" t-att-aria-label="this.capacityPct + '% ' + this.capacityLabel">
+                                <circle cx="30" cy="30" r="25" class="o_kpi_ring_track"/>
+                                <circle cx="30" cy="30" r="25" class="o_kpi_ring_fill" transform="rotate(-90 30 30)"
+                                    t-att-stroke-dasharray="this.capacityRing.dash"
+                                    t-att-stroke-dashoffset="this.capacityRing.offset"/>
+                            </svg>
+                            <div class="o_kpi_cap_text">
+                                <span class="o_kpi_value"><t t-out="this.capacityPct"/>%</span>
+                                <span class="o_kpi_label"><t t-out="this.capacityLabel"/></span>
+                            </div>
+                        </div>
+                    </div>
+                    <t t-if="this.showContent" t-component="this.props.Renderer" t-props="this.rendererProps"/>
+                </t>
+            </Layout>
+        </div>
+    </t>
+    <t t-name="nova_grid.GridView.Buttons" owl="1">
+        <div class="d-flex gap-1">
+            <button class="btn btn-primary">Add a line</button>
+        </div>
+    </t>
+</templates>

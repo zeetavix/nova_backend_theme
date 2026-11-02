@@ -1,0 +1,180 @@
+///
+/// Nova AI editor prompt dialog — selected-text context, prompt input,
+/// suggestion chips, result preview. Tokens from the Nova theme.
+///
+
+.nova_ai_prompt_dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nova_ai_prompt_selection {
+    border-left: 3px solid $nova-action;
+    border-radius: $o-border-radius-sm;
+    background: $o-gray-100;
+    padding: 8px 12px;
+}
+
+.nova_ai_prompt_sel_label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $nova-ink-muted;
+    margin-bottom: 2px;
+}
+
+.nova_ai_prompt_sel_body {
+    font-size: 13px;
+    line-height: 1.5;
+    color: $nova-ink;
+    max-height: 100px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+// Same field recipe as the form floor: tinted fill at rest, teal on focus.
+.nova_ai_prompt_input {
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: $nova-paper-deep;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: $nova-ink;
+    resize: vertical;
+    min-height: 68px;
+    transition: border-color $nova-dur-base $o-easing-enter,
+        box-shadow $nova-dur-base $o-easing-enter,
+        background-color $nova-dur-base $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-paper-border;
+    }
+
+    &:focus {
+        border-color: $nova-action;
+        background-color: $o-white;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
+        outline: none;
+    }
+
+    &::placeholder {
+        color: $nova-ink-muted;
+    }
+}
+
+.nova_ai_prompt_suggest {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.nova_ai_prompt_chip {
+    border: 1px solid $o-border-color;
+    border-radius: 999px;
+    background: $o-white;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: $nova-ink-muted;
+    cursor: pointer;
+    transition: background $nova-dur-fast $o-easing-enter,
+        border-color $nova-dur-fast $o-easing-enter,
+        color $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-border-strong;
+        color: $nova-ink;
+        background: $o-gray-100;
+    }
+
+    &.nova_ai_prompt_chip_on {
+        border-color: $nova-action;
+        background: $nova-action-soft;
+        color: $nova-action-active;
+        font-weight: 600;
+    }
+}
+
+.nova_ai_prompt_actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nova_ai_prompt_go {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+
+    .nova_ai_glyph {
+        flex: 0 0 auto;
+    }
+}
+
+.nova_ai_prompt_spin {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba($o-white, 0.4);
+    border-top-color: $o-white;
+    border-radius: 50%;
+    animation: nova-ai-spin 0.7s linear infinite;
+}
+
+@keyframes nova-ai-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.nova_ai_prompt_hint {
+    font-size: 12px;
+    color: $nova-ink-muted;
+}
+
+.nova_ai_prompt_error {
+    border-left: 3px solid $o-danger;
+    border-radius: $o-border-radius-sm;
+    background: rgba($o-danger, 0.06);
+    padding: 8px 12px;
+    font-size: 13px;
+    color: map-get($o-theme-text-colors, "danger");
+}
+
+.nova_ai_prompt_preview {
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius;
+    background: $o-view-background-color;
+    overflow: hidden;
+}
+
+.nova_ai_prompt_prev_label {
+    padding: 6px 12px;
+    border-bottom: 1px solid $o-border-color;
+    background: $o-gray-100;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $nova-ink-muted;
+}
+
+.nova_ai_prompt_prev_body {
+    padding: 10px 12px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: $nova-ink;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+// Reduced motion: the spinner freezes to a static ring.
+@media (prefers-reduced-motion: reduce) {
+    .nova_ai_prompt_spin {
+        animation: none;
+        border-top-color: rgba($o-white, 0.4);
+    }
+}

@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     The skills Nova ships with. A skill is a procedure the agent loads
+     before acting: one line of trigger text in the system prompt, the
+     body on demand. These encode the Odoo rules that are expensive to
+     rediscover and wrong to guess — products live on product.template,
+     Odoo owns the defaults, domains are triples, and a record that was
+     read may be cited. -->
+<odoo>
+    <data noupdate="1">
+    <record id="skill_create_product" model="nova.ai.knowledge">
+        <field name="name">Create a product</field>
+        <field name="code">create-a-product</field>
+        <field name="kind">skill</field>
+        <field name="description">Create a new product, service or consumable in the catalogue</field>
+        <field name="body"><![CDATA[
+## When to use
+The user asks for a new product, service, subscription or consumable.
+
+## Procedure
+1. **Search first.** `search_records` on `product.template`, name `ilike`
+   the product name. If something close exists, offer it instead of
+   creating a duplicate.
+2. **Queue a draft.** `create_draft` with
+   `model: "product.template"` and `values: {"name": "<name>"}`.
+   New products are ALWAYS `product.template` records — the variants
+   (`product.product`) are created automatically by Odoo. Never queue a
+   `product.product` without its template id.
+3. **Send only what the user stated.** Name is the one field they gave.
+   Everything else — price, cost, currency, category, uom, type —
+   is Odoo's business. Odoo fills its own defaults.
+
+## Where the values come from
+Three kinds of value, and only one of them is forbidden:
+- **Stated** by the user — use it.
+- **Found** by you this turn (a page you fetched, a record you read, a
+  price you looked up) — use it. Looked up is NOT invented. If the
+  user asked you to research, what you researched IS the answer they
+  asked for; refusing to use it is refusing the job.
+- **Invented** by you — never. No price, SKU, reference, weight or
+  spec that came from your own head.
+
+So: no value without a source. A value you looked up has a source.
+
+## Traps
+- **Never ask the user for a value Odoo already defaults.** Asking for
+  price, currency or category when the user only said "iPhone 18 Pro"
+  is a failure: create it with the name and let Odoo default the rest.
+- Never invent a SKU, barcode, internal reference or cost. Omit the
+  field instead — a card with an invented value is worse than a card
+  with a missing field.
+- **Do not stop to describe what you would do.** If the user asked for
+  a change, the turn is not finished until the card is queued. A turn
+  that ends with "I would now..." has done nothing.
+- **A product that already exists is an update, not a second
+  product.** Find it, then set the fields on it — one card, several
+  fields — instead of creating a duplicate.
+- `product.category` and `uom.uom` are the models for category and
+  unit. There is no `product.uom`.
+- After the card is approved the template exists and its variant is
+  usable; no second step is needed.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="skill_customer_invoice" model="nova.ai.knowledge">
+        <field name="name">Raise a customer invoice</field>
+        <field name="code">raise-a-customer-invoice</field>
+        <field name="kind">skill</field>
+        <field name="description">Bill a customer for delivered goods or services</field>
+        <field name="body"><![CDATA[
+## When to use
+The user wants to invoice a customer, bill a customer, or raise an
+invoice for work already done.
+
+## Procedure
+1. **Find the sale order** — `search_records` on `sale.order` for the
+   customer and the unpaid lines. An invoice that already exists for
+   those lines is a finding, not an obstacle: report it and stop.
+2. **Check what is deliverable** — read the order's lines and their
+   delivered state. Do not invoice what was never delivered without
+   saying so.
+3. **Invoice it** — `invoice_order` on the order id. It queues a
+   card; the user approves.
+4. **Report the number** — the invoice name and its total come from
+   the card. Do not state a total you did not read from a tool.
+
+## Traps
+- A customer invoice is `account.move` with
+  `move_type = "out_invoice"`. A vendor bill is `in_invoice`. Always
+  filter the type — an unfiltered search returns both and the answer
+  is wrong.
+- One invoice per order, not one per line. `invoice_order` handles
+  the grouping; do not queue one card per line.
+- `res.partner` has no customer flag. Filter `customer_rank > 0`.
+- Never invent a tax, a payment term or a journal. Omit the field.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="skill_overdue_invoices" model="nova.ai.knowledge">
+        <field name="code">find-overdue-invoices</field>
+        <field name="name">Find overdue invoices</field>
+        <field name="kind">skill</field>
+        <field name="description">Report which customer invoices are past due and by how much</field>
+        <field name="body"><![CDATA[
+## When to use
+The user asks who owes money, which invoices are late, or what to chase.
+
+## Procedure
+1. **Count first.** `count_records` on `account.move` with
+   `move_type = "out_invoice"`, `payment_state` in
+   `("not_paid", "partial")` and a due date in the past. The count is
+   the headline of the answer.
+2. **Then list them.** `search_records` with the same domain, ordered
+   by due date ascending — the oldest debt first.
+3. **Per row**: invoice number, customer, residual amount with its
+   currency, and days overdue.
+4. **One collection step.** Do not read every line of every invoice;
+   the residual and the dates are on the header.
+
+## Traps
+- Empty is a finding, not a failure: "no overdue invoices" is a
+  complete answer.
+- Never round a residual to "0" without the count that says so.
+- `amount_residual` is the money left; `amount_total` is not. Reporting
+  the total as the debt is wrong.
+- `payment_state` is the truth (`not_paid`, `partial`, `paid`); a
+  date in the past alone does not mean overdue.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="skill_log_time" model="nova.ai.knowledge">
+        <field name="name">Log time on a project</field>
+        <field name="code">log-time-on-a-project</field>
+        <field name="kind">skill</field>
+        <field name="description">Record worked hours against a project task</field>
+        <field name="body"><![CDATA[
+## When to use
+The user says they worked on something, asks to log hours, or wants
+today's timesheet filled in.
+
+## Procedure
+1. **Find the task** — `search_records` on `project.task`, name
+   `ilike` what the user said. If several match, ask with
+   `ask_user` and 2-4 concrete options — never pick one.
+2. **Log the hours** — `log_timesheet` with `task_id` and `hours`.
+   A day is 8h, a morning is about 4h, and "an hour" is 1. If the
+   user said nothing about duration, ask.
+3. **The date** — "today" and "yesterday" are accepted words; pass
+   "today" unless the user named another day.
+
+## Traps
+- A timesheet is `account.analytic.line`. It needs a project and a
+  task; the project is derived from the task.
+- Hours are a number between 0 and 24. "all day" is 8, not 24.
+- One card for the whole entry, not one per hour.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="skill_use_tools" model="nova.ai.knowledge">
+        <field name="name">Use the tools correctly</field>
+        <field name="code">use-the-tools-correctly</field>
+        <field name="kind">skill</field>
+        <field name="description">How to call read and write tools without failing</field>
+        <field name="body"><![CDATA[
+## Domains
+A domain is a **list of [field, operator, value] triples**, one list
+per condition:
+
+```
+[["name", "ilike", "Acme"]]
+[["move_type", "=", "out_invoice"], ["payment_state", "!=", "paid"]]
+```
+
+Never a flat triple, never a dict, never a bare string. Operators:
+`=`, `!=`, `>`, `>=`, `<`, `<=`, `like`, `ilike`, `in`, `not in`.
+
+## Order of work
+1. **Read first.** Search before you create — never create what might
+   already exist. Then read the record, then act.
+2. **One tool call per fact.** A search and a read of the same row
+   are two facts, not one.
+3. **Never guess an id.** No "id 1". Every id in a write must come
+   from a tool result in this turn. A web page can never give you an
+   Odoo id.
+4. **Batch the reads.** Independent searches in one round beat three
+   rounds of one.
+
+## When a call fails
+Read the error, fix the argument, retry **once**. The same failing
+call twice is the failure. If the second attempt also fails, stop
+and use `inspect_method` (for a method's real parameters) or
+`fields_get` (for real field names) before trying again. If a field
+name is uncertain, ask the user.
+
+## Writing
+- Only fields the user stated or a tool returned. Omit the rest.
+- A write always lands as a confirmation card. Saying "queued"
+  without a tool call is a failure.
+- Chains: queue every step in dependency order in one turn and let
+  the approvals fill the ids.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="skill_cite_sources" model="nova.ai.knowledge">
+        <field name="name">Answer with sources</field>
+        <field name="code">answer-with-sources</field>
+        <field name="kind">skill</field>
+        <field name="description">Ground every claim in a record and cite it</field>
+        <field name="body"><![CDATA[
+## When to use
+Any question about a record, a number, a list of records, or a
+decision. This is the default, not an option.
+
+## Procedure
+1. Every figure in the answer comes from a tool result in this turn.
+2. Name the record it came from: the invoice number, the partner
+   name, the project. A number without its source is a guess.
+3. Read the record you cite. A citation to a record you did not
+   read is worse than no citation.
+
+## Shape
+- One line per finding, no paragraphs of preamble.
+- Say what is missing when something is missing: "no reorder points
+  are on file, so the shortfall is computed as zero" is a finding.
+- A record you read can be cited with its deep link — the answer
+  shows the record it came from and the user can open it.
+
+## Traps
+- Never round to "zero" without the count that says so.
+- Never mix a total with a residual.
+- If a search comes back empty, say it is empty. Do not substitute a
+  plausible-sounding number.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="skill_digitize_bill" model="nova.ai.knowledge">
+        <field name="name">Digitize a vendor bill</field>
+        <field name="code">digitize-a-vendor-bill</field>
+        <field name="kind">skill</field>
+        <field name="description">Read a scanned or PDF invoice into a draft vendor bill</field>
+        <field name="body"><![CDATA[
+## When to use
+The user attaches a bill, an invoice PDF or a scan and wants it in
+the books.
+
+## Procedure
+1. **Read the document** — `digitize_bill` on the attachment. It needs
+   a model that can read images; a PDF with selectable text is
+   better than a scan.
+2. **Check for a duplicate** — search `account.move` for the vendor and
+   the amount before queueing anything.
+3. **Queue the bill** — a vendor bill is `account.move` with
+   `move_type = "in_invoice"`, vendor, date, lines.
+4. **Say what you could not read.** A scan that is half-legible
+   gets a bill with the legible fields and a question about the
+   rest — not a confident guess.
+
+## Traps
+- A bill is `in_invoice`; an invoice you raise for a customer is
+  `out_invoice`. Never queue the wrong one.
+- The amount on the document wins over anything inferred.
+- If the document is a scan the model cannot read, say so plainly
+  instead of producing an empty bill.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="skill_learn" model="nova.ai.knowledge">
+        <field name="name">Learn and propose</field>
+        <field name="code">learn-and-propose</field>
+        <field name="kind">skill</field>
+        <field name="description">Capture a durable fact or procedure worth keeping</field>
+        <field name="body"><![CDATA[
+## When to use
+The user taught you something that will matter next time: a naming
+convention, a business rule, a preference ("we always bill on the
+last day of the month"), a correction.
+
+## Procedure
+1. `write_knowledge` with a short `name`, a `description` that says
+   **when this applies** (that line is what gets matched against a
+   future request), and the `body` in markdown.
+2. `kind`: `memory` for a fact about the business or the user,
+   `wiki` for a concept, `skill` for a procedure to follow.
+
+## Traps
+- It lands as a **draft**. A human reviews it before the agent may
+  use it. Do not claim it is already in effect.
+- Never store a password, a key or a token. The tool refuses.
+- One concept per record. If it is two ideas, it is two records.
+- Do not propose what the tools already answer. A fact that a search
+  returns is not knowledge.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+    </data>
+</odoo>

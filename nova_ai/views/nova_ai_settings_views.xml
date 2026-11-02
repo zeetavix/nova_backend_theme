@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     Nova AI settings block: injected into the shared Settings form
+     (Odoo shows one block per installed module). Switches and a
+     voice picker bound to the engine params, a live status line,
+     and the Prepare button. -->
+<odoo>
+    <record id="nova_ai_settings_view_form" model="ir.ui.view">
+        <field name="name">nova.ai.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <div class="app_settings_block" data-string="Nova AI"
+                     string="Nova AI" data-key="nova_ai">
+                    <h2>Voice</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left">
+                                <field name="nova_local_stt" />
+                            </div>
+                            <div class="o_setting_right">
+                                <label for="nova_local_stt" />
+                                <div class="text-muted">
+                                    Hear users on this server (whisper,
+                                    in-process). Off falls back to the
+                                    provider, then the browser.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left">
+                                <field name="nova_local_tts" />
+                            </div>
+                            <div class="o_setting_right">
+                                <label for="nova_local_tts" />
+                                <div class="text-muted">
+                                    Speak replies on this server (Piper,
+                                    in-process). The voice downloads
+                                    itself once.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left">
+                                <field name="nova_tts_voice" />
+                            </div>
+                            <div class="o_setting_right">
+                                <label for="nova_tts_voice" />
+                                <div class="text-muted">
+                                    Who answers when Nova speaks aloud.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left">
+                                <field name="nova_voice_wake" />
+                            </div>
+                            <div class="o_setting_right">
+                                <label for="nova_voice_wake" />
+                                <div class="text-muted">
+                                    Hands-free listening in an open
+                                    browser tab.
+                                    <field name="nova_voice_wake_phrase"
+                                            placeholder="hey nova" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 o_setting_box">
+                            <div class="o_setting_right">
+                                <label for="nova_voice_status" />
+                                <div><field name="nova_voice_status"
+                                          readonly="1" nolabel="1" /></div>
+                                <button name="action_prepare_voice"
+                                        type="object"
+                                        string="Prepare offline voice"
+                                        class="btn-primary mt8"
+                                        title="Download the voice, load whisper, speak one word to prove it." />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

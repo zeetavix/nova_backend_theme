@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     The flows Nova ships with. Each one reads first and writes last,
+     and every write lands as a confirmation card the user approves.
+     Flows that need an input declare it in the start step; the Studio
+     asks for it when the flow runs. -->
+<odoo>
+    <data noupdate="1">
+<record id="flow_unpaid_vendor_bills_2" model="nova.ai.flow">
+<field name="name">Unpaid vendor bills (summary)</field>
+        <field name="description">Vendor bills waiting for payment, oldest first, with what is owed to whom</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {
+    &quot;type&quot;: &quot;start&quot;,
+    &quot;config&quot;: {&quot;variables&quot;: []}
+  },
+  {
+    &quot;type&quot;: &quot;search&quot;,
+    &quot;config&quot;: {&quot;args&quot;: {
+      &quot;model&quot;: &quot;account.move&quot;,
+      &quot;domain&quot;: [[&quot;move_type&quot;, &quot;=&quot;, &quot;in_invoice&quot;], [&quot;payment_state&quot;, &quot;in&quot;, [&quot;not_paid&quot;, &quot;partial&quot;]]],
+      &quot;fields&quot;: [&quot;name&quot;, &quot;partner_id&quot;, &quot;amount_residual&quot;, &quot;invoice_date_due&quot;],
+      &quot;limit&quot;: 15,
+      &quot;order&quot;: &quot;invoice_date_due asc&quot;
+    }},
+    &quot;resultVariable&quot;: &quot;bills&quot;
+  },
+  {
+    &quot;type&quot;: &quot;agent&quot;,
+    &quot;config&quot;: {&quot;instruction&quot;: &quot;Summarize the unpaid vendor bills in ${bills}: vendor, invoice number, amount owed and due date. Flag the most overdue first.&quot;},
+    &quot;resultVariable&quot;: &quot;summary&quot;
+  },
+  {
+    &quot;type&quot;: &quot;output&quot;,
+    &quot;config&quot;: {&quot;value&quot;: &quot;${summary}&quot;}
+  }
+]" />
+    </record>
+
+    <record id="flow_recent_sales" model="nova.ai.flow">
+        <field name="name">Recent sales</field>
+        <field name="description">Latest confirmed sale orders with customer and total, ready to brief</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {
+    &quot;type&quot;: &quot;start&quot;,
+    &quot;config&quot;: {&quot;variables&quot;: []}
+  },
+  {
+    &quot;type&quot;: &quot;search&quot;,
+    &quot;config&quot;: {&quot;args&quot;: {
+      &quot;model&quot;: &quot;sale.order&quot;,
+      &quot;domain&quot;: [[&quot;state&quot;, &quot;=&quot;, &quot;sale&quot;]],
+      &quot;fields&quot;: [&quot;name&quot;, &quot;partner_id&quot;, &quot;amount_total&quot;, &quot;date_order&quot;],
+      &quot;limit&quot;: 10,
+      &quot;order&quot;: &quot;date_order desc&quot;
+    }},
+    &quot;resultVariable&quot;: &quot;orders&quot;
+  },
+  {
+    &quot;type&quot;: &quot;agent&quot;,
+    &quot;config&quot;: {&quot;instruction&quot;: &quot;Summarize these recent sales in ${orders}: order, customer, total and date. End with the combined total.&quot;},
+    &quot;resultVariable&quot;: &quot;digest&quot;
+  },
+  {
+    &quot;type&quot;: &quot;output&quot;,
+    &quot;config&quot;: {&quot;value&quot;: &quot;${digest}&quot;}
+  }
+]" />
+    </record>
+
+    <record id="flow_draft_quotations" model="nova.ai.flow">
+        <field name="name">Draft quotations to chase</field>
+        <field name="description">Oldest unsent quotations with customer and amount, ready for follow-up</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {
+    &quot;type&quot;: &quot;start&quot;,
+    &quot;config&quot;: {&quot;variables&quot;: []}
+  },
+  {
+    &quot;type&quot;: &quot;search&quot;,
+    &quot;config&quot;: {&quot;args&quot;: {
+      &quot;model&quot;: &quot;sale.order&quot;,
+      &quot;domain&quot;: [[&quot;state&quot;, &quot;=&quot;, &quot;draft&quot;]],
+      &quot;fields&quot;: [&quot;name&quot;, &quot;partner_id&quot;, &quot;amount_total&quot;, &quot;create_date&quot;],
+      &quot;limit&quot;: 15,
+      &quot;order&quot;: &quot;create_date asc&quot;
+    }},
+    &quot;resultVariable&quot;: &quot;drafts&quot;
+  },
+  {
+    &quot;type&quot;: &quot;agent&quot;,
+    &quot;config&quot;: {&quot;instruction&quot;: &quot;List these draft quotations in ${drafts} for follow-up: quote, customer, amount and age. Oldest first.&quot;},
+    &quot;resultVariable&quot;: &quot;followups&quot;
+  },
+  {
+    &quot;type&quot;: &quot;output&quot;,
+    &quot;config&quot;: {&quot;value&quot;: &quot;${followups}&quot;}
+  }
+]" />
+    </record>
+
+    <record id="flow_new_leads" model="nova.ai.flow">
+        <field name="name">New leads triage</field>
+        <field name="description">Leads created since a date, triaged by heat with contact details</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {
+    &quot;type&quot;: &quot;start&quot;,
+    &quot;config&quot;: {&quot;variables&quot;: [
+      {&quot;name&quot;: &quot;since&quot;, &quot;type&quot;: &quot;required&quot;, &quot;description&quot;: &quot;Show leads created on or after this date (YYYY-MM-DD)&quot;}
+    ]}
+  },
+  {
+    &quot;type&quot;: &quot;search&quot;,
+    &quot;config&quot;: {&quot;args&quot;: {
+      &quot;model&quot;: &quot;crm.lead&quot;,
+      &quot;domain&quot;: [[&quot;create_date&quot;, &quot;&gt;=&quot;, &quot;${since}&quot;]],
+      &quot;fields&quot;: [&quot;name&quot;, &quot;partner_id&quot;, &quot;email_from&quot;, &quot;phone&quot;, &quot;stage_id&quot;],
+      &quot;limit&quot;: 20,
+      &quot;order&quot;: &quot;create_date desc&quot;
+    }},
+    &quot;resultVariable&quot;: &quot;leads&quot;
+  },
+  {
+    &quot;type&quot;: &quot;agent&quot;,
+    &quot;config&quot;: {&quot;instruction&quot;: &quot;Triage these new leads in ${leads}: name, contact, stage, and which look hottest. One line each.&quot;},
+    &quot;resultVariable&quot;: &quot;triage&quot;
+  },
+  {
+    &quot;type&quot;: &quot;output&quot;,
+    &quot;config&quot;: {&quot;value&quot;: &quot;${triage}&quot;}
+  }
+]" />
+    </record>
+
+    <record id="flow_timesheet_week" model="nova.ai.flow">
+        <field name="name">Timesheet week</field>
+        <field name="description">Worked hours since a date, grouped by project with who did what</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {
+    &quot;type&quot;: &quot;start&quot;,
+    &quot;config&quot;: {&quot;variables&quot;: [
+      {&quot;name&quot;: &quot;since&quot;, &quot;type&quot;: &quot;required&quot;, &quot;description&quot;: &quot;Show hours logged on or after this date (YYYY-MM-DD)&quot;}
+    ]}
+  },
+  {
+    &quot;type&quot;: &quot;search&quot;,
+    &quot;config&quot;: {&quot;args&quot;: {
+      &quot;model&quot;: &quot;account.analytic.line&quot;,
+      &quot;domain&quot;: [[&quot;date&quot;, &quot;&gt;=&quot;, &quot;${since}&quot;]],
+      &quot;fields&quot;: [&quot;project_id&quot;, &quot;task_id&quot;, &quot;employee_id&quot;, &quot;unit_amount&quot;, &quot;date&quot;],
+      &quot;limit&quot;: 30,
+      &quot;order&quot;: &quot;date desc&quot;
+    }},
+    &quot;resultVariable&quot;: &quot;lines&quot;
+  },
+  {
+    &quot;type&quot;: &quot;agent&quot;,
+    &quot;config&quot;: {&quot;instruction&quot;: &quot;Summarize these timesheet lines in ${lines} by project: hours logged and who worked. End with the week total.&quot;},
+    &quot;resultVariable&quot;: &quot;summary&quot;
+  },
+  {
+    &quot;type&quot;: &quot;output&quot;,
+    &quot;config&quot;: {&quot;value&quot;: &quot;${summary}&quot;}
+  }
+]" />
+    </record>
+
+<record id="flow_zero_price_products_2" model="nova.ai.flow">
+<field name="name">Zero-price products (review)</field>
+        <field name="description">Products with no sales price on file, flagged for a pricing review</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {
+    &quot;type&quot;: &quot;start&quot;,
+    &quot;config&quot;: {&quot;variables&quot;: []}
+  },
+  {
+    &quot;type&quot;: &quot;search&quot;,
+    &quot;config&quot;: {&quot;args&quot;: {
+      &quot;model&quot;: &quot;product.template&quot;,
+      &quot;domain&quot;: [[&quot;list_price&quot;, &quot;&lt;=&quot;, 0]],
+      &quot;fields&quot;: [&quot;name&quot;, &quot;list_price&quot;, &quot;type&quot;, &quot;categ_id&quot;],
+      &quot;limit&quot;: 20
+    }},
+    &quot;resultVariable&quot;: &quot;products&quot;
+  },
+  {
+    &quot;type&quot;: &quot;agent&quot;,
+    &quot;config&quot;: {&quot;instruction&quot;: &quot;List these zero-priced products in ${products} for review: name, type, and whether a zero price looks intentional (e.g. a service) or like missing data.&quot;},
+    &quot;resultVariable&quot;: &quot;review&quot;
+  },
+  {
+    &quot;type&quot;: &quot;output&quot;,
+    &quot;config&quot;: {&quot;value&quot;: &quot;${review}&quot;}
+  }
+]" />
+    </record>
+
+    <record id="flow_overdue_tasks" model="nova.ai.flow">
+        <field name="name">Overdue tasks</field>
+        <field name="description">Tasks past their deadline with owner and stage, ready to chase</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {
+    &quot;type&quot;: &quot;start&quot;,
+    &quot;config&quot;: {&quot;variables&quot;: [
+      {&quot;name&quot;: &quot;before&quot;, &quot;type&quot;: &quot;required&quot;, &quot;description&quot;: &quot;Tasks due on or before this date (YYYY-MM-DD)&quot;}
+    ]}
+  },
+  {
+    &quot;type&quot;: &quot;search&quot;,
+    &quot;config&quot;: {&quot;args&quot;: {
+      &quot;model&quot;: &quot;project.task&quot;,
+      &quot;domain&quot;: [[&quot;date_deadline&quot;, &quot;&lt;=&quot;, &quot;${before}&quot;]],
+      &quot;fields&quot;: [&quot;name&quot;, &quot;project_id&quot;, &quot;user_ids&quot;, &quot;date_deadline&quot;, &quot;stage_id&quot;],
+      &quot;limit&quot;: 20,
+      &quot;order&quot;: &quot;date_deadline asc&quot;
+    }},
+    &quot;resultVariable&quot;: &quot;tasks&quot;
+  },
+  {
+    &quot;type&quot;: &quot;agent&quot;,
+    &quot;config&quot;: {&quot;instruction&quot;: &quot;List these overdue tasks in ${tasks}: task, project, owner, deadline and stage. Oldest first.&quot;},
+    &quot;resultVariable&quot;: &quot;blockers&quot;
+  },
+  {
+    &quot;type&quot;: &quot;output&quot;,
+    &quot;config&quot;: {&quot;value&quot;: &quot;${blockers}&quot;}
+  }
+]" />
+    </record>
+
+    <record id="flow_stale_drafts" model="nova.ai.flow">
+        <field name="name">Stale drafts cleanup</field>
+        <field name="description">Old draft invoices and bills that were never posted, listed for cleanup</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {
+    &quot;type&quot;: &quot;start&quot;,
+    &quot;config&quot;: {&quot;variables&quot;: [
+      {&quot;name&quot;: &quot;before&quot;, &quot;type&quot;: &quot;required&quot;, &quot;description&quot;: &quot;Drafts created on or before this date (YYYY-MM-DD)&quot;}
+    ]}
+  },
+  {
+    &quot;type&quot;: &quot;search&quot;,
+    &quot;config&quot;: {&quot;args&quot;: {
+      &quot;model&quot;: &quot;account.move&quot;,
+      &quot;domain&quot;: [[&quot;state&quot;, &quot;=&quot;, &quot;draft&quot;], [&quot;create_date&quot;, &quot;&lt;=&quot;, &quot;${before}&quot;]],
+      &quot;fields&quot;: [&quot;name&quot;, &quot;move_type&quot;, &quot;partner_id&quot;, &quot;amount_total&quot;, &quot;create_date&quot;],
+      &quot;limit&quot;: 20,
+      &quot;order&quot;: &quot;create_date asc&quot;
+    }},
+    &quot;resultVariable&quot;: &quot;drafts&quot;
+  },
+  {
+    &quot;type&quot;: &quot;agent&quot;,
+    &quot;config&quot;: {&quot;instruction&quot;: &quot;List these stale drafts in ${drafts} for cleanup: type, partner, amount and age. Oldest first.&quot;},
+    &quot;resultVariable&quot;: &quot;cleanup&quot;
+  },
+  {
+    &quot;type&quot;: &quot;output&quot;,
+    &quot;config&quot;: {&quot;value&quot;: &quot;${cleanup}&quot;}
+  }
+]" />
+    </record>
+    </data>
+</odoo>

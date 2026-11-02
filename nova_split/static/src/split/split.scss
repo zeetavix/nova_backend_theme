@@ -1,0 +1,311 @@
+// Part of Nova. See LICENSE file for full copyright and licensing details.
+// 16px hit area (touch-friendly); the visible rule stays 1px.
+$o-nova-split-divider-size: 16px;
+$o-nova-split-panel-shadow: -12px 0 24px -18px rgba(0, 0, 0, 0.35);
+$o-nova-split-accent: var(--nova-accent, var(--bs-primary, #714b67));
+
+.o_nova_split_view {
+    .o_nova_split_body {
+        display: flex;
+        align-items: stretch;
+        flex: 1 1 auto;
+        height: 100%;
+        min-height: 0;
+    }
+
+    .o_nova_split_list {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        overflow-y: auto;
+
+        .o_list_renderer {
+            flex: 1 0 auto;
+        }
+    }
+
+    .o_nova_split_divider {
+        position: relative;
+        flex: 0 0 auto;
+        width: $o-nova-split-divider-size;
+        min-height: 0;
+        border: 0;
+        border-left: 1px solid var(--bs-border-color, #dee2e6);
+        background: transparent;
+        cursor: col-resize;
+        touch-action: none;
+
+        &::after {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 32px;
+            border-radius: 2px;
+            background: var(--bs-border-color, #dee2e6);
+            transform: translate(-50%, -50%);
+            content: "";
+        }
+
+        &:hover::after, &:active::after {
+            background: $o-nova-split-accent;
+        }
+
+        &:focus-visible {
+            outline: 2px solid $o-nova-split-accent;
+            outline-offset: -2px;
+        }
+
+        .o_nova_split_close, .o_nova_split_expand {
+            position: absolute;
+            left: 50%;
+            z-index: 1;
+            padding: 2px 4px;
+            transform: translateX(-50%);
+            // Faint at rest so the actions are discoverable without
+            // hovering (touch has no hover); fully opaque on hover.
+            opacity: 0.55;
+        }
+
+        .o_nova_split_close {
+            top: 8px;
+        }
+
+        .o_nova_split_expand {
+            top: 44px;
+        }
+
+        &:hover .o_nova_split_close, &:focus-within .o_nova_split_close,
+        &:hover .o_nova_split_expand, &:focus-within .o_nova_split_expand {
+            opacity: 1;
+        }
+    }
+
+    // The list pane takes focus on click so arrow keys can drive the panel.
+    .o_nova_split_list:focus {
+        outline: none;
+    }
+
+    .o_nova_split_list:focus-visible {
+        box-shadow: inset 0 0 0 2px rgba(113, 75, 103, 0.35);
+    }
+
+    .o_nova_split_panel {
+        flex: 0 0 auto;
+        min-width: 0;
+        min-height: 0;
+        overflow-y: auto;
+        background: var(--o-view-background, #ffffff);
+        box-shadow: $o-nova-split-panel-shadow;
+        animation: o-nova-split-in 180ms ease-out both;
+        // The form inside is laid out for the PANEL, not for the window.
+        container-type: inline-size;
+        container-name: nova-split-panel;
+    }
+
+    .o_nova_split_body.o_nova_split_expanded {
+        .o_nova_split_divider {
+            cursor: default;
+        }
+
+        .o_nova_split_panel {
+            flex: 1 1 auto;
+            width: auto !important;
+            box-shadow: none;
+        }
+    }
+
+    // Panel-width parity, driven by the PANEL's own width (container
+    // queries), never by the window width. Odoo picks form layouts from the
+    // window breakpoints, so a docked panel inside a wide window used to get
+    // the full-window layout: squeezed fields and a clipped chatter lane.
+    // Below 1100px the chatter goes under the sheet at full width (the
+    // sheet keeps the whole panel width); below 768px (Odoo's own md
+    // breakpoint) the groups also stack into single-column fields, like a
+    // normal narrow form.
+    @container nova-split-panel (max-width: 1099px) {
+        .o_form_renderer {
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+
+        .o_form_sheet_bg {
+            flex: 1 1 100%;
+            min-width: 0;
+        }
+
+        // Whatever mail decided from the window width, below 1100px the
+        // chatter belongs under the sheet at full width.
+        .o-mail-Form-chatter {
+            flex: 1 1 100%;
+            width: auto !important;
+            min-width: 0;
+            margin-left: 0;
+            margin-right: 0;
+            padding-left: 0;
+            padding-right: 0;
+
+            .o-mail-Chatter {
+                width: 100%;
+            }
+        }
+    }
+
+    @container nova-split-panel (max-width: 767px) {
+        .o_group {
+            flex-direction: column;
+        }
+
+        .o_inner_group {
+            --fieldWidget-margin-bottom: 0;
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        // Odoo 20 compiles groups to Bootstrap `.grid` containers whose
+        // span rules squeeze labels into unreadable slivers in a narrow
+        // panel (verified on hr.employee notebook groups). Drop those groups
+        // to plain block stacking: label above field, like a normal form.
+        .o_inner_group.grid {
+            display: block;
+        }
+
+        .o_inner_group.grid > .o_cell {
+            max-width: 100%;
+        }
+
+        .o_inner_group .o_cell {
+            max-width: 100%;
+        }
+
+        .o_inner_group .o_cell.o_wrap_label {
+            min-width: 0;
+            white-space: normal;
+        }
+
+        .o_inner_group .o_cell .o_field_widget:not(.o_field_boolean) {
+            width: 100%;
+        }
+    }
+
+    .o_nova_split_form {
+        height: 100%;
+        min-height: 0;
+
+        // Record navigation lives in the list (click the row), so the
+        // form's own prev/next pager is hidden in the panel: it duplicates
+        // chrome and collides with the smart buttons in narrow panels.
+        .o_cp_pager {
+            display: none;
+        }
+
+        // Smart buttons used to overflow their slot and run under the pager.
+        // In the docked panel the button box gets its own full-width row and
+        // wraps onto as many rows as needed, so every button keeps its
+        // natural width and full label instead of truncating or scrolling.
+        .o_control_panel_main {
+            flex-wrap: wrap !important;
+        }
+
+        .o_control_panel_actions {
+            order: 10;
+            flex: 1 1 100% !important;
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        .o-form-buttonbox {
+            max-width: 100%;
+            flex-wrap: wrap;
+            row-gap: 4px;
+        }
+
+        .o-form-buttonbox .oe_stat_button {
+            flex: 0 0 auto;
+        }
+
+        // The embedded form keeps its own control panel (save button, cog
+        // menu); only the action-level chrome is trimmed away.
+        .o_control_panel {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+    }
+
+    .o_data_row.o_nova_split_active {
+        background-color: rgba(113, 75, 103, 0.12);
+        background-color: color-mix(in srgb, $o-nova-split-accent 12%, transparent);
+        box-shadow: inset 3px 0 0 $o-nova-split-accent;
+    }
+
+    .o_nova_split_empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 64px 32px;
+        text-align: center;
+
+        .o_nova_split_empty_title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .o_nova_split_empty_help {
+            margin: 0 0 8px;
+            color: var(--bs-secondary-color, #6c757d);
+        }
+    }
+
+    .o_nova_split_toggle.active {
+        border-color: $o-nova-split-accent;
+        color: $o-nova-split-accent;
+    }
+}
+
+@keyframes o-nova-split-in {
+    from {
+        opacity: 0;
+        transform: translateX(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_nova_split_view .o_nova_split_panel {
+        animation: none;
+    }
+}
+
+@media (max-width: 992px) {
+    .o_nova_split_view {
+        .o_nova_split_body {
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .o_nova_split_list {
+            flex: 0 0 auto;
+            max-height: 42vh;
+            overflow-y: auto;
+        }
+
+        .o_nova_split_divider {
+            display: none;
+        }
+
+        .o_nova_split_panel {
+            flex: 1 0 auto;
+            width: 100% !important;
+            border-top: 1px solid var(--bs-border-color, #dee2e6);
+            box-shadow: none;
+        }
+    }
+}

@@ -1,0 +1,93 @@
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<templates>
+    <t t-name="nova_grid.GridRenderer" owl="1">
+        <div t-attf-class="o_nova_grid_wrap {{ this.columns.length > 10 ? 'o_compact' : '' }}" t-ref="this.tableRef">
+            <t t-if="this.model.hasData()">
+                <table class="o_nova_grid table table-sm table-hover align-middle mb-0">
+                    <thead class="position-sticky top-0">
+                        <tr>
+                            <th class="o_nova_grid_rowhead"><span class="o_rowhead_title"><t t-out="this.rowHeaderTitle"/></span></th>
+                            <t t-foreach="this.columns" t-as="col" t-key="col.id">
+                                <th t-attf-class="o_nova_grid_colhead text-center {{ col.isToday ? 'o_today' : '' }} {{ col.isWeekDay === false ? 'o_weekend' : '' }}" t-att-title="col.title">
+                                    <div class="o_col_top"><t t-out="col.headerTop"/></div>
+                                    <div class="o_col_main"><t t-out="col.headerSub"/></div>
+                                </th>
+                            </t>
+                            <th t-if="this.showLineTotal" class="o_nova_grid_totalhead o_nova_grid_totalcol text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="this.visibleItems" t-as="item" t-key="item.id">
+                            <tr t-if="item.isSection and !item.isFake" class="o_nova_grid_section" t-on-click="() => this.toggleSection(item)" title="Collapse / expand">
+                                <td t-att-colspan="this.columns.length + (this.showLineTotal ? 2 : 1)">
+                                    <span class="o_section_label">
+                                        <span class="o_section_chevron"><t t-if="this.isCollapsed(item)">▸</t><t t-else="">▾</t></span>
+                                        <span class="o_section_avatar" t-att-style="this.avatarStyle(item)"><t t-out="this.avatarInitial(item)"/></span>
+                                        <span class="fw-bold o_section_name"><t t-out="item.title"/></span>
+                                        <span class="text-muted fw-normal small o_section_count">(<t t-out="Object.keys(item.rows || {}).length"/> · <t t-out="this.sectionTotal(item)"/>)</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr t-if="!item.isSection or item.isFake" class="o_nova_grid_row">
+                                <th class="o_nova_grid_rowhead" scope="row" t-att-title="item.title">
+                                    <span class="text-truncate d-inline-block" style="max-width: 280px;"><t t-out="item.title"/></span>
+                                    <span t-if="item.isExtra" class="badge text-bg-info ms-1">new</span>
+                                </th>
+                                <t t-foreach="this.columns" t-as="col" t-key="col.id">
+                                    <t t-set="cell" t-value="item.cells[col.id]"/>
+                                    <td
+                                        t-att-data-cell="this.cellKey(item, col)"
+                                        t-attf-class="o_nova_grid_cell text-center p-0 {{ col.isToday ? 'o_today' : '' }} {{ col.isWeekDay === false ? 'o_weekend' : '' }} {{ cell and cell.readonly ? 'o_readonly' : '' }}"
+                                        t-on-click="() => this.startEdit(item, col)"
+                                        t-att-title="cell ? cell.title : ''"
+                                    >
+                                        <t t-if="cell">
+                                            <t t-if="this.isEditing(item, col)">
+                                                <input
+                                                    class="o_nova_grid_input form-control form-control-sm text-center"
+                                                    t-model.proxy="this.ui.draft"
+                                                    t-on-blur="() => this.commitEdit(item, col)"
+                                                    t-on-keydown="(ev) => this.onCellKeydown(ev, item, col)"
+                                                    autofocus="autofocus"
+                                                />
+                                            </t>
+                                            <t t-else="">
+                                                    <button
+                                                        t-attf-class="o_nova_grid_value btn btn-sm border-0 {{ cell.value ? 'o_has_value' : '' }} {{ this.isOvertime(cell) ? 'o_overtime' : '' }}"
+                                                        t-att-style="cell.value ? this.heatStyle(cell) : ''"
+                                                    >
+                                                    <t t-if="cell.value"><t t-out="this.formatCell(cell.value)"/></t>
+                                                    <t t-else=""><span class="o_empty_dot text-muted">·</span></t>
+                                                    <span t-if="cell.saving" class="spinner-border spinner-border-sm ms-1"/>
+                                                </button>
+                                            </t>
+                                        </t>
+                                    </td>
+                                </t>
+                                <td t-if="this.showLineTotal" t-attf-class="o_nova_grid_linetotal o_nova_grid_totalcol text-center fw-bold {{ !item.getTotal(this.model.showWeekend) ? 'o_zero' : '' }}">
+                                    <t t-out="this.fmtTotal(item.getTotal(this.model.showWeekend))"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                    <tfoot t-if="this.showColumnTotal">
+                        <tr>
+                            <th class="o_nova_grid_rowhead" scope="row">Total</th>
+                            <t t-foreach="this.columns" t-as="col" t-key="col.id">
+                                <th t-attf-class="text-center {{ !col.total ? 'o_zero' : '' }}"><t t-out="this.fmtTotal(col.total)"/></th>
+                            </t>
+                            <th t-if="this.showLineTotal" t-attf-class="o_nova_grid_totalcol o_nova_grid_grandtotal text-center {{ !this.grandTotal ? 'o_zero' : '' }}"><t t-out="this.fmtTotal(this.grandTotal)"/></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </t>
+            <t t-else="">
+                <div class="o_nova_grid_empty text-center py-5">
+                    <div class="display-6 mb-2">No data for this period</div>
+                    <p class="text-muted">Try another period, clear filters, or add your first line.</p>
+                    <button class="btn btn-primary mt-2" t-on-click="this.addRow">Add a line</button>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

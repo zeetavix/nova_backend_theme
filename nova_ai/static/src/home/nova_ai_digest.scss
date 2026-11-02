@@ -1,0 +1,78 @@
+///
+/// Launcher digest — the agent's brief under the insight tiles. Same
+/// card language as the KPI tiles above it (border, radius, shadow) so
+/// it reads as part of the Insights row, not a margin note stapled on.
+/// Badge pill carries the teal; the chips carry the server figures.
+///
+
+.nova_ai_digest {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 12px 0 0;
+    padding: 16px 20px;
+    border: 1px solid $o-border-color;
+    border-radius: $o-border-radius-lg;
+    background: $o-view-background-color;
+    box-shadow: $nova-shadow-sm;
+}
+
+// Teal pill: one accent, the sparkle, uppercase micro-type.
+.nova_ai_digest_badge {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: $nova-action-soft;
+    color: $nova-action-active;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    white-space: nowrap;
+
+    .nova_ai_glyph {
+        width: 1.1em;
+        height: 1.1em;
+        vertical-align: -0.15em;
+    }
+}
+
+.nova_ai_digest_body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.nova_ai_digest_text {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: $nova-ink;
+    text-wrap: pretty;
+    max-width: 90ch;
+}
+
+// Server figures as quiet chips — scannable numbers, not a run-on line.
+.nova_ai_digest_chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.nova_ai_digest_chip {
+    display: inline-block;
+    padding: 2px 9px;
+    border: 1px solid $o-border-color;
+    border-radius: 999px;
+    background: $o-gray-100;
+    font-size: 11px;
+    color: $nova-ink-muted;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}

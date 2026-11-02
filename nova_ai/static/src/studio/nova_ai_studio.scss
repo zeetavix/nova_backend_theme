@@ -1,0 +1,1614 @@
+///
+/// Nova Studio — the agent's control room.
+///
+/// One accent (teal), flat surfaces, warm paper for content, 8pt grid.
+/// The Studio is an operator surface: it must read as calm and factual,
+/// so the type scale is quiet, the borders are hairline, and colour is
+/// reserved for state (trust, staleness, success, danger).
+///
+
+.nova_studio {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    background: $o-gray-100;
+    color: $nova-ink;
+    font-size: 13px;
+}
+
+// ── head ──────────────────────────────────────────────────────────────
+.nova_studio_head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 20px;
+    background: $o-view-background-color;
+    border-bottom: 1px solid $nova-border;
+    flex: 0 0 auto;
+}
+
+.nova_studio_brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.nova_studio_mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: $nova-action-soft;
+    color: $nova-action-active;
+    font-size: 15px;
+    flex: 0 0 auto;
+
+    svg {
+        width: 1em;
+        height: 1em;
+        display: block;
+    }
+}
+
+.nova_studio_brandtext {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+    min-width: 0;
+
+    strong {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+}
+
+.nova_studio_brandsub {
+    font-size: 11px;
+    color: $nova-ink-muted;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nova_studio_agent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    padding: 4px 12px 4px 4px;
+    border: 1px solid $nova-border;
+    border-radius: 999px;
+    background: $o-view-background-color;
+    min-width: 0;
+}
+
+.nova_studio_avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: $nova-action;
+    color: $nova-on-action;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    flex: 0 0 auto;
+}
+
+.nova_studio_avatar_lg {
+    width: 44px;
+    height: 44px;
+    font-size: 15px;
+}
+
+.nova_studio_who {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+    min-width: 0;
+
+    strong {
+        font-size: 12.5px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+}
+
+.nova_studio_who_sub {
+    font-size: 11px;
+    color: $nova-ink-muted;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nova_studio_headactions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+// ── buttons ───────────────────────────────────────────────────────────
+.nova_studio_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid $nova-border-strong;
+    border-radius: 8px;
+    background: $o-view-background-color;
+    color: $nova-ink;
+    font-size: 12.5px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background $nova-dur-fast $o-easing-enter,
+        border-color $nova-dur-fast $o-easing-enter;
+
+    &:hover:not([disabled]) {
+        background: $o-gray-100;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+
+    &[disabled] {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+}
+
+.nova_studio_btn_primary {
+    background: $nova-action;
+    border-color: $nova-action;
+    color: $nova-on-action;
+
+    &:hover:not([disabled]) {
+        background: $nova-action-hover;
+        border-color: $nova-action-hover;
+    }
+}
+
+.nova_studio_btn_small {
+    height: 26px;
+    padding: 0 10px;
+    font-size: 12px;
+}
+
+.nova_studio_linkbtn {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: $nova-action-active;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+        color: $nova-action-hover;
+    }
+}
+
+.nova_studio_iconbtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: $nova-ink-muted;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+        background: $o-gray-100;
+        color: $nova-ink;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.nova_studio_spin {
+    width: 12px;
+    height: 12px;
+    border: 2px solid $nova-border-strong;
+    border-top-color: $nova-action;
+    border-radius: 50%;
+    animation: nova_studio_spin 700ms linear infinite;
+}
+
+@keyframes nova_studio_spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// ── body: rail + main ────────────────────────────────────────────────
+.nova_studio_body {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.nova_studio_rail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 208px;
+    flex: 0 0 auto;
+    padding: 14px 10px;
+    background: $o-view-background-color;
+    border-right: 1px solid $nova-border;
+    overflow-y: auto;
+}
+
+.nova_studio_railbtn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: $nova-ink;
+    font: inherit;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    transition: background $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: -2px;
+    }
+}
+
+.nova_studio_railbtn_on {
+    background: $nova-action-soft;
+    color: $nova-action-active;
+    font-weight: 600;
+
+    &:hover {
+        background: $nova-action-soft;
+    }
+}
+
+.nova_studio_railicon {
+    width: 16px;
+    text-align: center;
+    color: $nova-ink-muted;
+    font-size: 13px;
+    flex: 0 0 auto;
+}
+
+.nova_studio_railbtn_on .nova_studio_railicon {
+    color: $nova-action-active;
+}
+
+.nova_studio_raillabel {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nova_studio_railcount {
+    flex: 0 0 auto;
+    min-width: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: $o-gray-100;
+    color: $nova-ink-muted;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.nova_studio_railcount_alert {
+    background: $o-warning;
+    color: #fff;
+}
+
+.nova_studio_main {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-y: auto;
+    padding: 20px 24px 48px;
+}
+
+.nova_studio_section {
+    max-width: 1180px;
+}
+
+// ── messages ──────────────────────────────────────────────────────────
+.nova_studio_error,
+.nova_studio_notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 14px;
+    padding: 9px 14px;
+    border-radius: 10px;
+    font-size: 12.5px;
+}
+
+.nova_studio_error {
+    background: lighten($o-danger, 46%);
+    color: darken($o-danger, 12%);
+    border: 1px solid lighten($o-danger, 34%);
+}
+
+.nova_studio_notice {
+    background: $nova-action-soft;
+    color: $nova-action-active;
+    border: 1px solid rgba($nova-action, 0.24);
+}
+
+.nova_studio_empty {
+    margin: 24px 0;
+    padding: 28px 24px;
+    border: 1px dashed $nova-border-strong;
+    border-radius: 12px;
+    background: $o-view-background-color;
+    color: $nova-ink-muted;
+    text-align: center;
+    font-size: 13px;
+}
+
+.nova_studio_skeleton {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+
+    span {
+        height: 132px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, $o-gray-100 25%, $o-gray-200 37%, $o-gray-100 63%);
+        background-size: 400% 100%;
+        animation: nova_studio_shimmer 1.3s ease infinite;
+    }
+}
+
+@keyframes nova_studio_shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+// ── panels ────────────────────────────────────────────────────────────
+.nova_studio_overview {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.nova_studio_span2 {
+    grid-column: 1 / -1;
+}
+
+.nova_studio_panel {
+    background: $o-view-background-color;
+    border: 1px solid $nova-border;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: $nova-shadow-sm;
+    min-width: 0;
+}
+
+.nova_studio_panelhead {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+
+    h2 {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        color: $nova-ink;
+    }
+}
+
+.nova_studio_panelfoot {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid $nova-border;
+    flex-wrap: wrap;
+}
+
+// ── hero ──────────────────────────────────────────────────────────────
+.nova_studio_herobody {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.nova_studio_heroinfo {
+    min-width: 0;
+
+    h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+}
+
+.nova_studio_herolines {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    font-size: 12.5px;
+    color: $nova-ink-muted;
+
+    em {
+        font-style: normal;
+        color: $nova-ink-muted;
+        display: inline-block;
+        min-width: 78px;
+        opacity: 0.75;
+    }
+}
+
+// ── waiting on you ────────────────────────────────────────────────────
+.nova_studio_waiting {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.nova_studio_waitrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid $nova-border;
+
+    &:last-child {
+        border-bottom: 0;
+    }
+}
+
+.nova_studio_waitnum {
+    flex: 0 0 auto;
+    min-width: 34px;
+    height: 28px;
+    padding: 0 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: $o-gray-100;
+    color: $nova-ink;
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.nova_studio_waittext {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.35;
+
+    strong {
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    em {
+        font-style: normal;
+        font-size: 11.5px;
+        color: $nova-ink-muted;
+    }
+}
+
+// ── stats ─────────────────────────────────────────────────────────────
+.nova_studio_stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+    gap: 10px;
+}
+
+.nova_studio_stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 14px;
+    border: 1px solid $nova-border;
+    border-radius: 10px;
+    background: $o-gray-100;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    transition: border-color $nova-dur-fast $o-easing-enter,
+        background $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-action;
+        background: $nova-action-soft;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.nova_studio_statnum {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: $nova-ink;
+}
+
+.nova_studio_statlabel {
+    font-size: 11.5px;
+    color: $nova-ink-muted;
+}
+
+// ── lists ─────────────────────────────────────────────────────────────
+.nova_studio_plainlist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    li {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        font-size: 12.5px;
+    }
+
+    strong {
+        font-weight: 600;
+    }
+
+    em {
+        font-style: normal;
+        font-size: 11.5px;
+        color: $nova-ink-muted;
+    }
+}
+
+.nova_studio_dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: $nova-border-strong;
+    flex: 0 0 auto;
+    transform: translateY(-1px);
+}
+
+.nova_studio_dot_on {
+    background: $o-success;
+}
+
+.nova_studio_dot_bad {
+    background: $o-danger;
+}
+
+// ── toolbar ───────────────────────────────────────────────────────────
+.nova_studio_toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.nova_studio_search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 260px;
+    max-width: 420px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid $nova-border-strong;
+    border-radius: 8px;
+    background: $o-view-background-color;
+    color: $nova-ink-muted;
+
+    &:focus-within {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.16);
+    }
+}
+
+.nova_studio_search_wide {
+    max-width: none;
+    flex: 1 1 auto;
+}
+
+.nova_studio_input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: $nova-ink;
+    font: inherit;
+    font-size: 12.5px;
+    height: 100%;
+}
+
+.nova_studio_input_block {
+    width: 100%;
+    height: auto;
+    padding: 8px 10px;
+    border: 1px solid $nova-border-strong;
+    border-radius: 8px;
+    background: $o-view-background-color;
+
+    &:focus {
+        border-color: $nova-action;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.16);
+    }
+}
+
+.nova_studio_textarea {
+    resize: vertical;
+    line-height: 1.5;
+    font-family: inherit;
+}
+
+.nova_studio_filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.nova_studio_chip {
+    height: 26px;
+    padding: 0 11px;
+    border: 1px solid $nova-border-strong;
+    border-radius: 999px;
+    background: $o-view-background-color;
+    color: $nova-ink;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background $nova-dur-fast $o-easing-enter,
+        border-color $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        background: $o-gray-100;
+    }
+
+    &:focus-visible {
+        outline: 2px solid $nova-action;
+        outline-offset: 2px;
+    }
+}
+
+.nova_studio_chip_on {
+    background: $nova-action;
+    border-color: $nova-action;
+    color: $nova-on-action;
+
+    &:hover {
+        background: $nova-action-hover;
+    }
+}
+
+// ── cards ─────────────────────────────────────────────────────────────
+.nova_studio_cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+    gap: 14px;
+}
+
+.nova_studio_cards_wide {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.nova_studio_card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 16px;
+    background: $o-view-background-color;
+    border: 1px solid $nova-border;
+    border-radius: 12px;
+    box-shadow: $nova-shadow-sm;
+    min-width: 0;
+    transition: border-color $nova-dur-fast $o-easing-enter,
+        box-shadow $nova-dur-fast $o-easing-enter;
+
+    &:hover {
+        border-color: $nova-border-strong;
+        box-shadow: $nova-shadow-md;
+    }
+}
+
+.nova_studio_card_wide {
+    gap: 10px;
+}
+
+.nova_studio_card_stale {
+    border-left: 3px solid $o-warning;
+}
+
+.nova_studio_cardhead {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.nova_studio_kind {
+    display: inline-flex;
+    align-items: center;
+    height: 19px;
+    padding: 0 8px;
+    border-radius: 5px;
+    background: $o-gray-100;
+    color: $nova-ink-muted;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.nova_studio_kind-skill {
+    background: $nova-action-soft;
+    color: $nova-action-active;
+}
+
+.nova_studio_kind-memory {
+    background: lighten($o-info, 44%);
+    color: darken($o-info, 14%);
+}
+
+.nova_studio_kind-wiki {
+    background: $o-gray-200;
+    color: $nova-ink;
+}
+
+.nova_studio_kind-reference {
+    background: lighten($o-info, 44%);
+    color: darken($o-info, 14%);
+}
+
+.nova_studio_kind-document {
+    background: $o-gray-200;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_kind-flow {
+    background: lighten($o-success, 52%);
+    color: darken($o-success, 16%);
+}
+
+.nova_studio_trust {
+    display: inline-flex;
+    align-items: center;
+    height: 19px;
+    padding: 0 8px;
+    border-radius: 5px;
+    font-size: 10.5px;
+    font-weight: 600;
+    border: 1px solid $nova-border;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_trust-human-reviewed {
+    border-color: rgba($o-success, 0.4);
+    background: lighten($o-success, 56%);
+    color: darken($o-success, 16%);
+}
+
+.nova_studio_trust-machine-confirmed {
+    border-color: rgba($o-info, 0.4);
+    background: lighten($o-info, 54%);
+    color: darken($o-info, 14%);
+}
+
+.nova_studio_pill {
+    display: inline-flex;
+    align-items: center;
+    height: 19px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: $o-gray-100;
+    color: $nova-ink-muted;
+    font-size: 10.5px;
+    font-weight: 600;
+}
+
+.nova_studio_pill_warn {
+    background: lighten($o-warning, 52%);
+    color: darken($o-warning, 14%);
+}
+
+.nova_studio_pill_ok {
+    background: lighten($o-success, 56%);
+    color: darken($o-success, 16%);
+}
+
+.nova_studio_pill_info {
+    background: $nova-action-soft;
+    color: $nova-action-active;
+}
+
+.nova_studio_pill_danger {
+    background: lighten($o-danger, 50%);
+    color: darken($o-danger, 12%);
+}
+
+.nova_studio_cardtitle {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: $nova-ink;
+    cursor: pointer;
+
+    &:hover {
+        color: $nova-action-active;
+    }
+}
+
+.nova_studio_carddesc {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: $nova-ink-muted;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.nova_studio_cardfoot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid $nova-border;
+    flex-wrap: wrap;
+}
+
+.nova_studio_meta {
+    font-size: 11.5px;
+    color: $nova-ink-muted;
+    white-space: nowrap;
+}
+
+.nova_studio_spacer {
+    flex: 1 1 auto;
+}
+
+// ── markdown body ─────────────────────────────────────────────────────
+// Named .nova_studio_prose, NOT .nova_studio_body: the layout row is
+// already called that, and a max-height on a markdown block once
+// capped the whole Studio to 420px.
+.nova_studio_prose {
+    font-size: 13px;
+    line-height: 1.6;
+    color: $nova-ink;
+    background: $nova-paper;
+    border: 1px solid $nova-paper-border;
+    border-radius: 10px;
+    padding: 12px 16px;
+    overflow: auto;
+    max-height: 420px;
+
+    p {
+        margin: 0 0 8px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    h1, h2, h3 {
+        margin: 14px 0 6px;
+        font-size: 13.5px;
+        font-weight: 600;
+    }
+
+    ul, ol {
+        margin: 0 0 8px;
+        padding-left: 20px;
+    }
+
+    li {
+        margin-bottom: 3px;
+    }
+
+    code {
+        font-family: $o-font-family-monospace;
+        font-size: 12px;
+        background: $nova-paper-deep;
+        padding: 1px 4px;
+        border-radius: 4px;
+    }
+
+    pre {
+        background: $nova-paper-deep;
+        padding: 10px 12px;
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+
+    strong {
+        font-weight: 600;
+    }
+}
+
+// ── flow steps ────────────────────────────────────────────────────────
+.nova_studio_steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.nova_studio_step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0 6px 0;
+    position: relative;
+
+    &:not(:last-child)::before {
+        content: "";
+        position: absolute;
+        left: 11px;
+        top: 26px;
+        bottom: -4px;
+        width: 1px;
+        background: $nova-border;
+    }
+}
+
+.nova_studio_stepicon {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: $o-view-background-color;
+    border: 1px solid $nova-border-strong;
+    color: $nova-ink-muted;
+    font-size: 11px;
+    flex: 0 0 auto;
+}
+
+.nova_studio_stepbody {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+    padding-top: 2px;
+
+    strong {
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    em {
+        font-style: normal;
+        font-size: 11.5px;
+        color: $nova-ink-muted;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.nova_studio_stepvar {
+    flex: 0 0 auto;
+    margin-top: 3px;
+    padding: 1px 7px;
+    border-radius: 5px;
+    background: $nova-action-soft;
+    color: $nova-action-active;
+    font-family: $o-font-family-monospace;
+    font-size: 10.5px;
+}
+
+.nova_studio_flowproblem {
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: lighten($o-danger, 48%);
+    color: darken($o-danger, 12%);
+    font-size: 12px;
+}
+
+// ── section head ──────────────────────────────────────────────────────
+.nova_studio_sectionhead {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.nova_studio_lead {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: $nova-ink-muted;
+    max-width: 78ch;
+}
+
+// ── tables ────────────────────────────────────────────────────────────
+.nova_studio_tablewrap {
+    border: 1px solid $nova-border;
+    border-radius: 12px;
+    background: $o-view-background-color;
+    overflow-x: auto;
+    box-shadow: $nova-shadow-sm;
+}
+
+// A long table gets its own scroll with a sticky header: a 48-row
+// routing table must not push the rest of the Studio off the screen.
+.nova_studio_tablewrap_scroll {
+    max-height: 440px;
+    overflow-y: auto;
+
+    .nova_studio_table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+}
+
+.nova_studio_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+
+    th {
+        text-align: left;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $nova-ink-muted;
+        padding: 9px 14px;
+        border-bottom: 1px solid $nova-border;
+        background: $o-gray-100;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 9px 14px;
+        border-bottom: 1px solid $nova-border;
+        vertical-align: top;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    tbody tr:hover td {
+        background: $o-gray-100;
+    }
+}
+
+.nova_studio_td_code {
+    font-family: $o-font-family-monospace;
+    font-size: 12px;
+    color: $nova-ink;
+    white-space: nowrap;
+}
+
+.nova_studio_td_desc {
+    color: $nova-ink-muted;
+    max-width: 46ch;
+}
+
+.nova_studio_td_num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.nova_studio_td_when {
+    white-space: nowrap;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_row_out td {
+    opacity: 0.5;
+}
+
+.nova_studio_row_bad td {
+    background: lighten($o-danger, 52%);
+}
+
+.nova_studio_errtext {
+    display: block;
+    margin-top: 2px;
+    font-family: inherit;
+    font-size: 11.5px;
+    color: darken($o-danger, 12%);
+    max-width: 52ch;
+}
+
+.nova_studio_tier {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 7px;
+    border-radius: 5px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: $o-gray-200;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_tier-t2 {
+    background: $nova-action-soft;
+    color: $nova-action-active;
+}
+
+.nova_studio_tier-t3 {
+    background: lighten($o-success, 54%);
+    color: darken($o-success, 16%);
+}
+
+.nova_studio_caps {
+    display: inline-flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.nova_studio_cap {
+    display: inline-flex;
+    align-items: center;
+    height: 18px;
+    padding: 0 7px;
+    border-radius: 5px;
+    background: $o-gray-100;
+    border: 1px solid $nova-border;
+    color: $nova-ink-muted;
+    font-size: 10.5px;
+    font-weight: 500;
+}
+
+.nova_studio_missing {
+    font-size: 11.5px;
+    color: darken($o-danger, 12%);
+    font-style: italic;
+}
+
+.nova_studio_relbar {
+    display: inline-block;
+    width: 56px;
+    height: 5px;
+    border-radius: 3px;
+    background: $o-gray-200;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-right: 6px;
+
+    span {
+        display: block;
+        height: 100%;
+        border-radius: 3px;
+    }
+}
+
+.nova_studio_rel-high {
+    background: $o-success;
+}
+
+.nova_studio_rel-mid {
+    background: $o-warning;
+}
+
+.nova_studio_rel-low {
+    background: $o-danger;
+}
+
+.nova_studio_relnum {
+    font-size: 11.5px;
+    color: $nova-ink-muted;
+    font-variant-numeric: tabular-nums;
+}
+
+// ── routing ───────────────────────────────────────────────────────────
+.nova_studio_chosen {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 12px 0 0;
+    font-size: 13px;
+}
+
+.nova_studio_chosenlabel {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_chosen_none {
+    color: darken($o-danger, 12%);
+}
+
+.nova_studio_sim {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nova_studio_skillrows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.nova_studio_skillrows li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+}
+
+.nova_studio_skillbar {
+    display: inline-block;
+    width: 120px;
+    height: 6px;
+    border-radius: 3px;
+    background: $o-gray-200;
+    overflow: hidden;
+    flex: 0 0 auto;
+
+    span {
+        display: block;
+        height: 100%;
+        background: $nova-action;
+        border-radius: 3px;
+    }
+}
+
+.nova_studio_skillname {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nova_studio_skillscore {
+    font-variant-numeric: tabular-nums;
+    color: $nova-ink-muted;
+    font-size: 11.5px;
+}
+
+// ── the sheet (detail + composer) ─────────────────────────────────────
+.nova_studio_sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    justify-content: flex-end;
+    background: rgba(28, 30, 33, 0.32);
+}
+
+.nova_studio_sheetpanel {
+    display: flex;
+    flex-direction: column;
+    width: 560px;
+    max-width: 92vw;
+    height: 100%;
+    background: $o-view-background-color;
+    border-left: 1px solid $nova-border;
+    box-shadow: $nova-shadow-lg;
+}
+
+.nova_studio_sheetpanel_narrow {
+    width: 520px;
+}
+
+// The flow editor needs room for forms: wider than the detail sheet,
+// still a sheet, still the same header/body/footer rhythm.
+.nova_studio_sheetpanel_wide {
+    width: 720px;
+}
+
+// ── the flow editor ───────────────────────────────────────────────────
+.nova_studio_estep {
+    border: 1px solid $nova-border;
+    border-radius: 10px;
+    background: $o-view-background-color;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.nova_studio_estephead {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: $o-gray-100;
+    border-bottom: 1px solid $nova-border;
+
+    strong {
+        font-size: 12.5px;
+        font-weight: 600;
+        flex: 0 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.nova_studio_estepbody {
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nova_studio_erow {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nova_studio_erow2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+
+    & > div {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
+}
+
+.nova_studio_erow3 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 90px minmax(0, 1fr);
+    gap: 10px;
+
+    & > div {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
+}
+
+.nova_studio_echeck {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 8px;
+}
+
+.nova_studio_check {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    color: $nova-ink;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
+        accent-color: $nova-action;
+    }
+}
+
+.nova_studio_evarrow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 110px minmax(0, 1.4fr) 28px;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.nova_studio_epalette {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 12px;
+    border: 1px dashed $nova-border-strong;
+    border-radius: 10px;
+    background: $o-gray-100;
+}
+
+.nova_studio_paletlabel {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_problemlist {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    font-size: 12px;
+
+    li {
+        margin-bottom: 2px;
+    }
+}
+
+.nova_studio_textarea_small {
+    min-height: 52px;
+}
+
+.nova_studio_iconbtn_small {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+}
+
+.nova_studio_sheethead {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid $nova-border;
+    flex: 0 0 auto;
+
+    h2 {
+        margin: 6px 0 0;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    > div {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+}
+
+.nova_studio_sheetcode {
+    margin: 4px 0 0;
+    font-family: $o-font-family-monospace;
+    font-size: 11.5px;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_sheetbody {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 16px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nova_studio_sheetfoot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-top: 1px solid $nova-border;
+    background: $o-gray-100;
+    flex: 0 0 auto;
+}
+
+.nova_studio_subhead {
+    margin: 6px 0 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $nova-ink-muted;
+}
+
+.nova_studio_dl {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 6px 12px;
+    margin: 0;
+    font-size: 12.5px;
+
+    dt {
+        color: $nova-ink-muted;
+    }
+
+    dd {
+        margin: 0;
+        color: $nova-ink;
+        overflow-wrap: anywhere;
+    }
+}
+
+.nova_studio_label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $nova-ink-muted;
+    margin-top: 4px;
+}
+
+.nova_studio_hint {
+    margin: 0;
+    font-size: 11.5px;
+    color: $nova-ink-muted;
+}
+
+// ── responsive ────────────────────────────────────────────────────────
+@media (max-width: 900px) {
+    .nova_studio_overview {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .nova_studio_rail {
+        width: 56px;
+        padding: 12px 6px;
+    }
+
+    .nova_studio_raillabel,
+    .nova_studio_railcount {
+        display: none;
+    }
+
+    .nova_studio_railbtn {
+        justify-content: center;
+        padding: 9px 0;
+    }
+}

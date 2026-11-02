@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     Starter automation: runs as admin until the owner reassigns it.
+     New rows are created (noupdate): an upgrade never rewrites them. -->
+<odoo>
+    <data noupdate="1">
+        <record id="schedule_cash_radar" model="nova.ai.schedule">
+            <field name="name">Overdue-Cash Radar (07:00)</field>
+            <field name="agent_id" ref="agent_ask_nova" />
+            <field name="prompt">List overdue customer invoices: number, partner, residual amount with currency, days overdue, and the date of the last message or activity on each. Sort by days overdue, worst first. Queue one log-note card per row proposing the collection step, so each row is approved separately. Use only figures the tools return.</field>
+            <field name="run_as_user_id" ref="base.user_admin" />
+            <field name="mail_results" eval="False" />
+            <field name="active" eval="True" />
+        </record>
+
+        <record id="schedule_stale_quotes" model="nova.ai.schedule">
+            <field name="name">Stale-Quote Reviver (nightly)</field>
+            <field name="agent_id" ref="agent_ask_nova" />
+            <field name="prompt">Find sent quotations older than 7 days with no recent activity: number, customer, amount, days silent, owner. Queue one log-note card per row with the revival step, so each is approved separately. Use only figures the tools return.</field>
+            <field name="run_as_user_id" ref="base.user_admin" />
+            <field name="mail_results" eval="False" />
+            <field name="active" eval="True" />
+        </record>
+
+        <record id="schedule_bill_mismatch" model="nova.ai.schedule">
+            <field name="name">Bill-PO Mismatch (exceptions)</field>
+            <field name="agent_id" ref="agent_ask_nova" />
+            <field name="prompt">For draft vendor bills, compare each against its purchase order and receipts: report exceptions only — quantity or price gaps with the computed delta per row. Queue nothing; advise. Use only figures the tools return.</field>
+            <field name="run_as_user_id" ref="base.user_admin" />
+            <field name="mail_results" eval="False" />
+            <field name="active" eval="True" />
+        </record>
+
+        <record id="schedule_stockout_watch" model="nova.ai.schedule">
+            <field name="name">Stockout Watch (morning)</field>
+            <field name="agent_id" ref="agent_ask_nova" />
+            <field name="prompt">Report stockouts: products at zero or below reorder point with open demand, late receipts, blocked moves. Per row: product, location, shortfall, the replenishment to make. Empty shelves are a finding — say so. Use only figures the tools return.</field>
+            <field name="run_as_user_id" ref="base.user_admin" />
+            <field name="mail_results" eval="False" />
+            <field name="active" eval="True" />
+        </record>
+
+        <record id="schedule_task_nag" model="nova.ai.schedule">
+            <field name="name">Overdue-Task Nag (disabled: needs project)</field>
+            <field name="agent_id" ref="agent_ask_nova" />
+            <field name="prompt">List overdue project tasks by owner with days late and the next step each. Requires the project module.</field>
+            <field name="run_as_user_id" ref="base.user_admin" />
+            <field name="mail_results" eval="False" />
+            <field name="active" eval="False" />
+        </record>
+    </data>
+    <!-- The runner cron lives OUTSIDE noupdate: cadence fixes must
+         deploy to existing databases, while schedule rows above stay
+         admin-owned. run_due() runs every active schedule. -->
+    <record id="cron_cash_radar" model="ir.cron">
+        <field name="name">Nova AI: run scheduled agents</field>
+        <field name="model_id" ref="model_nova_ai_schedule" />
+        <field name="state">code</field>
+        <field name="code">model.run_due()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=7, minute=0, second=0).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="active" eval="True" />
+    </record>
+</odoo>

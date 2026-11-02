@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     Knowledge screens. The list is the agent's brain at a glance: what
+     it knows, who wrote it, whether a human checked it, and what is
+     waiting for review. -->
+<odoo>
+    <record id="nova_ai_knowledge_view_tree" model="ir.ui.view">
+        <field name="name">nova.ai.knowledge.list</field>
+        <field name="model">nova.ai.knowledge</field>
+        <field name="arch" type="xml">
+            <list string="Knowledge" decoration-muted="status == 'deprecated'"
+                  decoration-info="status == 'draft'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="description" optional="show"/>
+                <field name="trust_tier"/>
+                <field name="status"/>
+                <field name="is_stale" string="Stale"/>
+                <field name="use_count" optional="hide"/>
+                <field name="owner_user_id" optional="hide"/>
+                <field name="last_used_at" string="Last used" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="nova_ai_knowledge_view_kanban" model="ir.ui.view">
+        <field name="name">nova.ai.knowledge.kanban</field>
+        <field name="model">nova.ai.knowledge</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="kind" quick_create="false">
+                <field name="trust_tier"/>
+                <field name="is_stale"/>
+                <field name="is_proposed"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_kanban_card_content">
+                            <div class="o_kanban_card_title">
+                                <field name="name"/>
+                            </div>
+                            <div class="o_kanban_card_subtitle">
+                                <field name="code"/>
+                            </div>
+                            <div class="o_kanban_card_text">
+                                <field name="description"/>
+                            </div>
+                            <div class="o_kanban_card_bottom">
+                                <field name="trust_tier" widget="badge"/>
+                                <field name="status" widget="badge"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="nova_ai_knowledge_view_form" model="ir.ui.view">
+        <field name="name">nova.ai.knowledge.form</field>
+        <field name="model">nova.ai.knowledge</field>
+        <field name="arch" type="xml">
+            <form string="Knowledge">
+                <header>
+                    <button name="action_accept" type="object" string="Accept"
+                            class="btn-primary" invisible="not is_proposed"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            invisible="not is_proposed"/>
+                    <button name="action_verify" type="object" string="Mark reviewed"
+                            invisible="verified_by"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Proposed" bg_color="text-bg-info"
+                            invisible="not is_proposed"/>
+                    <div class="oe_title">
+                        <label for="name" string="Title"/>
+                        <h1><field name="name" placeholder="Create a product"/></h1>
+                    </div>
+                    <group>
+                        <group name="left">
+                            <field name="code"/>
+                            <field name="kind"/>
+                            <field name="status"/>
+                            <field name="owner_user_id"/>
+                        </group>
+                        <group name="right">
+                            <field name="trust_tier"/>
+                            <field name="is_stale"/>
+                            <field name="generated_by"/>
+                            <field name="generated_at"/>
+                            <field name="verified_by"/>
+                            <field name="verified_at"/>
+                            <field name="stale_after"/>
+                            <field name="use_count"/>
+                            <field name="last_used_at"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"
+                               placeholder="When does this apply? This line is what the agent matches against."/>
+                    </group>
+                    <group string="Sources">
+                        <field name="sources" nolabel="1"
+                               placeholder='[{"resource": "sale.order/42", "id": "so42", "title": "SO 42"}]'/>
+                    </group>
+                    <notebook>
+                        <page string="Content" name="content">
+                            <field name="body" nolabel="1"
+                                   placeholder="The concept itself, in markdown."/>
+                        </page>
+                        <page string="Review" name="review">
+                            <group>
+                                <field name="proposed_by"/>
+                                <field name="reviewed_by"/>
+                                <field name="review_note"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="nova_ai_knowledge_view_search" model="ir.ui.view">
+        <field name="name">nova.ai.knowledge.search</field>
+        <field name="model">nova.ai.knowledge</field>
+        <field name="arch" type="xml">
+            <search string="Knowledge">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="kind"/>
+                <filter name="skills" string="Skills" domain="[('kind','=','skill')]"/>
+                <filter name="proposed" string="To review" domain="[('is_proposed','=',True)]"/>
+                <filter name="stale" string="Stale" domain="[('is_stale','=',True)]"/>
+                <separator/>
+                <filter name="trusted" string="Human reviewed" domain="[('trust_tier','=','human-reviewed')]"/>
+                <group>
+                    <filter name="group_kind" string="Kind" context="{'group_by': 'kind'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_nova_ai_knowledge" model="ir.actions.act_window">
+        <field name="name">Knowledge</field>
+        <field name="res_model">nova.ai.knowledge</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="nova_ai_knowledge_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing known yet</p>
+            <p>The agent's skills, facts and concepts live here. A skill is a
+               procedure it loads before acting; a memory is a durable fact;
+               a wiki entry is a concept it maintains.</p>
+        </field>
+    </record>
+</odoo>

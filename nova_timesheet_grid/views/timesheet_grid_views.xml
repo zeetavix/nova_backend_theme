@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- My Timesheets grid: rows project/task, columns days -->
+        <record id="view_nova_timesheet_grid_my" model="ir.ui.view">
+            <field name="name">account.analytic.line.grid.my</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <grid string="My Timesheets" editable="1" create_inline="1" show_heatmap="1" heatmap_scale="8" barchart_total="1">
+                    <field name="project_id" type="row" string="Project"/>
+                    <field name="task_id" type="row" string="Task"/>
+                    <field name="date" type="col">
+                        <range name="week" string="Week" span="week" step="day" default="1"/>
+                        <range name="month" string="Month" span="month" step="day"/>
+                    </field>
+                    <field name="unit_amount" type="measure" operator="sum" string="Hours"/>
+                </grid>
+            </field>
+        </record>
+
+        <!-- All Timesheets grid: section employee -->
+        <record id="view_nova_timesheet_grid_all" model="ir.ui.view">
+            <field name="name">account.analytic.line.grid.all</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <grid string="Timesheets" editable="1" create_inline="1" show_heatmap="1" heatmap_scale="8">
+                    <field name="employee_id" type="row" section="1" string="Employee"/>
+                    <field name="project_id" type="row" string="Project"/>
+                    <field name="task_id" type="row" string="Task"/>
+                    <field name="date" type="col">
+                        <range name="week" string="Week" span="week" step="day" default="1"/>
+                        <range name="month" string="Month" span="month" step="day"/>
+                    </field>
+                    <field name="unit_amount" type="measure" operator="sum" string="Hours"/>
+                </grid>
+            </field>
+        </record>
+
+        <!-- Project Timesheets grid -->
+        <record id="view_nova_timesheet_grid_project" model="ir.ui.view">
+            <field name="name">account.analytic.line.grid.project</field>
+            <field name="model">account.analytic.line</field>
+            <field name="arch" type="xml">
+                <grid string="Project Timesheets" editable="1" create_inline="1" show_heatmap="1">
+                    <field name="task_id" type="row" string="Task"/>
+                    <field name="employee_id" type="row" string="Employee"/>
+                    <field name="date" type="col">
+                        <range name="week" string="Week" span="week" step="day" default="1"/>
+                        <range name="month" string="Month" span="month" step="day"/>
+                    </field>
+                    <field name="unit_amount" type="measure" operator="sum" string="Hours"/>
+                </grid>
+            </field>
+        </record>
+
+        <!-- Attach grid as the FIRST (default) view of the stock Timesheets
+             actions, exactly like Enterprise does. No separate menu: the grid
+             lives inside Timesheets > My Timesheets / All Timesheets next to
+             list, kanban, calendar. Uninstall-safe: only our own
+             act_window.view rows are added, stock actions are untouched. -->
+        <record id="nova_grid_in_my_timesheets" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">grid</field>
+            <field name="view_id" ref="view_nova_timesheet_grid_my"/>
+            <field name="act_window_id" ref="hr_timesheet.act_hr_timesheet_line"/>
+        </record>
+        <record id="nova_grid_in_all_timesheets" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">grid</field>
+            <field name="view_id" ref="view_nova_timesheet_grid_all"/>
+            <field name="act_window_id" ref="hr_timesheet.timesheet_action_all"/>
+        </record>
+        <record id="nova_grid_in_project_timesheets" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">grid</field>
+            <field name="view_id" ref="view_nova_timesheet_grid_project"/>
+            <field name="act_window_id" ref="hr_timesheet.act_hr_timesheet_line_by_project"/>
+        </record>
+    </data>
+</odoo>

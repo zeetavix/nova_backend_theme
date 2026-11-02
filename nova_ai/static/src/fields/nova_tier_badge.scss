@@ -1,0 +1,56 @@
+///
+/// Nova AI — tier badges (light). One chip system, three states:
+/// T1 outline / T2 soft fill / T3 solid, all on theme tokens. The
+/// badge is the visual handle for the capability engine, so it is
+/// deliberately the loudest small object on these screens.
+///
+
+.nova_tier {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 16px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+
+    // Status dot ahead of the text: the tier reads at a glance even
+    // at 11px. currentColor keeps it correct in both themes with no
+    // duplicated rules.
+    &::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        flex: 0 0 auto;
+    }
+
+    // Tier T1 — outline: the model is trusted with words only.
+    &.nova_tier-t1 {
+        border: 1px solid $nova-border-strong;
+        color: $nova-ink;
+        background: transparent;
+    }
+
+    // Tier T2 — soft fill: tools with confirmation. The action border
+    // separates it from the active column header wash (same soft tone),
+    // so the badge never hides inside a highlighted header.
+    &.nova_tier-t2 {
+        border: 1px solid $nova-action;
+        background: $nova-action-soft;
+        color: $nova-action-active;
+    }
+
+    // Tier T3 — solid: agent-grade; the only tier that may auto-apply.
+    &.nova_tier-t3 {
+        border: 1px solid $nova-action;
+        background: $nova-action;
+        color: $nova-on-action;
+    }
+}

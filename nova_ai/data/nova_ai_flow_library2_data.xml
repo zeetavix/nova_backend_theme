@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     The library, continued: purchase, CRM, manufacturing, HR, project
+     and stock flows in the same shape (start -> search -> agent ->
+     output), plus one action flow that queues real work. Same
+     contract: every write lands as a card the user approves. -->
+<odoo>
+    <data noupdate="1">
+    <record id="flow_purchase_orders_awaiting" model="nova.ai.flow">
+        <field name="name">Purchase orders awaiting</field>
+        <field name="description">Draft and sent purchase orders, oldest first, ready to confirm or cancel</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {'type': 'start', 'config': {'variables': []}},
+  {'type': 'search', 'resultVariable': 'orders', 'config': {'args': {
+    'model': 'purchase.order',
+    'domain': [['state', 'in', ['draft', 'sent']]],
+    'fields': ['name', 'partner_id', 'amount_total', 'date_order', 'state'],
+    'limit': 15, 'order': 'date_order asc'}}},
+  {'type': 'agent', 'resultVariable': 'triage', 'config': {'instruction': 'Triage these open purchase orders in ${orders}: vendor, amount, age and state. For each, say confirm, chase the vendor, or cancel.'}},
+  {'type': 'output', 'config': {'value': '${triage}'}}
+]" />
+    </record>
+
+    <record id="flow_crm_big_deals" model="nova.ai.flow">
+        <field name="name">Biggest deals</field>
+        <field name="description">Highest-value open opportunities, ready to prioritize</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {'type': 'start', 'config': {'variables': []}},
+  {'type': 'search', 'resultVariable': 'deals', 'config': {'args': {
+    'model': 'crm.lead',
+    'domain': [['type', '=', 'opportunity']],
+    'fields': ['name', 'partner_id', 'expected_revenue', 'probability', 'stage_id'],
+    'limit': 10, 'order': 'expected_revenue desc'}}},
+  {'type': 'agent', 'resultVariable': 'ranking', 'config': {'instruction': 'Rank these open deals in ${deals} by expected value times probability: name, amount, stage, and the one action that moves each forward.'}},
+  {'type': 'output', 'config': {'value': '${ranking}'}}
+]" />
+    </record>
+
+    <record id="flow_open_manufacturing_orders" model="nova.ai.flow">
+        <field name="name">Open manufacturing orders</field>
+        <field name="description">Manufacturing orders not yet done, oldest deadline first</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {'type': 'start', 'config': {'variables': []}},
+  {'type': 'search', 'resultVariable': 'orders', 'config': {'args': {
+    'model': 'mrp.production',
+    'domain': [['state', 'not in', ['done', 'cancel']]],
+    'fields': ['name', 'product_id', 'product_qty', 'date_deadline', 'state'],
+    'limit': 15, 'order': 'date_deadline asc'}}},
+  {'type': 'agent', 'resultVariable': 'status', 'config': {'instruction': 'Report these open manufacturing orders in ${orders}: order, product, quantity, deadline and state. Flag anything past deadline.'}},
+  {'type': 'output', 'config': {'value': '${status}'}}
+]" />
+    </record>
+
+    <record id="flow_new_employees" model="nova.ai.flow">
+        <field name="name">New employees</field>
+        <field name="description">Employees hired since a date, with role and department</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {'type': 'start', 'config': {'variables': [{'name': 'since', 'type': 'required', 'description': 'Hired on or after this date (YYYY-MM-DD)'}]}},
+  {'type': 'search', 'resultVariable': 'hires', 'config': {'args': {
+    'model': 'hr.employee',
+    'domain': [['create_date', '&gt;=', '${since}']],
+    'fields': ['name', 'job_title', 'department_id', 'work_email'],
+    'limit': 20, 'order': 'create_date desc'}}},
+  {'type': 'agent', 'resultVariable': 'welcome', 'config': {'instruction': 'List these new hires in ${hires}: name, role, department, contact. Suggest one onboarding check per person.'}},
+  {'type': 'output', 'config': {'value': '${welcome}'}}
+]" />
+    </record>
+
+    <record id="flow_project_tasks" model="nova.ai.flow">
+        <field name="name">Tasks for a project</field>
+        <field name="description">Open tasks of one named project, grouped by stage</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {'type': 'start', 'config': {'variables': [{'name': 'project', 'type': 'required', 'description': 'Project name (or part of it)'}]}},
+  {'type': 'search', 'resultVariable': 'proj', 'config': {'args': {
+    'model': 'project.project',
+    'domain': [['name', 'ilike', '${project}']],
+    'fields': ['name'],
+    'limit': 3}}},
+  {'type': 'search', 'resultVariable': 'tasks', 'config': {'args': {
+    'model': 'project.task',
+    'domain': [['project_id', '=', '${proj.rows[0].id}']],
+    'fields': ['name', 'user_ids', 'date_deadline', 'stage_id'],
+    'limit': 25, 'order': 'date_deadline asc'}}},
+  {'type': 'agent', 'resultVariable': 'brief', 'config': {'instruction': 'Summarize these project tasks in ${tasks} by stage: what is moving, what is stuck, what is overdue. If the task list is empty, say which project was matched and that it has no tasks on file.'}},
+  {'type': 'output', 'config': {'value': '${brief}'}}
+]" />
+    </record>
+
+    <record id="flow_payment_followup_action" model="nova.ai.flow">
+        <field name="name">Payment follow-up call</field>
+        <field name="description">Finds the biggest overdue invoice and queues a follow-up call on it</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {'type': 'start', 'config': {'variables': []}},
+  {'type': 'search', 'resultVariable': 'worst', 'config': {'args': {
+    'model': 'account.move',
+    'domain': [['move_type', '=', 'out_invoice'], ['payment_state', 'in', ['not_paid', 'partial']]],
+    'fields': ['name', 'partner_id', 'amount_residual', 'invoice_date_due'],
+    'limit': 1, 'order': 'amount_residual desc'}}},
+  {'type': 'tool', 'resultVariable': 'scheduled', 'config': {
+    'tool': 'schedule_activity',
+    'args': {'model': 'account.move', 'res_id': '${worst.rows[0].id}', 'summary': 'Call customer about overdue invoice'}}},
+  {'type': 'output', 'config': {'value': '${scheduled}'}}
+]" />
+    </record>
+
+    <record id="flow_incoming_shipments" model="nova.ai.flow">
+        <field name="name">Incoming shipments</field>
+        <field name="description">Purchase receipts waiting to be received, with vendor and date</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {'type': 'start', 'config': {'variables': []}},
+  {'type': 'search', 'resultVariable': 'pickings', 'config': {'args': {
+    'model': 'stock.picking',
+    'domain': [['picking_type_id.code', '=', 'incoming'], ['state', 'in', ['confirmed', 'assigned']]],
+    'fields': ['name', 'partner_id', 'scheduled_date', 'state'],
+    'limit': 15, 'order': 'scheduled_date asc'}}},
+  {'type': 'agent', 'resultVariable': 'docks', 'config': {'instruction': 'List these incoming shipments in ${pickings}: reference, vendor, scheduled date and state. Flag anything past scheduled date.'}},
+  {'type': 'output', 'config': {'value': '${docks}'}}
+]" />
+    </record>
+
+    <record id="flow_recent_vendor_bills" model="nova.ai.flow">
+        <field name="name">Recent vendor bills</field>
+        <field name="description">Latest vendor bills with amounts and state, ready to review</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="active" eval="True"/>
+        <field name="steps" eval="[
+  {'type': 'start', 'config': {'variables': []}},
+  {'type': 'search', 'resultVariable': 'bills', 'config': {'args': {
+    'model': 'account.move',
+    'domain': [['move_type', '=', 'in_invoice']],
+    'fields': ['name', 'partner_id', 'amount_total', 'state', 'invoice_date'],
+    'limit': 10, 'order': 'invoice_date desc'}}},
+  {'type': 'agent', 'resultVariable': 'review', 'config': {'instruction': 'Review these recent vendor bills in ${bills}: vendor, amount, state. Flag any draft older than it should be.'}},
+  {'type': 'output', 'config': {'value': '${review}'}}
+]" />
+    </record>
+    </data>
+</odoo>

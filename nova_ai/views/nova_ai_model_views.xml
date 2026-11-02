@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <record id="action_nova_ai_model" model="ir.actions.act_window">
+        <field name="name">Models</field>
+        <field name="res_model">nova.ai.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No models yet</p>
+            <p>Add a provider first, then sync its models and probe them to learn what each one can do.</p>
+        </field>
+    </record>
+
+    <record id="view_nova_ai_model_list" model="ir.ui.view">
+        <field name="name">nova.ai.model.list</field>
+        <field name="model">nova.ai.model</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="provider_id" />
+                <field name="tier" widget="nova_tier_badge" />
+                <field name="context_length" />
+<field name="supports_tools" />
+<field name="supports_embeddings" />
+<field name="supports_vision" />
+                <field name="last_probe" />
+                <field name="active" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_nova_ai_model_search" model="ir.ui.view">
+        <field name="name">nova.ai.model.search</field>
+        <field name="model">nova.ai.model</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Model" />
+                <field name="provider_id" />
+                <filter name="tier_t1" string="T1 Basic"
+                        domain="[('tier', '=', 't1')]" />
+                <filter name="tier_t2" string="T2 Assistant"
+                        domain="[('tier', '=', 't2')]" />
+                <filter name="tier_t3" string="T3 Agent"
+                        domain="[('tier', '=', 't3')]" />
+                <separator />
+                <filter name="not_probed" string="Never probed"
+                        domain="[('last_probe', '=', False)]" />
+                <group>
+                    <filter name="group_tier" string="Tier"
+                            context="{'group_by': 'tier'}" />
+                    <filter name="group_provider" string="Provider"
+                            context="{'group_by': 'provider_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_nova_ai_model_form" model="ir.ui.view">
+        <field name="name">nova.ai.model.form</field>
+        <field name="model">nova.ai.model</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1><field name="name" placeholder="llama3.1:8b" /></h1>
+                        <h3><field name="provider_id" /></h3>
+                    </div>
+                    <group>
+                        <group name="tier">
+                            <field name="tier" />
+                            <field name="tier_reason" />
+                            <field name="tier_override" />
+                        </group>
+                        <group name="capabilities">
+                            <field name="context_length" />
+                            <field name="supports_tools" />
+                            <field name="supports_json" />
+                            <field name="supports_embeddings" />
+                            <field name="supports_vision" />
+                            <field name="supports_reasoning" />
+                            <field name="last_probe" />
+                            <field name="active" />
+                        </group>
+                    </group>
+                    <group string="Routing">
+                        <group name="cost">
+                            <field name="cost_in_per_mtok" />
+                            <field name="cost_out_per_mtok" />
+                            <field name="reliability" />
+                            <field name="latency_hint_ms" />
+                        </group>
+                        <group name="routing_note">
+                            <field name="routing_note" nolabel="1" readonly="1"
+                                   placeholder="Routing: this model is picked for tools that need X."/>
+                        </group>
+                    </group>
+                    <div>
+                        <p class="text-muted">
+                            Probe asks the endpoint three cheap questions: how much
+                            context it accepts, whether it calls tools, and whether
+                            embeddings are available. Unknown answers degrade the
+                            tier â€” nothing is guessed. Override upward only after you
+                            have verified the model by hand.
+                        </p>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_probe" type="object"
+                            string="Probe capabilities" class="btn-primary" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

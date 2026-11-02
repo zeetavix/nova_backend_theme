@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <record id="category_nova_ai" model="ir.module.category">
+        <field name="name">Nova AI</field>
+        <field name="description">Access to Nova AI agents and providers</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="privilege_nova_ai" model="res.groups.privilege">
+        <field name="name">Nova AI</field>
+        <field name="category_id" ref="category_nova_ai" />
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="group_nova_ai_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="privilege_id" ref="privilege_nova_ai" />
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
+        <field name="comment">May chat with agents they are allowed to use.</field>
+    </record>
+
+    <record id="group_nova_ai_admin" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="privilege_id" ref="privilege_nova_ai" />
+        <field name="implied_ids" eval="[(4, ref('group_nova_ai_user'))]" />
+        <field name="user_ids" eval="[(4, ref('base.user_admin'))]" />
+        <field name="comment">Manages providers, models, agents, tools, logs.</field>
+    </record>
+</odoo>

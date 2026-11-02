@@ -1,0 +1,40 @@
+/* Part of Nova. See LICENSE file for full copyright and licensing details. */
+/* Dark palette for the Nova backend theme (and any future dark bundle).
+   Loaded through web.assets_web_dark, right after the light Gantt styles,
+   so swapping tokens here is enough to re-skin the whole view. */
+.o_nova_gantt_wrap, .o_nova_gantt_toolbar, .o_nova_kpis {
+    --ng-accent: var(--nova-accent, #60a5fa);
+    --ng-surface: #1b1c1f;
+    --ng-surface-2: #232529;
+    --ng-border: #33363b;
+    --ng-border-strong: #454a50;
+    --ng-ink: #e6e8eb;
+    --ng-muted: #9aa1a9;
+    --ng-weekend: rgba(0, 0, 0, 0.22);
+    --ng-hover: rgba(255, 255, 255, 0.045);
+    --ng-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    --ng-sticky-shadow: rgba(0, 0, 0, 0.55);
+    --ng-bar-ink: #0b1220;
+}
+/* Bars stay luminous on near-black without turning into solid blocks. */
+.o_nova_gantt_bar {
+    background: color-mix(in srgb, var(--ng-accent) 62%, transparent);
+    border-color: color-mix(in srgb, var(--ng-accent) 80%, transparent);
+}
+/* Weekend columns recede in the body, but the header stays on the elevated
+   band: a notch there reads as a hole in the header rather than a weekend. */
+.o_nova_gantt_grid .o_nova_gantt_colhead.o_weekend {
+    background-color: var(--ng-surface-2);
+}
+/* Section band: on dark it needs a touch more presence to separate rows. */
+.o_nova_gantt_section {
+    background: color-mix(in srgb, var(--ng-accent) 10%, transparent);
+}
+/* Sticky edges get a darker lip so lanes do not bleed together. */
+.o_nova_gantt_wrap .o_nova_gantt_rowhead {
+    border-right-color: var(--ng-border-strong);
+}
+/* Focus ring stays visible on dark surfaces. */
+.o_nova_gantt_bar:hover {
+    outline-color: color-mix(in srgb, var(--ng-accent) 70%, transparent);
+}

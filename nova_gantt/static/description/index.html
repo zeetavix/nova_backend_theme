@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Nova Gantt — Modular 2D Gantt view engine for Odoo Community</title>
+</head>
+<body>
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan" style="color:#2563eb;">Nova Gantt</h2>
+        <h3 class="oe_slogan">A modular 2D Gantt view engine for Odoo Community</h3>
+        <p class="oe_mt32 text-center">
+            <span style="background:#2563eb;color:#fff;padding:6px 14px;border-radius:20px;font-weight:bold;">Free</span>
+            <span style="margin-left:8px;color:#6c757d;">Odoo 20.0 Community &nbsp;•&nbsp; By <a href="https://zeetavix.com">Zeetavix</a></span>
+        </p>
+        <p class="oe_mt32">
+            Nova Gantt is a clean-room <b>&lt;gantt&gt;</b> view type for Odoo Community — the missing
+            Enterprise-style timeline, rebuilt from scratch and usable by <b>any model</b>
+            with a start/end date pair (projects, events, leaves, manufacturing orders).
+            Define lanes, a date range and a measure in XML; the engine renders an editable
+            timeline with drag-to-move, edge resize, sticky lanes and hero-number KPIs.
+        </p>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h3 class="oe_slogan">Any lanes, any period</h3>
+        <p>Section + row grouping, month and quarter ranges with prev/today/next navigation,
+        weekend toggle, sticky lane headers and a today line.</p>
+        <div class="oe_demo oe_screenshot">
+            <div class="oe_pic_ctr"><img style="display:block; width:100%; height:auto; max-width:none; max-height:none;" loading="lazy" src="img/01_engine_month.png" alt="Nova Gantt monthly timeline"/></div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h3 class="oe_slogan">Drag to reschedule</h3>
+        <p>Grab a bar to move it, drag its edges to resize — snapped to days, written back
+        through a guarded server API. Keyboard works too: arrows move, Shift+arrows resize,
+        Enter opens the record.</p>
+        <div class="oe_demo oe_screenshot">
+            <div class="oe_pic_ctr"><img style="display:block; width:100%; height:auto; max-width:none; max-height:none;" loading="lazy" src="img/02_engine_sections.png" alt="Nova Gantt sections and bars"/></div>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h3 class="oe_slogan">Build your own Gantt in minutes</h3>
+<pre style="background:#1e293b;color:#e2e8f0;padding:16px;border-radius:8px;overflow:auto;">&lt;gantt string="Portfolio" date_start="date_start" date_stop="date"
+      editable="1" kpi_unit="d"&gt;
+    &lt;field name="user_id" type="row" section="1" string="Manager"/&gt;
+    &lt;field name="name" type="row" string="Project"/&gt;
+&lt;/gantt&gt;</pre>
+        <h3 class="oe_slogan">Server API (on every model, via <b>base</b>)</h3>
+        <ul>
+            <li><b>nova_gantt_fetch</b> — one-RPC record fetch with normalised relation values</li>
+            <li><b>nova_gantt_update_dates</b> — guarded move/resize write with stop clamped at start</li>
+        </ul>
+        <h3 class="oe_slogan">Support</h3>
+        <p style="text-align:center;">By <a href="https://zeetavix.com">Zeetavix</a> — https://zeetavix.com</p>
+    </div>
+</section>
+</body>
+</html>

@@ -34,7 +34,7 @@ colour/typography/spacing systems and Meta's clarity language.
     "maintainer": "Zeetavix",
     "support": "support@zeetavix.com",
     "website": "https://zeetavix.com",
-    "price": 10.0,
+    "price": 0.0,
     "currency": "USD",
     "license": "OPL-1",
     "depends": ["web"],

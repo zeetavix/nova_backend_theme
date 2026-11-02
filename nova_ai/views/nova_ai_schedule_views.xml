@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <record id="action_nova_ai_schedule" model="ir.actions.act_window">
+        <field name="name">Schedules</field>
+        <field name="res_model">nova.ai.schedule</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_nova_ai_schedule_list" model="ir.ui.view">
+        <field name="name">nova.ai.schedule.list</field>
+        <field name="model">nova.ai.schedule</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="agent_id" />
+                <field name="run_as_user_id" />
+                <field name="last_run" />
+                <field name="last_ok" widget="boolean_toggle" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_nova_ai_schedule_form" model="ir.ui.view">
+        <field name="name">nova.ai.schedule.form</field>
+        <field name="model">nova.ai.schedule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1><field name="name" placeholder="Overdue-Cash Radar (07:00)" /></h1>
+                    </div>
+                    <group>
+                        <group name="what">
+                            <field name="agent_id" />
+                            <field name="prompt" placeholder="What the agent should do…" />
+                            <field name="context_model" placeholder="e.g. account.move" />
+                            <field name="context_res_id" />
+                        </group>
+                        <group name="run">
+                            <field name="run_as_user_id" />
+                            <field name="post_note" />
+                            <field name="mail_results" />
+                            <field name="active" />
+                        </group>
+                    </group>
+                    <group name="last">
+                        <field name="last_run" readonly="1" />
+                        <field name="last_ok" readonly="1" />
+                        <field name="last_error" readonly="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_nova_ai_schedule_search" model="ir.ui.view">
+        <field name="name">nova.ai.schedule.search</field>
+        <field name="model">nova.ai.schedule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Schedule" />
+                <filter name="active_true" string="Active"
+                        domain="[('active', '=', True)]" />
+            </search>
+        </field>
+    </record>
+</odoo>

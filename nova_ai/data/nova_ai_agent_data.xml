@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     Starter agents, seeded once (noupdate): an upgrade must never
+     overwrite an admin's prompt, model or tool choices. The model stays
+     empty until an admin connects a provider; the drawer shows a setup
+     state until then. -->
+<odoo>
+    <data noupdate="1">
+        <record id="agent_ask_nova" model="nova.ai.agent">
+            <field name="name">Ask Nova</field>
+            <field name="initials">AN</field>
+            <field name="sequence">5</field>
+            <!-- Inactive until an admin connects a model: the active
+                 constraint refuses model-less agents, and the drawer
+                 shows its setup state meanwhile. -->
+            <field name="active" eval="False" />
+            <field name="description">General assistant for questions about your records</field>
+            <field name="system_prompt">&lt;p&gt;You are Nova, the assistant of this company. Answer only from the data you are given, never invent figures, and say plainly when something is unknown. Quote currency codes and keep totals to two decimals.&lt;/p&gt;</field>
+            <field name="instructions">Be brief and concrete. Prefer a table for anything numeric. If a question needs data you were not given, say which record or view to open instead of guessing.</field>
+            <field name="tool_ids" eval="[(6, 0, [ref('tool_search_records'), ref('tool_read_record'), ref('tool_count_records'), ref('tool_open_view'), ref('tool_summarize_thread'), ref('tool_translate_message'), ref('tool_next_steps'), ref('tool_draft_reply'), ref('tool_create_draft'), ref('tool_log_note'), ref('tool_schedule_activity'), ref('tool_search_knowledge'), ref('tool_confirm_sale_order'), ref('tool_validate_invoice'), ref('tool_set_field'), ref('tool_copy_record'), ref('tool_read_related'), ref('tool_unlink_record'), ref('tool_execute_method'), ref('tool_read_group'), ref('tool_fields_get'), ref('tool_inspect_method'), ref('tool_list_attachments'), ref('tool_digitize_bill'), ref('tool_read_attachment'), ref('tool_cancel_invoice'), ref('tool_cancel_sale_order'), ref('tool_confirm_purchase_order'), ref('tool_validate_delivery'), ref('tool_invoice_order'), ref('tool_add_order_line'), ref('tool_register_payment'), ref('tool_reconcile_moves'), ref('tool_reverse_move'), ref('tool_resolve_ticket'), ref('tool_log_timesheet'), ref('tool_read_knowledge'), ref('tool_write_knowledge'), ref('tool_list_flows'), ref('tool_run_flow'), ref('tool_list_flow_runs'), ref('tool_set_fields'), ref('tool_build_domain'), ref('tool_list_models'), ref('tool_validate_write'), ref('tool_diagnose_access'), ref('tool_scan_codebase'), ref('tool_draft_flow'), ref('tool_update_flow'), ref('tool_export_flow'), ref('tool_import_flow'), ref('tool_ask_user'), ref('tool_fetch_url')])]" />
+        </record>
+    </data>
+</odoo>

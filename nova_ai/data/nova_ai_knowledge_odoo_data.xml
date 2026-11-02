@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     The Odoo knowledge Nova ships with. A fresh install gets a brain that
+     already knows Odoo 20 itself: how its domains read, where its
+     products live, what its invoices mean, and which of its fields can
+     be trusted. kind="reference" everywhere on purpose: these are facts
+     the agent looks up, not procedures it follows (those are skills),
+     and the router only auto-loads skills — references are read on
+     demand, so they never crowd a turn uninvited. -->
+<odoo>
+    <data noupdate="1">
+    <record id="odoo_domains" model="nova.ai.knowledge">
+        <field name="name">Odoo domains</field>
+        <field name="code">odoo-domains</field>
+        <field name="kind">reference</field>
+        <field name="description">How to filter records: domains are lists of [field, operator, value] triples</field>
+        <field name="body"><![CDATA[
+## Domains
+A domain is a **list of [field, operator, value] triples**, one list
+per condition:
+
+```
+[["name", "ilike", "Acme"]]
+[["move_type", "=", "out_invoice"], ["payment_state", "!=", "paid"]]
+```
+
+Never a flat triple, never a dict, never a bare string. Operators:
+`=`, `!=`, `>`, `>=`, `<`, `<=`, `like`, `ilike`, `in`, `not in`.
+
+Prefix operators combine triples: `"&"` (and, the default),
+`"|"` (or), `"!"` (not). Each prefix consumes the two (or one)
+conditions that follow it.
+
+## Traps
+- A many2one filters by **id**, never by name. Search the record
+  first, then use the id you found.
+- `ilike` is the case-insensitive contains every name search wants;
+  `=` on a name misses on case.
+- An empty domain `[]` means *everything* — never pass one by
+  accident when you meant "no filter yet".
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_products" model="nova.ai.knowledge">
+        <field name="name">Odoo products</field>
+        <field name="code">odoo-products</field>
+        <field name="kind">reference</field>
+        <field name="description">Where products live: product.template holds the catalogue, variants are automatic</field>
+        <field name="body"><![CDATA[
+## The catalogue
+New products are ALWAYS `product.template` records. The variants
+(`product.product`) are created automatically by Odoo - never queue a
+`product.product` without its template id.
+
+Key fields on the template: `name` (the one field a request always
+has), `list_price`, `standard_price` (cost), `default_code`
+(internal reference), `categ_id` (product category), `uom_id`
+(unit of measure), `type` ("consu", "service" or "product").
+
+## What Odoo fills in
+Price, currency, category, unit and type all have defaults. A new
+product with only a name is a complete, valid product - the rest
+is Odoo's business unless the user or a fetched page says otherwise.
+
+## Lookup by name, act by id
+Search with `name ilike`, then use the template id you found. A name
+match is a duplicate to reuse, not a second record to create.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_invoices" model="nova.ai.knowledge">
+        <field name="name">Odoo invoices</field>
+        <field name="code">odoo-invoices</field>
+        <field name="kind">reference</field>
+        <field name="description">Customer vs vendor bills: move types, payment states and residuals</field>
+        <field name="body"><![CDATA[
+## Bills live on account.move
+Both kinds of bill are `account.move` rows; the type tells them apart:
+- Customer invoices are `move_type = "out_invoice"`.
+- Vendor bills are `move_type = "in_invoice"`.
+
+Always filter the type. An unfiltered search returns both, and the
+answer is wrong.
+
+## Payment state is the truth
+`payment_state` is `not_paid`, `partial` or `paid`. A date in the
+past alone does not mean overdue - the invoice must be unpaid or
+partially paid AND past due.
+
+## Money
+- `amount_residual` is what is still owed. `amount_total` is not.
+  Reporting the total as the debt is wrong.
+- `amount_untaxed`, `amount_tax`, `amount_total` describe the bill;
+  `amount_residual_signed` carries the sign.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_partners" model="nova.ai.knowledge">
+        <field name="name">Odoo partners</field>
+        <field name="code">odoo-partners</field>
+        <field name="kind">reference</field>
+        <field name="description">Partners and customers: customer_rank marks a customer, there is no customer flag</field>
+        <field name="body"><![CDATA[
+## Customers are partners with history
+`res.partner` has NO `customer` flag. A partner is a customer when
+`customer_rank > 0` - it has bought before - and a vendor when
+`supplier_rank > 0`.
+
+## Lookup
+Search by `name ilike`. A partner's `email`, `phone`, `street`,
+`city` and `country_id` are the fields worth reading back; the rest
+is rarely what was asked.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_units" model="nova.ai.knowledge">
+        <field name="name">Odoo units of measure</field>
+        <field name="code">odoo-units</field>
+        <field name="kind">reference</field>
+        <field name="description">Units live on uom.uom inside categories; there is no product.uom model</field>
+        <field name="body"><![CDATA[
+## Units
+The model is `uom.uom`, grouped by `uom.category`. A product's unit
+is `uom_id`, a many2one to `uom.uom`.
+
+There is NO `product.uom` model. Asking for it fails, and the failure
+looks like a missing model rather than a wrong name - check the name
+before assuming the model is gone.
+
+## Defaults
+Units, dozens and common weights/lengths ship with the database.
+Pick from what exists; creating a unit is rare and almost never what
+a question is really about.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_sales" model="nova.ai.knowledge">
+        <field name="name">Odoo sale orders</field>
+        <field name="code">odoo-sale-orders</field>
+        <field name="kind">reference</field>
+        <field name="description">Sale order states and invoicing: draft, sent, sale, done and how to invoice</field>
+        <field name="body"><![CDATA[
+## Lifecycle
+A `sale.order` moves draft -> sent -> sale (confirmed) -> done.
+`state = "draft"` means editable; confirmed orders grow delivery
+orders and invoices, they are not edited in place.
+
+## Invoicing one
+Do not invoice line by line. `invoice_order` on the order id handles
+the grouping (down payments, delivery quantities, already-invoiced
+lines) and queues one card. Report the invoice number and its total
+from the card - never state a total a tool did not return.
+
+## Lines
+`order.order_line` holds the lines: product, quantity, price, and
+the delivered quantity. Delivered vs ordered is the first thing to
+check before promising anything about stock.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_stock" model="nova.ai.knowledge">
+        <field name="name">Odoo stock</field>
+        <field name="code">odoo-stock</field>
+        <field name="kind">reference</field>
+        <field name="description">Stock levels live on quants per location; pickings move goods, moves explain</field>
+        <field name="body"><![CDATA[
+## On hand
+`stock.quant` rows say how much of a product sits in a location:
+`quantity` on hand, `reserved_quantity` promised to pickings.
+Negative or zero quants with open demand is a stockout, not a
+missing product.
+
+## Movement
+`stock.picking` moves goods between locations; `stock.move` lines
+explain each transfer. A delivery that never happened is a picking
+in an unfinished state, not an empty shelf.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_security" model="nova.ai.knowledge">
+        <field name="name">Odoo 20 access</field>
+        <field name="code">odoo-20-access</field>
+        <field name="kind">reference</field>
+        <field name="description">Who may see or change what: privileges, model access and per-record checks</field>
+        <field name="body"><![CDATA[
+## Odoo 20 has no ir.rule and no ir.model.access
+Access is privileges (`res.groups.privilege`) plus `ir.access`
+rows: per model, per operation, per group, with an optional domain.
+A row with no group is a global restriction and binds everyone,
+including administrators.
+
+## The agent mirrors the user
+Every read and every write runs with the asking user's own rights.
+An AccessError names a real boundary - do not route around it, say
+it plainly and stop that line of work.
+
+## Check before you queue
+`diagnose_access` answers whether the user may touch a model or a
+record, which rows apply, and which fields are group-gated - before
+a card is queued for a write that would fail at Approve. A refused
+model means the turn ends with an explanation, not another search.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_fields" model="nova.ai.knowledge">
+        <field name="name">Odoo field types</field>
+        <field name="code">odoo-fields</field>
+        <field name="kind">reference</field>
+        <field name="description">Field types and how to use them: many2one by id, selections by key, readonly</field>
+        <field name="body"><![CDATA[
+## Reading
+- A `many2one` shows as a name but filters and writes by **id**.
+  Search the record first, then use the id you found.
+- A `selection` stores a key ("consu") and shows a label
+  ("Consumable"). Report the label, write the key.
+- `monetary` carries the company's currency; `float` and `integer`
+  are plain numbers. `date` has no time, `datetime` has one.
+
+## Writing
+- `readonly` and group-gated fields refuse at write time. Check
+  with `fields_get` or `diagnose_access` before queuing, not after
+  the approval fails.
+- `one2many` and `many2many` are never written directly by a simple
+  write; they need their own commands, so leave them out of a
+  `set_fields` call.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_models_index" model="nova.ai.knowledge">
+        <field name="name">Everyday Odoo models</field>
+        <field name="code">odoo-models-index</field>
+        <field name="kind">reference</field>
+        <field name="description">Which model holds what: partners, products, orders, invoices, stock, time</field>
+        <field name="body"><![CDATA[
+## Where things live
+- People and companies: `res.partner`. Users are `res.users`.
+- Catalogue: `product.template` (variants auto-create).
+- Selling: `sale.order` + `sale.order.line`.
+- Money in/out: `account.move` (`out_invoice` / `in_invoice`).
+- Stock on hand: `stock.quant`; moving goods: `stock.picking`.
+- Work: `project.task`; hours: `account.analytic.line`.
+- People directory: `hr.employee`; leave: `hr.leave`.
+
+This index names the model so a search can start. For field names
+and relations, read the model itself - never guess a field.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_timesheets" model="nova.ai.knowledge">
+        <field name="name">Odoo timesheets</field>
+        <field name="code">odoo-timesheets</field>
+        <field name="kind">reference</field>
+        <field name="description">Worked hours live on analytic lines against tasks; a day is 8 hours</field>
+        <field name="body"><![CDATA[
+## Hours
+Hours worked are `account.analytic.line` records tied to a
+`project.task` (and through it, a project). A timesheet entry needs
+a task, hours, and a date.
+
+## Conventions
+A day is 8h, a morning about 4h. Hours are a number between 0 and
+24 - "all day" is 8, never 24. One card per entry, not one per hour.
+"today" and "yesterday" are accepted words; anything vaguer needs
+asking.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+
+    <record id="odoo_writes" model="nova.ai.knowledge">
+        <field name="name">Odoo writes</field>
+        <field name="code">odoo-writes</field>
+        <field name="kind">reference</field>
+        <field name="description">How a change lands: one card per write, preview first, multi-field in one go</field>
+        <field name="body"><![CDATA[
+## One card per change
+Nothing lands in the database without the user approving a card.
+A turn that describes a change instead of queuing one has done
+nothing - the card IS the work.
+
+## The right tool for the write
+- One simple field: `set_field`.
+- Several fields on one record: `set_fields`, one card, one
+  approval, one undo. Chaining single-field writes risks a record
+  that is half-updated if the user approves only some cards.
+- A new record: `create_draft` with only the fields stated or found.
+- Unsure it will apply: `validate_write` first - a dry run that
+  reports unknown fields, missing required fields and current
+  values, and writes nothing.
+
+## After the queue
+Say what was queued and what it will do when approved. Never claim
+a write happened before its card is approved - the card is a
+proposal, not a result.
+]]></field>
+        <field name="generated_by">nova_ai/1.0</field>
+        <field name="status">stable</field>
+    </record>
+    </data>
+</odoo>

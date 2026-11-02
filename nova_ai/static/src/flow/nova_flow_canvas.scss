@@ -1,0 +1,81 @@
+///
+/// Nova Flow Canvas (light): the n8n-class visual builder, in the
+/// Nova theme language. Surfaces, borders and text ride the theme
+/// tokens ($nova-*, $o-*) so light mode is calm paper, not a dark
+/// IDE. Node accents stay saturated (they must read on both modes);
+/// the .dark.scss twin deepens the stage for dark mode.
+///
+
+.nova_flow { display: flex; flex-direction: column; height: 100%; background: $nova-surface-app; color: $nova-ink; }
+.nova_flow_top { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid $o-border-color; background: $nova-surface-view; }
+.nova_flow_title { display: flex; align-items: center; gap: 10px; font-size: 15px; flex: 1; color: $o-main-headings-color; }
+.nova_flow_ver { font-size: 12px; color: $o-main-color-muted; }
+.nova_flow_hook { font-size: 11px; color: $o-info; overflow: hidden; text-overflow: ellipsis; max-width: 380px; }
+.nova_flow_actions { display: flex; gap: 8px; }
+.nova_flow_alert { margin: 8px 14px 0; }
+.nova_flow_body { display: flex; flex: 1; min-height: 0; }
+.nova_flow_palette { width: 210px; padding: 12px; border-right: 1px solid $o-border-color; overflow-y: auto; background: $nova-surface-view; }
+.nova_flow_palette .form-control { background: $o-input-bg; }
+.nova_flow_group { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: $o-main-color-muted; margin: 10px 0 6px; }
+.nova_flow_pal { display: flex; gap: 8px; align-items: center; width: 100%; text-align: left; background: $nova-surface-view; border: 1px solid $o-border-color; color: $nova-ink; border-radius: $o-border-radius; padding: 7px 9px; margin-bottom: 6px; }
+.nova_flow_pal:hover { border-color: $nova-action; }
+.nova_flow_pal small { display: block; color: $o-main-color-muted; font-size: 11px; }
+.nova_flow_dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.nova_flow_tip { font-size: 11px; color: $o-main-color-muted; margin-top: 10px; }
+.nova_flow_stage { position: relative; flex: 1; overflow: auto; background: $nova-paper; background-image: radial-gradient($nova-paper-border 1px, transparent 1px); background-size: 22px 22px; min-height: 480px; border-radius: 0; }
+.nova_flow_wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.nova_flow_wire { fill: none; stroke: $nova-action; stroke-width: 2; opacity: .85; }
+.nova_flow_wirehit { fill: none; stroke: transparent; stroke-width: 12; pointer-events: all; cursor: pointer; }
+.nova_flow_wirelabel { font-size: 11px; fill: $o-main-code-color; }
+.nova_flow_node { position: absolute; width: 170px; background: $nova-surface-view; border: 1px solid var(--nc, $nova-border-strong); border-top: 3px solid var(--nc, $nova-action); border-radius: $o-border-radius; padding: 8px 10px; cursor: grab; box-shadow: $nova-shadow-md; color: $nova-ink; }
+.nova_flow_node.is_sel { outline: 2px solid $nova-action; }
+.nova_flow_ntype {
+    font-size: 10px; color: var(--nc); font-weight: $o-font-weight-bold; text-transform: uppercase; letter-spacing: .06em;
+    // Accent dots/borders are large graphics; this tiny label gets
+    // darkened in light mode so it keeps contrast on paper.
+    // (The .dark.scss twin resets it to none.)
+    filter: brightness(0.72) saturate(1.25);
+}
+.nova_flow_nname { font-size: 13px; font-weight: $o-font-weight-medium; color: $nova-ink; }
+.nova_flow_nops { display: flex; gap: 6px; margin-top: 6px; }
+.nova_flow_nops button { background: $o-gray-100; color: $nova-ink; border: 1px solid $o-border-color; border-radius: 6px; font-size: 11px; }
+.nova_flow_inspector { width: 300px; padding: 14px; border-left: 1px solid $o-border-color; overflow-y: auto; background: $nova-surface-view; }
+.nova_flow_inspector h4 { color: $o-main-headings-color; }
+.nova_flow_inspector label { font-size: 11px; color: $o-main-color-muted; margin-top: 10px; display: block; }
+.nova_flow_json { font-family: monospace; font-size: 12px; }
+.nova_flow_hint { font-size: 11px; color: $o-main-color-muted; margin-top: 8px; }
+.nova_flow_problems { color: $o-danger; font-size: 12px; margin: 8px 0; }
+.nova_flow_run { font-size: 12px; padding: 4px 0; border-bottom: 1px dashed $o-border-color; cursor: pointer; color: $nova-ink; }
+.nova_flow_run:hover { color: $nova-action; }
+.nova_flow_hookbar { padding: 6px 14px; font-size: 12px; color: $o-info; background: $nova-action-soft; border-bottom: 1px solid $o-border-color; }
+.nova_flow_active { font-size: 12px; color: $o-main-color-muted; display: flex; gap: 6px; align-items: center; }
+.nova_flow_nhead { display: flex; justify-content: space-between; align-items: center; }
+.nova_flow_nio { color: $o-success; font-size: 10px; }
+.nova_flow_wire_true { stroke: $o-success; }
+.nova_flow_wire_false { stroke: $o-danger; }
+.nova_flow_wire_error { stroke: $o-warning; stroke-dasharray: 6 4; }
+.nova_flow_tabs { display: flex; gap: 6px; margin: 8px 0; }
+.nova_flow_tabs button { background: $o-gray-100; border: 1px solid $o-border-color; color: $nova-ink; border-radius: 6px; font-size: 12px; padding: 4px 10px; }
+.nova_flow_tabs button.on { background: $nova-action; border-color: $nova-action; color: $nova-on-action; }
+.nova_flow_io { background: $nova-surface-app; border: 1px solid $o-border-color; border-radius: 8px; padding: 8px; font-size: 11px; max-height: 260px; overflow: auto; white-space: pre-wrap; color: $nova-ink; }
+.nova_flow_nid { font-size: 11px; color: $o-main-color-muted; }
+.nova_flow_copilot { width: 300px; padding: 14px; border-left: 1px solid $nova-action; background: $nova-paper; display: flex; flex-direction: column; }
+.nova_flow_proposal { border: 1px dashed $nova-action; border-radius: $o-border-radius; padding: 8px 10px; margin: 8px 0; font-size: 12px; color: $nova-ink; background: $nova-action-soft; }
+.nova_flow_proposal div { display: flex; gap: 6px; margin-top: 6px; }
+.nova_flow_copilot h4 { color: $o-main-headings-color; }
+.nova_flow_chat { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 8px 0; min-height: 200px; }
+.nova_flow_msg_u { background: $o-gray-100; border-radius: 10px; padding: 8px 10px; font-size: 13px; align-self: flex-end; max-width: 90%; color: $nova-ink; }
+.nova_flow_msg_n { background: $nova-surface-view; border: 1px solid $nova-action; border-radius: 10px; padding: 8px 10px; font-size: 13px; color: $nova-ink; }
+.nova_flow_chatbar { display: flex; gap: 6px; }
+.nova_flow_guided select, .nova_flow_guided input, .nova_flow_guided textarea { margin-bottom: 4px; }
+.nova_flow_row3 { display: flex; gap: 6px; margin-bottom: 6px; }
+.nova_flow_row3 .form-control { min-width: 0; }
+.nova_flow_legacy { display: flex; align-items: center; gap: 10px; margin: 12px 14px 0; padding: 10px 14px; background: $nova-action-soft; border: 1px solid $nova-action; border-radius: $o-border-radius; color: $nova-ink; font-size: 13px; }
+// Import dialog: dimmed backdrop + centered card, same language as
+// the copilot drawer. Replaces the old window.prompt call.
+.nova_flow_import_backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); z-index: 40; }
+.nova_flow_import { position: fixed; z-index: 41; left: 50%; top: 12%; transform: translateX(-50%); width: 90vw; max-width: 560px; background: $nova-surface-view; border: 1px solid $o-border-color; border-radius: $o-border-radius-lg; box-shadow: $nova-shadow-lg; padding: 16px; color: $nova-ink; }
+.nova_flow_import h4 { margin: 0 0 4px; color: $o-main-headings-color; display: flex; align-items: center; gap: 8px; }
+.nova_flow_import_text { font-family: monospace; font-size: 12px; min-height: 220px; margin-top: 8px; background: $o-view-background-color; color: $nova-ink; }
+.nova_flow_import_bar { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+.nova_flow_tag { font-size: 11px; font-weight: 600; background: $nova-action-soft; color: $nova-action-active; border-radius: 999px; padding: 2px 8px; }

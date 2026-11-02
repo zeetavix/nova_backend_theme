@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <record id="nova_ai_flow_run_view_tree" model="ir.ui.view">
+        <field name="name">nova.ai.flow.run.list</field>
+        <field name="model">nova.ai.flow.run</field>
+        <field name="arch" type="xml">
+            <list string="Flow runs">
+                <field name="started_at"/>
+                <field name="flow_id"/>
+                <field name="trigger"/>
+                <field name="status"/>
+                <field name="duration_ms"/>
+                <field name="user_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="nova_ai_flow_run_view_form" model="ir.ui.view">
+        <field name="name">nova.ai.flow.run.form</field>
+        <field name="model">nova.ai.flow.run</field>
+        <field name="arch" type="xml">
+            <form string="Flow run">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="flow_id"/>
+                            <field name="trigger"/>
+                            <field name="status"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="started_at"/>
+                            <field name="duration_ms"/>
+                        </group>
+                    </group>
+                    <group string="Error" invisible="error == False">
+                        <field name="error" nolabel="1"/>
+                    </group>
+                    <group string="Inputs">
+                        <field name="inputs" nolabel="1"/>
+                    </group>
+                    <group string="Outputs">
+                        <field name="outputs" nolabel="1"/>
+                    </group>
+                    <group string="Nodes">
+                        <field name="node_log" nolabel="1"/>
+                    </group>
+                    <group string="Execution IO (n8n-style)">
+                        <field name="node_inputs" nolabel="1"/>
+                        <field name="node_outputs" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_nova_ai_flow_run" model="ir.actions.act_window">
+        <field name="name">Flow runs</field>
+        <field name="res_model">nova.ai.flow.run</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No runs yet</p>
+            <p>Run a flow from chat, the canvas, a webhook or a schedule —
+               every execution lands here with its inputs and results.</p>
+        </field>
+    </record>
+    <!-- The Flow runs menu lives in nova_ai_menus.xml (parent menus must
+         be defined before the child references them). -->
+</odoo>

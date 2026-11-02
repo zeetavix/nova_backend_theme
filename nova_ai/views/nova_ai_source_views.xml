@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <record id="action_nova_ai_source" model="ir.actions.act_window">
+        <field name="name">Knowledge sources</field>
+        <field name="res_model">nova.ai.source</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No sources yet</p>
+            <p>Point Nova at a public web page or a set of records. Fetch indexes the text so agents can quote it instead of guessing.</p>
+        </field>
+    </record>
+
+    <record id="view_nova_ai_source_list" model="ir.ui.view">
+        <field name="name">nova.ai.source.list</field>
+        <field name="model">nova.ai.source</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="kind" />
+                <field name="url" />
+                <field name="model_name" />
+                <field name="chunk_count" />
+                <field name="last_fetch" />
+                <field name="active" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_nova_ai_source_form" model="ir.ui.view">
+        <field name="name">nova.ai.source.form</field>
+        <field name="model">nova.ai.source</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1><field name="name" placeholder="Pricing page" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kind" />
+                            <field name="url" placeholder="https://…" />
+                            <field name="model_name" placeholder="product.product" />
+                            <field name="domain" />
+                            <field name="active" />
+                        </group>
+                        <group>
+                            <field name="chunk_count" />
+                            <field name="last_fetch" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="chunks" string="Chunks">
+                            <field name="chunk_ids" readonly="1">
+                                <list>
+                                    <field name="seq" />
+                                    <field name="content" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="action_fetch" type="object"
+                            string="Fetch and index" class="btn-primary" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Schedule views + action live in nova_ai_schedule_views.xml;
+         redefining them here shadowed that file. -->
+    <!-- The hourly twin of this runner lived here and fired every
+         schedule far too often: run_due() runs every active schedule,
+         so one runner (the daily one in nova_ai_schedule_data) sets
+         the cadence. Deleted, not moved. -->
+</odoo>

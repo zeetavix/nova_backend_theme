@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <record id="ir_cron_nova_flow_schedules" model="ir.cron">
+        <field name="name">Nova flows: run due schedules</field>
+        <field name="model_id" ref="model_nova_ai_flow"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_run_schedules()</field>
+<field name="interval_number">1</field>
+<field name="interval_type">minutes</field>
+<field name="active" eval="True"/>
+    </record>
+    <record id="ir_cron_nova_flow_trim" model="ir.cron">
+        <field name="name">Nova flows: trim old runs</field>
+        <field name="model_id" ref="model_nova_ai_flow"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_trim_runs()</field>
+<field name="interval_number">1</field>
+<field name="interval_type">days</field>
+<field name="active" eval="True"/>
+    </record>
+</odoo>

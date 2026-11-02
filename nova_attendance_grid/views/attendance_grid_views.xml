@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Attendance grid: rows employees, columns days, measure worked
+             hours. The measure is readonly on the model, so force_editable
+             declares the custom write path (corrections land on check_out).
+             Corrections only: empty days stay empty until someone checks in.
+             kpi_capacity_target=40 gives every grid its capacity ring. -->
+        <record id="view_nova_attendance_grid" model="ir.ui.view">
+            <field name="name">hr.attendance.grid</field>
+            <field name="model">hr.attendance</field>
+            <field name="arch" type="xml">
+                <grid string="Attendances" editable="1" force_editable="1"
+                      show_heatmap="1" heatmap_scale="8"
+                      kpi_capacity_target="40" kpi_capacity_label="of 40h week"
+                      kpi_unit="h" overtime_at="8">
+                    <field name="employee_id" type="row" string="Employee"/>
+                    <field name="date" type="col">
+                        <range name="week" string="Week" span="week" step="day" default="1"/>
+                        <range name="month" string="Month" span="month" step="day"/>
+                    </field>
+                    <field name="worked_hours" type="measure" operator="sum" string="Hours"/>
+                </grid>
+            </field>
+        </record>
+
+        <!-- Attach the grid as the FIRST (default) view of the stock
+             Attendances actions, exactly like Enterprise does for timesheets.
+             The My action already filters to the current user; record rules
+             keep everyone else out. Uninstall-safe: only our own
+             act_window.view rows are added, stock actions are untouched. -->
+        <record id="nova_grid_in_my_attendance" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">grid</field>
+            <field name="view_id" ref="view_nova_attendance_grid"/>
+            <field name="act_window_id" ref="hr_attendance.hr_attendance_my_action"/>
+        </record>
+
+        <record id="nova_grid_in_all_attendances" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">grid</field>
+            <field name="view_id" ref="view_nova_attendance_grid"/>
+            <field name="act_window_id" ref="hr_attendance.hr_attendance_action"/>
+        </record>
+    </data>
+</odoo>

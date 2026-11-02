@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Workload grid: section project, rows stage, columns deadline
+             weeks, measure allocated hours. kpi_unit="h" keeps the hero
+             numbers honest; there is no ring because no single target fits
+             every team. Undated tasks cannot be bucketed and stay out. -->
+        <record id="view_nova_project_workload_grid" model="ir.ui.view">
+            <field name="name">project.task.grid.workload</field>
+            <field name="model">project.task</field>
+            <field name="arch" type="xml">
+                <grid string="Workload" editable="1"
+                      show_heatmap="1" heatmap_scale="8" kpi_unit="h">
+                    <field name="project_id" type="row" section="1" string="Project"/>
+                    <field name="stage_id" type="row" string="Stage"/>
+                    <field name="date_deadline" type="col">
+                        <range name="week" string="Week" span="week" step="day" default="1"/>
+                        <range name="month" string="Month" span="month" step="day"/>
+                    </field>
+                    <field name="allocated_hours" type="measure" operator="sum" string="Planned"/>
+                </grid>
+            </field>
+        </record>
+
+        <!-- Attach the grid as the FIRST (default) view of the stock All
+             Tasks action (no active_id dependency, unlike the per-project
+             task action). Uninstall-safe: only our own act_window.view row
+             is added, the stock action is untouched. -->
+        <record id="nova_grid_in_all_tasks" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">grid</field>
+            <field name="view_id" ref="view_nova_project_workload_grid"/>
+            <field name="act_window_id" ref="project.action_view_all_task"/>
+        </record>
+    </data>
+</odoo>

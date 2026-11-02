@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<odoo>
+    <record id="action_nova_ai_agent" model="ir.actions.act_window">
+        <field name="name">Agents</field>
+        <field name="res_model">nova.ai.agent</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No agents yet</p>
+            <p>An agent is a role: a system prompt, a model, and the tools it may use. Ask Nova is the starter — connect a provider, pick a model, then activate it.</p>
+        </field>
+    </record>
+
+    <record id="view_nova_ai_agent_list" model="ir.ui.view">
+        <field name="name">nova.ai.agent.list</field>
+        <field name="model">nova.ai.agent</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="initials" />
+                <field name="description" />
+                <field name="model_id" />
+                <field name="tier" widget="nova_tier_badge" />
+                <field name="auto_apply" />
+                <field name="active" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_nova_ai_agent_search" model="ir.ui.view">
+        <field name="name">nova.ai.agent.search</field>
+        <field name="model">nova.ai.agent</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Agent" />
+                <field name="description" />
+                <filter name="active_true" string="Active"
+                        domain="[('active', '=', True)]" />
+                <group>
+                    <filter name="group_tier" string="Tier"
+                            context="{'group_by': 'tier'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_nova_ai_agent_form" model="ir.ui.view">
+        <field name="name">nova.ai.agent.form</field>
+        <field name="model">nova.ai.agent</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1><field name="name" placeholder="Sales Assistant" /></h1>
+                        <h3><field name="description" placeholder="One line for the picker" /></h3>
+                    </div>
+                    <group>
+                        <group name="identity">
+                            <field name="initials" placeholder="SA" />
+                            <field name="model_id" />
+                            <field name="requires" placeholder="vision, tools - empty = the agent's own model always"/>
+                            <field name="tier" />
+                            <field name="temperature" />
+                            <field name="active" />
+                        </group>
+                        <group name="access">
+                            <field name="group_ids" widget="many2many_tags"
+                                   placeholder="Empty = every internal user" />
+                            <field name="auto_apply" />
+                        <field name="model_scope"
+                               placeholder="sale.order,sale.order.line — empty = user-mirrored access" />
+                        </group>
+                    </group>
+                    <group name="prompt">
+                        <field name="system_prompt" colspan="2" />
+                    </group>
+                    <field name="instructions" placeholder="Skill-specific rules…" />
+                    <notebook>
+                        <page name="tools" string="Tools">
+                            <field name="tool_ids">
+                                <list>
+                                    <field name="name" />
+                                    <field name="code" />
+                                    <field name="tier_min" />
+                                    <field name="write_kind" />
+                                </list>
+                            </field>
+                            <p class="text-muted">
+                                Only tools at or below the connected model's tier are
+                                ever offered. A T1 model never sees a tool instruction
+                                it cannot follow.
+                            </p>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

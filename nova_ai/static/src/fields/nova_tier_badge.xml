@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<templates xml:space="preserve">
+    <t t-name="nova_ai.NovaTierBadge">
+        <span t-att-class="'nova_tier ' + this.cls"
+              t-att-title="this.title"
+              t-att-data-tier="this.value"><t t-out="this.label"/></span>
+    </t>
+</templates>

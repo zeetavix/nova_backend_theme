@@ -1,0 +1,29 @@
+id,name,model_id,group_id/id,operation,domain
+access_nova_ai_provider_admin,nova.ai.provider admin,nova.ai.provider,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_model_admin,nova.ai.model admin,nova.ai.model,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_model_user,nova.ai.model user,nova.ai.model,nova_ai.group_nova_ai_user,r,
+access_nova_ai_agent_admin,nova.ai.agent admin,nova.ai.agent,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_agent_user,nova.ai.agent user,nova.ai.agent,nova_ai.group_nova_ai_user,r,"['&', '&', ('active','=',True), '|', ('group_ids','=',False), ('group_ids','in',user.all_group_ids.ids), '|', ('company_id','=',False), ('company_id','in',user.company_ids.ids)]"
+access_nova_ai_tool_admin,nova.ai.tool admin,nova.ai.tool,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_tool_user,nova.ai.tool user,nova.ai.tool,nova_ai.group_nova_ai_user,r,
+access_nova_ai_log_admin,nova.ai.log admin,nova.ai.log,nova_ai.group_nova_ai_admin,r,
+access_nova_ai_session_admin,nova.ai.session admin,nova.ai.session,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_session_user,nova.ai.session user,nova.ai.session,nova_ai.group_nova_ai_user,crud,"[('user_id','=',user.id)]"
+access_nova_ai_message_admin,nova.ai.message admin,nova.ai.message,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_message_user,nova.ai.message user,nova.ai.message,nova_ai.group_nova_ai_user,r,"[('session_id.user_id','=',user.id)]"
+access_nova_ai_prompt_admin,nova.ai.prompt admin,nova.ai.prompt,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_prompt_user,nova.ai.prompt user,nova.ai.prompt,nova_ai.group_nova_ai_user,r,
+access_nova_ai_source_admin,nova.ai.source admin,nova.ai.source,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_source_user,nova.ai.source user,nova.ai.source,nova_ai.group_nova_ai_user,r,
+access_nova_ai_chunk_admin,nova.ai.chunk admin,nova.ai.chunk,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_chunk_user,nova.ai.chunk user,nova.ai.chunk,nova_ai.group_nova_ai_user,r,
+access_nova_ai_schedule_admin,nova.ai.schedule admin,nova.ai.schedule,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_snapshot_admin,nova.ai.snapshot admin,nova.ai.snapshot,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_snapshot_user,nova.ai.snapshot user,nova.ai.snapshot,nova_ai.group_nova_ai_user,r,"[('user_id','=',user.id)]"
+access_nova_ai_knowledge_admin,nova.ai.knowledge admin,nova.ai.knowledge,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_knowledge_user,nova.ai.knowledge user,nova.ai.knowledge,nova_ai.group_nova_ai_user,r,"['|', ('owner_user_id','=',False), ('owner_user_id','=',user.id)]"
+access_nova_ai_flow_admin,nova.ai.flow admin,nova.ai.flow,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_flow_user,nova.ai.flow user,nova.ai.flow,nova_ai.group_nova_ai_user,r,
+access_nova_ai_flow_run_admin,nova.ai.flow.run admin,nova.ai.flow.run,nova_ai.group_nova_ai_admin,crud,
+access_nova_ai_flow_run_user,nova.ai.flow.run user,nova.ai.flow.run,nova_ai.group_nova_ai_user,r,"[('user_id','=',user.id)]",
+access_nova_ai_flow_credential_admin,nova.ai.flow.credential admin,nova.ai.flow.credential,nova_ai.group_nova_ai_admin,crud,

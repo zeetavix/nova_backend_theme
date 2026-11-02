@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Event Gantt: section event type, one lane per event. -->
+        <record id="view_nova_event_gantt" model="ir.ui.view">
+            <field name="name">event.event.grid.gantt</field>
+            <field name="model">event.event</field>
+            <field name="arch" type="xml">
+                <gantt string="Events" date_start="date_begin" date_stop="date_end"
+                       editable="1" kpi_unit="d">
+                    <field name="event_type_id" type="row" section="1" string="Template"/>
+                    <field name="name" type="row" string="Event"/>
+                    <range name="month" string="Month" span="month" step="day" default="1"/>
+                    <range name="quarter" string="Quarter" span="quarter" step="day"/>
+                </gantt>
+            </field>
+        </record>
+
+        <record id="nova_gantt_in_events" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">gantt</field>
+            <field name="view_id" ref="view_nova_event_gantt"/>
+            <field name="act_window_id" ref="event.action_event_view"/>
+        </record>
+    </data>
+</odoo>

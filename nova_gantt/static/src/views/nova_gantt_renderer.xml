@@ -1,0 +1,54 @@
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<templates>
+    <t t-name="nova_gantt.GanttRenderer" owl="1">
+        <div t-attf-class="o_nova_gantt_wrap {{ this.model.columnsArray.length > 40 ? 'o_wide' : '' }}" t-ref="this.gridRef">
+            <t t-if="this.model.hasData()">
+                <div class="o_nova_gantt_grid" t-att-style="this.gridStyle">
+                    <div class="o_nova_gantt_corner o_nova_gantt_rowhead">
+                        <span class="o_rowhead_title"><t t-out="this.rowHeaderTitle()"/></span>
+                    </div>
+                    <t t-foreach="this.model.columnsArray" t-as="col" t-key="col.id">
+                        <div t-attf-class="o_nova_gantt_colhead text-center {{ col.isToday ? 'o_today' : '' }} {{ col.isWeekDay === false ? 'o_weekend' : '' }}" t-att-title="col.title">
+                            <div class="o_col_top"><t t-out="col._headerTop"/></div>
+                            <div class="o_col_main"><t t-out="col._headerSub"/></div>
+                        </div>
+                    </t>
+                    <t t-foreach="this.model.sectionsArray" t-as="section" t-key="section.id">
+                        <t t-if="!section.isFake">
+                            <div class="o_nova_gantt_section">
+                                <span class="o_section_label">
+                                    <span class="o_section_avatar" t-att-style="this.avatarStyle(section)"><t t-out="this.avatarInitial(section)"/></span>
+                                    <span class="fw-bold o_section_name"><t t-out="section.title"/></span>
+                                    <span class="text-muted fw-normal small o_section_count">(<t t-out="section.lanes.length"/>)</span>
+                                </span>
+                            </div>
+                        </t>
+                        <t t-foreach="this.lanesOf(section)" t-as="lane" t-key="lane.id">
+                            <div class="o_nova_gantt_rowhead" t-att-title="lane.title">
+                                <span class="text-truncate d-inline-block" style="max-width: 280px;"><t t-out="lane.title || this.rowHeaderTitle()"/></span>
+                            </div>
+                            <div class="o_nova_gantt_track" t-att-style="this.trackStyle()" t-att-data-lane="lane.id">
+                                <t t-foreach="lane.bars" t-as="bar" t-key="bar.id">
+                                    <button
+                                        t-att-data-bar="bar.id"
+                                        t-attf-class="o_nova_gantt_bar {{ this.isCompact(bar) ? 'o_compact' : '' }} {{ bar.saving() ? 'o_saving' : '' }}"
+                                        t-att-style="this.barStyle(bar)"
+                                        t-att-title="this.barTitle(bar)"
+                                        t-on-pointerdown="(ev) => this.onBarDown(ev, bar)"
+                                        t-on-keydown="(ev) => this.onBarKeydown(ev, bar)"
+                                    >
+                                        <span class="o_nova_gantt_handle o_handle_l"/>
+                                        <span class="o_nova_gantt_label text-truncate"><t t-out="bar.label"/></span>
+                                        <span class="o_nova_gantt_handle o_handle_r"/>
+                                        <span t-if="bar.saving()" class="spinner-border spinner-border-sm ms-1"/>
+                                    </button>
+                                </t>
+                                <div t-if="this.todayIndex() >= 0" class="o_nova_gantt_todayline" t-att-style="this.todayStyle()"/>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

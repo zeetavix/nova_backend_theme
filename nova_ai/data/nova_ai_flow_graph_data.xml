@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details.
+     Graph-native examples: branching, loops and approvals — the shapes
+     the linear format could never express. -->
+<odoo>
+    <data noupdate="1">
+    <record id="flow_overdue_branch" model="nova.ai.flow">
+        <field name="name">Overdue triage (graph)</field>
+        <field name="description">Search overdue bills, branch on amount, loop reminders, queue approval</field>
+        <field name="agent_id" ref="agent_ask_nova"/>
+        <field name="trigger_type">chat</field>
+        <field name="trigger_config" eval="{'phrases': ['overdue', 'chase', 'triage']}"/>
+        <field name="spec_version" eval="2"/>
+        <field name="nodes" eval="[
+ {'id': 't', 'type': 'trigger', 'name': 'Start', 'config': {'variables': [{'name': 'days', 'type': 'optional', 'value': 30}]}, 'position': {'x': 40, 'y': 160}},
+ {'id': 's', 'type': 'odoo.search', 'name': 'Find overdue', 'config': {'model': 'account.move', 'domain': [['move_type', '=', 'out_invoice'], ['payment_state', 'in', ['not_paid', 'partial']]], 'fields': ['name', 'partner_id', 'amount_residual', 'invoice_date_due'], 'limit': 25, 'output': 'overdue'}, 'position': {'x': 260, 'y': 160}},
+ {'id': 'c', 'type': 'if', 'name': 'Big amounts?', 'config': {'condition': '${overdue} contains residual', 'output': 'has_rows'}, 'position': {'x': 480, 'y': 160}},
+ {'id': 'l', 'type': 'loop.foreach', 'name': 'Each invoice', 'config': {'items': '${overdue}', 'itemName': 'inv'}, 'position': {'x': 700, 'y': 100}},
+ {'id': 'a', 'type': 'ai.agent', 'name': 'Draft reminder', 'config': {'instruction': 'Write one short reminder for invoice ${inv}. Name the customer and amount. Plain text.', 'output': 'draft'}, 'position': {'x': 920, 'y': 100}},
+ {'id': 'h', 'type': 'human.approval', 'name': 'Approve reminders', 'config': {'title': 'Approve reminders', 'message': 'Review ${draft} before sending.'}, 'position': {'x': 1140, 'y': 100}},
+ {'id': 'o', 'type': 'output', 'name': 'Done', 'config': {'value': '${draft}'}, 'position': {'x': 1140, 'y': 260}},
+        ]"/>
+        <field name="edges" eval="[
+ {'id': 'e1', 'source': 't', 'target': 's'},
+ {'id': 'e2', 'source': 's', 'target': 'c'},
+ {'id': 'e3', 'source': 'c', 'target': 'l', 'source_handle': 'true'},
+ {'id': 'e4', 'source': 'c', 'target': 'o', 'source_handle': 'false'},
+ {'id': 'e5', 'source': 'l', 'target': 'a'},
+ {'id': 'e6', 'source': 'a', 'target': 'h'},
+ {'id': 'e7', 'source': 'h', 'target': 'o'},
+        ]"/>
+        <field name="active" eval="True"/>
+    </record>
+    </data>
+</odoo>

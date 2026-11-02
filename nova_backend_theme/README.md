@@ -33,7 +33,7 @@ brings stock Odoo back.
 | Odoo | 20.0 Community |
 | Dependencies | `web` only |
 | License | OPL-1 (Odoo Proprietary License v1.0) |
-| Price | $10.00 USD per module |
+| Price | **Free** |
 
 No Enterprise code is used or required.
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Part of Nova. See LICENSE file for full copyright and licensing details. -->
+<templates xml:space="preserve">
+    <t t-name="nova_ai.ChatterPatch" t-inherit="mail.Chatter" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o-mail-Chatter-activity')]" position="after">
+            <Dropdown menuClass="'nova_ai_chatter_menu'" position="'bottom-end'">
+                <button class="nova_ai_chatter_btn btn btn-secondary text-nowrap" aria-label="Ask Nova about this record" title="Ask Nova about this record">
+                    <span class="nova_ai_spark" aria-hidden="true"><svg class="nova_ai_glyph" width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c.7 4.6 3 6.9 7.6 7.6-4.6.7-6.9 3-7.6 7.6-.7-4.6-3-6.9-7.6-7.6 4.6-.7 6.9-3 7.6-7.6Z" fill="currentColor"/><circle cx="19" cy="5.5" r="1.7" fill="currentColor"/><circle cx="5" cy="18.5" r="1.7" fill="currentColor"/></svg></span> AI
+                </button>
+                <t t-set-slot="content">
+                    <button type="button" class="dropdown-item" t-on-click="() => this.novaAiAsk('summarize')">Summarize thread</button>
+                    <button type="button" class="dropdown-item" t-on-click="() => this.novaAiAsk('translate')">Translate last message</button>
+                    <button type="button" class="dropdown-item" t-on-click="() => this.novaAiAsk('draft')">Draft reply</button>
+                    <button type="button" class="dropdown-item" t-on-click="() => this.novaAiAsk('next')">Suggest next steps</button>
+                    <button type="button" class="dropdown-item" t-on-click="() => this.novaAiAsk('risk')">Check risks</button>
+                </t>
+            </Dropdown>
+        </xpath>
+    </t>
+</templates>

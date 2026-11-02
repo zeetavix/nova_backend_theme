@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portfolio Gantt: section manager, one lane per project, bars
+             from start to expiration date. Undated projects stay out. -->
+        <record id="view_nova_project_gantt" model="ir.ui.view">
+            <field name="name">project.project.grid.gantt</field>
+            <field name="model">project.project</field>
+            <field name="arch" type="xml">
+                <gantt string="Portfolio" date_start="date_start" date_stop="date"
+                       editable="1" kpi_unit="d">
+                    <field name="user_id" type="row" section="1" string="Manager"/>
+                    <field name="name" type="row" string="Project"/>
+                    <range name="month" string="Month" span="month" step="day" default="1"/>
+                    <range name="quarter" string="Quarter" span="quarter" step="day"/>
+                </gantt>
+            </field>
+        </record>
+
+        <!-- Attach the Gantt as the FIRST (default) view of the stock
+             Projects action. Uninstall-safe: only our own act_window.view
+             row is added, the stock action is untouched. -->
+        <record id="nova_gantt_in_all_projects" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">gantt</field>
+            <field name="view_id" ref="view_nova_project_gantt"/>
+            <field name="act_window_id" ref="project.open_view_project_all"/>
+        </record>
+    </data>
+</odoo>

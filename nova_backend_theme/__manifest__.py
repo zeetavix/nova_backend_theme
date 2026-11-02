@@ -6,7 +6,7 @@
 Nova Backend Theme
 ==================
 
-An original, clean-room backend theme for Odoo Community (LGPL-3).
+An original, clean-room backend theme for Odoo Community (OPL-1).
 
 Design thesis: if Meta designed an ERP, it would feel instant, calm and
 human — one action blue, soft surfaces, Apple-HIG craft, zero clutter.

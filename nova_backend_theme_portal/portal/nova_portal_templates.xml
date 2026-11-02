@@ -8,7 +8,7 @@
     <template id="nova_portal_layout_accent" inherit_id="portal.frontend_layout" name="Nova Portal Accent">
         <xpath expr="//head" position="inside">
             <t t-set="nova_accent" t-value="request.env.company.nova_accent or '#0E7C8A'"/>
-            <style t-if="nova_accent in ['#0E7C8A', '#7C3AED', '#0E7C8A', '#0A7D2C', '#B42323', '#8A5700']">
+            <style t-if="nova_accent in ['#0866FF', '#7C3AED', '#0E7C8A', '#0A7D2C', '#B42323', '#8A5700']">
                 :root {
                     --nova-accent: <t t-out="nova_accent"/>;
                     --nova-accent-soft: color-mix(in srgb, <t t-out="nova_accent"/> 18%, transparent);

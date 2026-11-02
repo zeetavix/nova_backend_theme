@@ -296,8 +296,8 @@ def studio_payload(env, user):
         "agent": {
             "id": agent.id if agent else 0,
             "name": agent.name if agent else "",
-            "initials": (agent.initials or (agent.name[:2] if agent
-                                             else "N")),
+            "initials": ((agent.initials or (agent.name or "N")[:2])
+                         if agent else "N"),
             "tier": agent.tier if agent else "t1",
             "model": agent.model_id.name if agent else "",
             "model_id": agent.model_id.id if agent else 0,

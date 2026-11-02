@@ -33,4 +33,4 @@ No Enterprise code is copied or required.
 
 ## Support
 
-support@zeetavix.com — https://zeetavix.com
+support@zeetavix.com — found a bug? Please open an issue: https://github.com/zeetavix/nova_backend_theme/issues — https://zeetavix.com

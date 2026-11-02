@@ -34,11 +34,9 @@ No Enterprise code is copied. All Python + OWL is original.
     "license": "OPL-1",
     "price": 0.0,
     "currency": "USD",
-    "images": [
-        "static/description/img/split_hero.png",
-        "static/description/img/split_expanded.png",
-        "static/description/img/split_dark.png",
-        "static/description/img/split_settings.png"
+        "images": [
+        "static/description/img/01_split_partner.png",
+        "static/description/img/02_split_invoice.png",
     ],
     "depends": ["web"],
     "data": [

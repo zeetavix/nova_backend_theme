@@ -62,7 +62,6 @@ No Enterprise code is used or required.
 nova_backend_theme/           the theme (paid)
 nova_backend_theme_mail/      free bridge for mail
 nova_backend_theme_portal/    free bridge for portal
-scripts/sync-from-addons.ps1  mirror the modules from a working addons path
 ```
 
 ## License

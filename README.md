@@ -1,8 +1,55 @@
 # Nova — free Odoo 20 Community addons by Zeetavix
 
-Backend theme, 2D grid/Gantt/split views, per-app use-cases, and a
-model-agnostic AI agent layer. Every addon in this repo is **free**
-(price `0.0`, OPL-1).
+![Odoo 20.0](https://img.shields.io/badge/Odoo-20.0-714B67)
+![License LGPL-3](https://img.shields.io/badge/License-LGPL--3-blue)
+![Price Free](https://img.shields.io/badge/Price-Free-success)
+![Community only](https://img.shields.io/badge/Community-no%20Enterprise%20code-lightgrey)
+
+A backend theme, 2D grid/Gantt/split views, per-app use-cases, and a
+model-agnostic AI agent layer — **all free and open source (LGPL-3)**.
+No Enterprise code copied or required, anywhere.
+
+![Nova launcher: greeting, today's activity, quick create, apps and insights](nova_backend_theme/static/description/screens/03-home.png)
+
+## Why Nova
+
+- **One accent, yours** — six presets or any brand hex, per company; light
+  and dark themes designed separately, never inverted.
+- **White-label branding** — brand name, login logo and favicon per company.
+- **Real views, not skins** — generic `<grid>` and `<gantt>` engines any
+  model can use, plus a split view that docks any form beside its list.
+- **AI with guardrails** — capability tiers, confirm cards, audit log, 29
+  library flows, offline voice. Your model, your data.
+
+## Tour
+
+| | |
+|---|---|
+| Light lists, calm and scannable | ![Sales orders list](nova_backend_theme/static/description/screens/04-sales-list.png) |
+| Forms that read like paper | ![Sale order form](nova_backend_theme/static/description/screens/05-sale-form.png) |
+| A real dark theme | ![Sales list in dark mode](nova_backend_theme/static/description/screens/11-sales-dark.png) |
+| Your identity on the login page | ![Branded login, light and dark](nova_backend_theme/static/description/screens/01-login-light.png) |
+
+### Views
+
+| Grid engine — any rows, any period | Gantt engine — lanes, drag, resize |
+|---|---|
+| ![Nova grid weekly matrix](nova_grid/static/description/img/01_engine_week.png) | ![Nova Gantt month view](nova_gantt/static/description/img/01_engine_month.png) |
+
+Split view: list left, form right, zero per-model work.
+
+![Split view on contacts](nova_split/static/description/img/01_split_partner.png)
+
+### AI agents
+
+![Nova Studio control room](nova_ai/static/description/img/01_studio.png)
+
+Chat in the drawer, threads read post by post, replies drafted from the
+record, flows as steps or node graphs, 166 tiered tools, any model.
+
+![Flow canvas with agent node](nova_ai/static/description/img/07_flow.png)
+
+## All addons
 
 | Addon | What it does |
 |---|---|
@@ -24,15 +71,8 @@ model-agnostic AI agent layer. Every addon in this repo is **free**
 The use-case grid/Gantt modules depend on their engine, so installing one
 pulls the engine in automatically. `nova_ai` needs the backend theme.
 
-## Requirements
-
-| | |
-|---|---|
-| Odoo | 20.0 Community |
-| License | LGPL-3 (free and open source) |
-| Price | Free — all modules, `0.0` USD |
-
-No Enterprise code is copied or required.
+Each addon ships its own Store listing (`static/description/index.html`
+with screenshots), icon, cover art, README and LICENSE.
 
 ## Installation
 
@@ -41,18 +81,19 @@ No Enterprise code is copied or required.
 3. Install the addons you want (theme first if you use `nova_ai`).
 4. Theme: Settings › Appearance. AI: Settings › Nova AI.
 
-## Layout
+## Support & contributions
 
-```
-nova_backend_theme*         theme + two free bridges
-nova_grid / nova_gantt      base view engines
-nova_split                  split view
-nova_*_grid / nova_*_gantt  one use-case module per app
-nova_ai                     the agent layer
-```
+- Questions: **support@zeetavix.com**
+- Found a bug? Please [open a GitHub issue](https://github.com/zeetavix/nova_backend_theme/issues) —
+  public issues help everyone and build this project in the open.
+- Pull requests welcome: keep Odoo 20 Community compatibility, no
+  Enterprise code, LGPL-3 headers intact.
 
 ## License
 
-Odoo Proprietary License v1.0 (OPL-1) — see [LICENSE](LICENSE).
-Free of charge; a license file ships with every addon.
-Support: support@zeetavix.com — https://zeetavix.com
+LGPL-3 (GNU Lesser General Public License v3.0) — see [LICENSE](LICENSE).
+Free and open source; a license file ships with every addon.
+
+Odoo is a trademark of Odoo S.A. This repository contains addons for Odoo
+and is neither affiliated with nor endorsed by Odoo S.A. No Odoo source
+code is distributed here.

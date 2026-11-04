@@ -276,7 +276,7 @@
     inset-inline-end: -8px;
     min-width: 24px;
     height: 24px;
-    padding: 0 7px;
+    padding: 0 8px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -365,9 +365,9 @@
 .o_web_client .o_form_view .o_form_sheet .o_field_widget select.o_input,
 .o_web_client .o_form_view .o_form_sheet .o_field_widget textarea.o_input {
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--nova-radius-sm, 8px);
     background-color: $nova-paper-deep;
-    padding: 6px 10px;
+    padding: 8px 12px;
     transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter, background-color $nova-dur-base $o-easing-enter;
 
     &:hover {
@@ -377,7 +377,7 @@
 
     &:focus, &:focus-within {
         border: 1px solid $nova-action;
-        background-color: $o-white;
+        background-color: $o-view-background-color;
         box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
         outline: none;
     }
@@ -433,9 +433,9 @@
 .modal .o_form_view .o_field_widget select.o_input,
 .modal .o_form_view .o_field_widget textarea.o_input {
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--nova-radius-sm, 8px);
     background-color: $nova-paper-deep;
-    padding: 6px 10px;
+    padding: 8px 12px;
     transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter, background-color $nova-dur-base $o-easing-enter;
 
     &:hover {
@@ -445,7 +445,7 @@
 
     &:focus, &:focus-within {
         border: 1px solid $nova-action;
-        background-color: $o-white;
+        background-color: $o-view-background-color;
         box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
         outline: none;
     }
@@ -453,8 +453,9 @@
 
 // ── Field visibility floor ────────────────────────────────────────────────
 // Nova shows a field by its FILL: transparent border at rest, paper-deep
-// box, action border on hover, white + ring on focus. The fill is the
-// FLOOR — borders come and go (stock zeroes them on activity notes and
+// box, action border on hover, surface + ring on focus. The surface token
+// adapts per color mode (a hardcoded white would blind dark sessions).
+// The fill is the FLOOR — borders come and go (stock zeroes them on activity notes and
 // small screens; Nova zeroes them on borderless icon rows and border-0
 // utilities), but an editable surface must never disappear.
 //
@@ -483,9 +484,9 @@
 .o_web_client .o_form_view .o_form_nosheet .o_field_widget select.o_input,
 .o_web_client .o_form_view .o_form_nosheet .o_field_widget textarea.o_input {
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--nova-radius-sm, 8px);
     background-color: $nova-paper-deep;
-    padding: 6px 10px;
+    padding: 8px 12px;
     transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter, background-color $nova-dur-base $o-easing-enter;
 
     &:hover {
@@ -495,7 +496,7 @@
 
     &:focus, &:focus-within {
         border: 1px solid $nova-action;
-        background-color: $o-white;
+        background-color: $o-view-background-color;
         box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
         outline: none;
     }
@@ -529,9 +530,9 @@
 .o_web_client .o_form_view .o_form_sheet .o_field_many2many_tags,
 .modal .o_form_view .o_field_many2many_tags {
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--nova-radius-sm, 8px);
     background-color: $nova-paper-deep;
-    padding: 6px 10px;
+    padding: 8px 12px;
     transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter, background-color $nova-dur-base $o-easing-enter;
 
     &:hover {
@@ -540,7 +541,7 @@
 
     &:focus-within {
         border: 1px solid $nova-action;
-        background-color: $o-white;
+        background-color: $o-view-background-color;
         box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
     }
 }
@@ -578,7 +579,7 @@
 .o_notebook .nav-tabs .nav-link {
     border: 0;
     border-bottom: 3px solid transparent;
-    border-radius: 3px 3px 0 0;
+    border-radius: var(--nova-radius-sm, 8px) var(--nova-radius-sm, 8px) 0 0;
     color: $nova-ink-muted;
     font-weight: 500;
     padding: 10px 14px;
@@ -691,14 +692,14 @@
 // Field images get the squircle. Faces (.o_avatar) stay round — people are
 // not app icons (aesthetic restraint: one signature, not two).
 .o_field_image {
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     overflow: hidden;
 }
 
 // Avatar widgets: round stack, hover outline, muted grayscale.
 .o_form_view .oe_avatar {
     border-radius: 50%;
-    transition: box-shadow $nova-dur-fast $o-easing-enter;
+    transition: box-shadow $nova-dur-base $o-easing-enter;
 
     &:hover {
         box-shadow: 0 0 0 2px $nova-action;

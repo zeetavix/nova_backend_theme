@@ -11,7 +11,13 @@ import { session } from "@web/session";
 
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 const RADIUS_BASE = { sm: 8, base: 10, lg: 12, xl: 16 };
-const RADIUS_FACTORS = { soft: 0.5, default: 1, round: 1.5 };
+// Discrete on-scale sets per density (never multiplied: 0.5x/1.5x factors
+// produced off-scale 4/5/6/15/18/24px values).
+const RADIUS_SETS = {
+    soft: { sm: 8, base: 8, lg: 10, xl: 12 },
+    default: { sm: 8, base: 10, lg: 12, xl: 16 },
+    round: { sm: 10, base: 12, lg: 16, xl: 16 },
+};
 
 function clampHex(value) {
     return typeof value === "string" && HEX_RE.test(value) ? value : null;
@@ -83,11 +89,32 @@ function writeCache(theme) {
     }
 }
 
+function readCookie(name) {
+    try {
+        const match = document.cookie.match(
+            new RegExp("(?:^|;\\s*)" + name + "=([^;]*)"));
+        return match ? decodeURIComponent(match[1]).toLowerCase() : "";
+    } catch {
+        return "";
+    }
+}
+
 function isDark() {
     try {
         const mode = document.documentElement.getAttribute("data-color-mode");
         if (mode) {
             return mode === "dark";
+        }
+        // Server truth first: the same nova_color_scheme cookie that
+        // ir.http.color_scheme() reads. The OS is only a fallback.
+        // (Reading the OS first painted light-mode accents — links near
+        // 1.9:1 — onto charcoal whenever Nova dark met a light OS.)
+        const cookie = readCookie("nova_color_scheme");
+        if (cookie === "dark") {
+            return true;
+        }
+        if (cookie === "light") {
+            return false;
         }
         return (
             window.matchMedia &&
@@ -212,10 +239,9 @@ function paintTheme(theme) {
                 }
             }
         }
-        const factor = RADIUS_FACTORS[theme.radius] || 1;
+        const set = RADIUS_SETS[theme.radius] || RADIUS_SETS.default;
         for (const name of Object.keys(RADIUS_BASE)) {
-            const px = Math.round(RADIUS_BASE[name] * factor * 2) / 2;
-            setVar(root, `--nova-radius-${name}`, `${px}px`);
+            setVar(root, `--nova-radius-${name}`, `${set[name]}px`);
         }
         if (theme.density === "compact" || theme.density === "comfortable") {
             root.setAttribute("data-nova-density", theme.density);

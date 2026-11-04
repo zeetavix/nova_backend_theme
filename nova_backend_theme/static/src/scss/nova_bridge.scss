@@ -90,6 +90,14 @@ a.link-primary {
 }
 
 // Focus rings: one accent everywhere, so keyboard users see one system.
+// %nova-focus-ring is the shared recipe: 2px outline, 2px offset, only
+// for keyboard focus. Extend it instead of writing new outline values.
+%nova-focus-ring {
+    outline: 2px solid $nova-action;
+    outline: 2px solid var(--nova-accent, $nova-action);
+    outline-offset: 2px;
+}
+
 .o_web_client :focus-visible,
 .o_database_list :focus-visible {
     outline-color: $nova-action;

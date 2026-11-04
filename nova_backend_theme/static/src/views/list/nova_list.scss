@@ -26,7 +26,7 @@
             white-space: nowrap;
             position: sticky;
             top: 0;
-            z-index: 2;
+            z-index: $nova-z-pinned;
             box-shadow: inset 0 -1px 0 $o-border-color;
         }
 
@@ -49,7 +49,7 @@
     }
 
     tbody tr {
-        transition: background $nova-dur-fast $o-easing-enter;
+        transition: background $nova-dur-base $o-easing-enter;
 
             &:hover {
                 background: $nova-action-soft;
@@ -67,8 +67,9 @@
             }
 
             // Checked (mass-edit) rows: teal-tinged tint, distinct from edition.
+            // (Selection keeps the action teal even though $o-info went slate.)
             &.o_data_row_selected {
-                background: rgba($o-info, 0.10);
+                background: rgba($nova-action, 0.10);
             }
 
             td {
@@ -89,10 +90,9 @@
         }
 
     // Editable selected row: inputs go borderless and fill the cell so
-    // edit mode reads as one calm surface, not a box in a box. No focus
-    // frame at all — no outline, no ring: the tinted row, the caret/
-    // chevron and live typing carry "you are here" on their own, and
-    // any box (even a hairline) reads as cheap chrome here.
+    // edit mode reads as one calm surface, not a box in a box. No outline
+    // ring here — instead the focused cell gets the same inset accent bar
+    // as keyboard navigation, so keyboard users still see "you are here".
     tbody tr.o_selected_row > td.o_data_cell {
         input:not([type="checkbox"]):not([type="radio"]),
         select, textarea {
@@ -108,6 +108,10 @@
                 box-shadow: none;
                 background-color: transparent;
             }
+        }
+
+        &:focus-within {
+            box-shadow: inset 2px 0 0 $nova-action;
         }
 
         .o_required_modifier input,
@@ -129,12 +133,31 @@
     }
 
         // Numeric cells breathe right; first col keeps row identity.
-        td.o_list_number, th.o_list_number {
+        // (Stock headers use o_list_number_th, not th.o_list_number.)
+        td.o_list_number, th.o_list_number, th.o_list_number_th {
             text-align: right;
             font-variant-numeric: tabular-nums;
         }
 
-        // Card edges: air on the outer columns so rows never touch chrome.
+        // Status pills read whole ("Sales Order", "To Invoice", "Nothing to
+    // Invoice" — never "Sales …"): no ellipsis inside list badges. Tables
+    // use fixed layout, where only the header row sizes columns — so badge
+    // tables switch to auto layout (content-sized) and badge cells get a
+    // floor. Text cells keep stock ellipsis, so nothing else grows.
+    td {
+        .o_badge, .badge {
+            white-space: nowrap;
+            max-width: none;
+        }
+    }
+
+    @include media-breakpoint-up(lg) {
+        td:has(.o_badge, .badge) {
+            min-width: 150px;
+        }
+    }
+
+    // Card edges: air on the outer columns so rows never touch chrome.
         // Consumes the stock padding var (falls back to 16px without it).
         th:first-child, td:first-child {
             padding-left: var(--ListRenderer-table-padding-x, 16px);
@@ -148,7 +171,7 @@
         .o_column_sortable {
             cursor: pointer;
             user-select: none;
-            transition: background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+            transition: background $nova-dur-base $o-easing-enter, color $nova-dur-base $o-easing-enter;
 
             &:hover {
                 background: $nova-action-soft;
@@ -182,9 +205,10 @@
 
             // Group pager: bordered ghost arrows so prev/next stay findable
             // against the translucent group wash (stock fill has no edge).
-            .o_group_header .o_pager .btn,
-            .o_group_header .o_pager_previous,
-            .o_group_header .o_pager_next {
+            // (Inside tr.o_group_header already: no extra ancestor prefix.)
+            .o_pager .btn,
+            .o_pager_previous,
+            .o_pager_next {
                 min-width: 28px;
                 min-height: 28px;
                 display: inline-flex;
@@ -194,8 +218,8 @@
                 border-radius: $o-border-radius-sm;
                 background: $o-view-background-color;
                 color: $nova-ink-muted;
-                transition: background $nova-dur-fast $o-easing-enter,
-                    border-color $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+                transition: background $nova-dur-base $o-easing-enter,
+                    border-color $nova-dur-base $o-easing-enter, color $nova-dur-base $o-easing-enter;
 
                 &:hover {
                     background: $nova-action-soft;
@@ -247,8 +271,9 @@
         }
 
         // Row action buttons (open form / delete line): sized, quiet, danger on delete.
-        .o_list_table .o_list_record_open_form_view button,
-        .o_list_table .o_list_record_remove button {
+        // (Inside .o_list_table already: no extra ancestor prefix.)
+        .o_list_record_open_form_view button,
+        .o_list_record_remove button {
             min-width: 28px;
             min-height: 28px;
             display: inline-flex;
@@ -258,8 +283,8 @@
             border-radius: $o-border-radius-sm;
             background: transparent;
             color: $nova-ink-muted;
-            transition: background $nova-dur-fast $o-easing-enter,
-                color $nova-dur-fast $o-easing-enter;
+            transition: background $nova-dur-base $o-easing-enter,
+                color $nova-dur-base $o-easing-enter;
 
             &:hover {
                 background: $nova-action-soft;
@@ -272,14 +297,14 @@
             }
         }
 
-        .o_list_table .o_list_record_remove button:hover {
+        .o_list_record_remove button:hover {
             background: rgba($o-danger, 0.10);
             color: map-get($o-theme-text-colors, "danger");
         }
 
         @include media-breakpoint-down(md) {
-            .o_list_table .o_list_record_open_form_view button,
-            .o_list_table .o_list_record_remove button {
+            .o_list_record_open_form_view button,
+            .o_list_record_remove button {
                 min-width: 44px;
                 min-height: 44px;
             }
@@ -316,7 +341,7 @@
         input[type="checkbox"].form-check-input {
             width: 16px;
             height: 16px;
-            border-radius: 6px;
+            border-radius: var(--nova-radius-sm, 8px);
             border-color: $nova-border-strong;
             cursor: pointer;
 
@@ -335,7 +360,7 @@
     tfoot {
         position: sticky;
         bottom: 0;
-        z-index: 2;
+        z-index: $nova-z-pinned;
         box-shadow: 0 -1px 0 $o-border-color;
     }
 
@@ -369,8 +394,37 @@
     height: 24px;
 }
 
+// Forced colors: the selected-row inset bar and washes vanish with
+// box-shadows, so selection and edition get real outlines.
+@media (forced-colors: active) {
+    tbody tr.o_selected_row {
+        outline: 1px solid CanvasText;
+        outline-offset: -1px;
+    }
+
+    tbody tr.o_selected_row > td.o_data_cell:focus-within {
+        outline: 2px solid CanvasText;
+    }
+}
+
 @media print {
     .o_list_table .o_list_record_selector {
         display: none;
+    }
+}
+
+// Badge tables size from content. Bare .o_list_table selectors must live
+// at ROOT level: this file nests everything else under .o_list_renderer
+// .o_list_table, where a repeated ancestor would double up and never match.
+// auto layout lets badge columns grow to their min-width; text cells keep
+// stock ellipsis so nothing else grows. (0,2,2) beats stock fixed (0,1,0).
+// NOTE: one :has() per selector — libsass drops comma lists inside :has().
+@include media-breakpoint-up(lg) {
+    .o_list_table:has(tbody td .o_badge),
+    .o_list_table:has(tbody td .badge) {
+        // !important: something (stock or module) re-pins fixed layout
+        // after this rule in ways bundle order can't be trusted for;
+        // auto is required for badge columns to honor min-width.
+        table-layout: auto !important;
     }
 }

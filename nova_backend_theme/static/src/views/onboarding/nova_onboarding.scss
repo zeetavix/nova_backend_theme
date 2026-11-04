@@ -14,7 +14,7 @@
 .o_onboarding_step {
     border-radius: $o-border-radius;
     padding: 8px 12px;
-    transition: background $nova-dur-fast $o-easing-enter;
+    transition: background $nova-dur-base $o-easing-enter;
 
     &:hover {
         background: $o-gray-100;

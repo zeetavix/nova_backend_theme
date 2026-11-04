@@ -36,8 +36,8 @@
     border-color: $o-border-color;
 }
 
-// Keyboard focus ring, mirrored from light (which does not load in
-// dark sessions).
+// Keyboard focus ring. The light rules load in dark sessions too; the
+// extra scope guards the ties.
 .o_web_client .o-mail-DiscussContent-headerBox {
     &:focus-visible {
         outline: 2px solid $nova-action;

@@ -1,4 +1,3 @@
 # Nova a11y baseline: light files with interactive selectors but no :focus-visible yet.
 # Fix a file, then delete its line here.
 core/nova_components.scss
-scss/nova_bridge.scss

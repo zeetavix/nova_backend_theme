@@ -11,7 +11,9 @@
 
     .o_cp_searchview .o_searchview {
         background: $o-gray-200;
-        border-color: $o-border-color;
+        // Strong border: default #3E4042 on #3A3B3C is ~1.05:1, far below
+        // the 3:1 component boundary.
+        border: 1px solid $nova-border-strong;
 
         &:focus-within {
             background: $o-gray-200;
@@ -57,7 +59,7 @@
 
     .o_searchview_dropdown_toggler.show {
         border-color: $nova-action;
-        box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--nova-accent, #3AAFA9) 28%, transparent);
     }
 
     .o_searchview_facet {
@@ -66,7 +68,7 @@
     }
 
     .o_searchview_autocomplete {
-        background: #2E2F30;
+        background: $nova-surface-overlay;
         border-color: $o-border-color;
     }
 }
@@ -122,8 +124,8 @@
     --DashboardCard__purple-color: #D8C9F3;
     --DashboardCard__purple-color--active: #EADFFB;
 
-    --DashboardCard__cyan-bg-color: rgba(58, 175, 169, 0.20);
-    --DashboardCard__cyan-bg-color--active: rgba(58, 175, 169, 0.34);
+    --DashboardCard__cyan-bg-color: color-mix(in srgb, var(--nova-accent, #3AAFA9) 20%, transparent);
+    --DashboardCard__cyan-bg-color--active: color-mix(in srgb, var(--nova-accent, #3AAFA9) 34%, transparent);
     --DashboardCard__cyan-color: #A9E5E1;
     --DashboardCard__cyan-color--active: #CFF3F0;
 

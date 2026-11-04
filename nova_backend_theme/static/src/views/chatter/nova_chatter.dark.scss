@@ -26,7 +26,8 @@
     }
 }
 
-// The light chatter ships lazy and wins ties: scoped duplicates.
+// The light chatter rules load in dark sessions too: scoped duplicates
+// guard the ties.
 .o_web_client .o-mail-Message {
     &:hover {
         background: rgba(255, 255, 255, 0.05);
@@ -52,7 +53,7 @@
 
     &:focus-within {
         border-color: $nova-action;
-        box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--nova-accent, #3AAFA9) 28%, transparent);
     }
 }
 
@@ -106,7 +107,7 @@
 }
 
 .o-mail-Chatter .o-mail-Followers-dropdown {
-    background: #2E2F30;
+    background: $nova-surface-overlay;
     border-color: $o-border-color;
 }
 

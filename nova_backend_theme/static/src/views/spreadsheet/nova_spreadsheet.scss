@@ -20,7 +20,7 @@
     --os-border-color: #{$o-border-color};
     --os-white-bg: #{$o-view-background-color};
 
-    border-radius: 10px;
+    border-radius: var(--nova-radius-base, 10px);
     overflow: hidden;
 }
 
@@ -28,5 +28,5 @@
 .o-sample-dashboard .o-figure-wrapper {
     background: $o-view-background-color;
     border: 1px solid $o-border-color;
-    border-radius: 10px;
+    border-radius: var(--nova-radius-base, 10px);
 }

@@ -11,6 +11,7 @@
 
 import { patch } from "@web/core/utils/patch";
 import { useHotkey } from "@web/core/hotkeys/hotkey_hook";
+import { _t } from "@web/core/l10n/translation";
 import { FormController } from "@web/views/form/form_controller";
 import { onMounted, onWillUnmount } from "@odoo/owl";
 

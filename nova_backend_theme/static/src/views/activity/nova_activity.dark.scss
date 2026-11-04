@@ -1,9 +1,8 @@
 ///
 /// Nova activity view (dark).
 ///
-/// NOTE: the light activity shell ships in web.assets_backend_lazy, which
-/// loads after the dark bundle and wins every specificity tie. Every rule
-/// below therefore carries an extra .o_web_client scope.
+/// NOTE: the light activity shell also loads in dark sessions, so every
+/// rule below carries an extra .o_web_client scope to guard the ties.
 ///
 .o_web_client .o_activity_view {
     background: $o-view-background-color;
@@ -27,64 +26,37 @@
     background-color: $o-gray-200;
 }
 
-// Summary cells: the light fills are full-strength success/danger/
-// warning with white ink — neon slabs in dark. Keep the hue, lose the
-// glare: deep translucent fills with full ink. !important because the
-// bg-*-light utilities paint with it, and the gradient overlay with it.
+// Summary cells: neutral canvas + 3px state edge (same recipe as the
+// light bundle). This REPLACES the old translucent severity fills below —
+// full-bleed salmon/tan/green slabs clash with "calm" in either mode.
+// The .o_web_client scope beats both the stock utilities and the light
+// bundle's copy of the same recipe, whatever the bundle order.
 .o_web_client .o_activity_view .o_activity_summary_cell {
-    &.planned {
-        background-color: rgba($o-success, 0.22) !important;
-        background-image: none !important;
-        color: $nova-ink;
+    background-color: $o-view-background-color !important;
+    background-image: none !important;
 
-        a {
-            color: $nova-ink;
-
-            &:hover {
-                text-decoration: underline;
-            }
-        }
+    &.bg-danger-light {
+        box-shadow: inset 3px 0 0 map-get($o-theme-text-colors, "danger");
     }
 
-    &.overdue {
-        background-color: rgba($o-danger, 0.25) !important;
-        background-image: none !important;
-        color: $nova-ink;
-
-        a {
-            color: $nova-ink;
-
-            &:hover {
-                text-decoration: underline;
-            }
-        }
+    &.bg-warning-light {
+        box-shadow: inset 3px 0 0 map-get($o-theme-text-colors, "warning");
     }
 
-    &.today {
-        background-color: rgba($o-warning, 0.22) !important;
-        background-image: none !important;
-        color: $nova-ink;
-
-        a {
-            color: $nova-ink;
-
-            &:hover {
-                text-decoration: underline;
-            }
-        }
+    &.bg-success-light {
+        box-shadow: inset 3px 0 0 map-get($o-theme-text-colors, "success");
     }
 
-    &.done {
-        background-color: $o-gray-200 !important;
-        background-image: none !important;
+    &.bg-dark-light {
+        box-shadow: inset 3px 0 0 $nova-ink-muted;
+    }
 
-        a {
-            color: $nova-ink-muted;
+    &, a {
+        color: $nova-ink;
+    }
 
-            &:hover {
-                text-decoration: underline;
-            }
-        }
+    a:hover {
+        text-decoration: underline;
     }
 }
 

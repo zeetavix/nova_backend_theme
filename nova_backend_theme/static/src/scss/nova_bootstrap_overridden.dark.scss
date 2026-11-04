@@ -9,7 +9,7 @@ $border-color: $o-border-color !default;
 $input-bg: $o-input-bg !default;
 $input-focus-bg: $o-gray-200 !default;
 $input-focus-border-color: $nova-action !default;
-$input-focus-box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28) !default;
+$input-focus-box-shadow: 0 0 0 3px color-mix(in srgb, var(--nova-accent, #3AAFA9) 28%, transparent) !default;
 $input-border-color: $nova-border-strong !default;
 // Placeholder must pass 4.5:1 in dark (was #7A7B7C at 2.65:1).
 $input-placeholder-color: $nova-ink-muted !default;
@@ -22,11 +22,11 @@ $dropdown-box-shadow: $nova-shadow-lg !default;
 $dropdown-border-color: $o-border-color !default;
 
 $card-bg: $o-view-background-color !default;
-$modal-content-bg: #242526 !default;
+$modal-content-bg: $o-view-background-color !default;
 $toast-background-color: rgba(36, 37, 38, 0.94) !default;
 
-$table-hover-bg: rgba(58, 175, 169, 0.12) !default;
-$table-active-bg: rgba(58, 175, 169, 0.16) !default;
+$table-hover-bg: color-mix(in srgb, var(--nova-accent, #3AAFA9) 12%, transparent) !default;
+$table-active-bg: color-mix(in srgb, var(--nova-accent, #3AAFA9) 16%, transparent) !default;
 $table-border-color: $o-border-color !default;
 
 $focus-ring-color: rgba($nova-action, 0.4) !default;

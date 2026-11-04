@@ -10,14 +10,23 @@
 
 // FullCalendar paints grid, gutters and today from its own vars: point
 // them at the dark tokens or the grid stays light.
+// --fc-neutral-bg-color shades non-working hours: it must be a touch
+// DARKER than the surface, never lighter (a light slab reads inverted).
 .o_web_client .o_calendar_widget {
     --fc-page-bg-color: #{$o-view-background-color};
-    --fc-neutral-bg-color: #{$o-gray-200};
+    --fc-neutral-bg-color: #{mix($o-view-background-color, #000000, 88%)};
     --fc-neutral-text-color: #{$nova-ink-muted};
     --fc-border-color: #{$o-border-color};
     --fc-today-bg-color: #{rgba($nova-action, 0.12)};
     --fc-event-text-color: #{$nova-ink};
     --fc-event-border-color: #{$o-border-color};
+}
+
+// Bright daytime event pills (pending-activity cream) glare on charcoal:
+// take the edge off without killing their data colors.
+.o_calendar_widget .fc-daygrid-event,
+.o_calendar_widget .fc-list-event {
+    filter: saturate(0.85) brightness(0.9);
 }
 
 .o_calendar_renderer {
@@ -57,8 +66,8 @@
 
 }
 
-// Keyboard focus ring on toolbar buttons, mirrored from light (which
-// does not load in dark sessions).
+// Keyboard focus ring on toolbar buttons. The light rules load in dark
+// sessions too, so this mirrors (not replaces) them.
 .o_web_client .o_calendar_widget .fc-toolbar .fc-button {
     &:focus-visible {
         outline: 2px solid $nova-action;
@@ -89,6 +98,6 @@
 }
 
 .fc-more-popover, .o_cw_popover {
-    background: #2E2F30;
+    background: $nova-surface-overlay;
     border-color: $o-border-color;
 }

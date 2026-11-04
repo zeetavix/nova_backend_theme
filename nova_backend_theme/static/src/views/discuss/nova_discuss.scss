@@ -14,10 +14,16 @@
     background: $o-view-background-color;
 }
 
+// The rail and the conversation list share one canvas: without this the
+// app background shows as a white strip between the two panels.
+.o-mail-Discuss {
+    background: $o-view-background-color;
+}
+
 // Channel rows: calm hover, blue-soft + inset bar when active (no weight shift).
 .o-mail-NotificationItem {
     border-radius: $o-border-radius;
-    transition: background $nova-dur-fast $o-easing-enter;
+    transition: background $nova-dur-base $o-easing-enter;
 
     &:hover {
         background: $o-gray-100;
@@ -47,7 +53,14 @@
 .o-mail-NotificationItem-badge.o-important,
 .o-mail-NotificationItem-counter.o-important {
     background: $nova-action;
-    color: $o-white;
+    color: $nova-on-action;
+}
+
+// Ordinary unread counters were stock green — a fourth accent. Neutral
+// ink badge instead; importance still speaks through the teal above.
+.o-mail-NotificationItem-counter:not(.o-important) {
+    background: $o-gray-200;
+    color: $nova-ink;
 }
 
 .o-mail-MessagingMenu-tab.active,

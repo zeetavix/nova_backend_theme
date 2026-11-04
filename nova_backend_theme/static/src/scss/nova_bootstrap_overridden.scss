@@ -89,7 +89,7 @@ $input-focus-border-color-invalid: $o-danger !default;
 // REAL 1px edge. Transparent was tried; edges vanish on light surfaces
 // (autocomplete looked borderless). Shadow alone never defines an edge.
 $dropdown-border-color: $o-border-color !default;
-$dropdown-border-radius: 12px !default;
+$dropdown-border-radius: var(--nova-radius-lg, 12px) !default;
 $dropdown-box-shadow: $nova-shadow-lg !default;
 $dropdown-padding-x: 8px !default;
 $dropdown-padding-y: 8px !default;
@@ -102,10 +102,10 @@ $dropdown-item-padding-y: 8px !default;
 $dropdown-item-padding-x: 12px !default;
 
 $popover-border-color: transparent !default;
-$popover-border-radius: 12px !default;
+$popover-border-radius: var(--nova-radius-lg, 12px) !default;
 $card-bg: $o-view-background-color !default;
 $modal-content-bg: $o-view-background-color !default;
-$modal-content-border-radius: 16px !default;
+$modal-content-border-radius: var(--nova-radius-xl, 16px) !default;
 $modal-backdrop-opacity: 0.4 !default;
 
 // Tables: calm, hover wash (not stripe-heavy).

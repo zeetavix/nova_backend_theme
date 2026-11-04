@@ -41,13 +41,16 @@ NOVA_ICON_MAX_BYTES = 512 * 1024
 # instead of sitting next to it.
 NOVA_WORDMARK_RATIO = 2.0
 
+# Teal is the identity default. The rest are brand overrides for
+# white-label buyers — labelled as such so screenshots, demos and the
+# "one teal" story stay coherent.
 NOVA_ACCENTS = [
-    ("#0866FF", "Nova Blue"),
-    ("#7C3AED", "Violet"),
-    ("#0E7C8A", "Teal"),
-    ("#0A7D2C", "Green"),
-    ("#B42323", "Red"),
-    ("#8A5700", "Amber"),
+    ("#0E7C8A", "Teal (Nova default)"),
+    ("#0866FF", "Blue (brand override)"),
+    ("#7C3AED", "Violet (brand override)"),
+    ("#0A7D2C", "Green (brand override)"),
+    ("#B42323", "Red (brand override)"),
+    ("#8A5700", "Amber (brand override)"),
 ]
 
 NOVA_DENSITIES = [

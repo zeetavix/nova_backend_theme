@@ -85,9 +85,23 @@ def naked_outlines(files):
         cleaned = strip(text)
         n = 0
         for _selector, body in BLOCK_RE.findall(cleaned):
-            if re.search(r"outline\s*:\s*(none|0)\b", body) and not re.search(
-                r"box-shadow\s*:\s*(?!none\b)[^;]+;", body
-            ):
+            outlines = re.findall(r"outline\s*:\s*([^;]+);", body)
+            shadows = re.findall(r"box-shadow\s*:\s*([^;]+);", body)
+
+            def _live(values):
+                return any(
+                    v.strip().lower() not in ("none", "0")
+                    for v in values
+                )
+
+            # Naked when an outline is killed with no visible replacement
+            # anywhere in the same block. (The old check paired any
+            # box-shadow — including `box-shadow: none` matched inside a
+            # larger nested block — and let bare `outline: none` pass.)
+            kills = [
+                v for v in outlines if v.strip().lower() in ("none", "0")
+            ]
+            if kills and not _live(shadows) and not _live(outlines):
                 n += 1
         if n:
             counts[rel] = n

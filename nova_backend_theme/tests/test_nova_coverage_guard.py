@@ -185,6 +185,13 @@ class TestNovaCoverageGuard(unittest.TestCase):
             "New Community hooks without Nova styling: add rules or "
             "regenerate the baseline if the surface is intentionally skipped.",
         )
+        self.assertGreaterEqual(
+            coverage,
+            TARGET_COVERAGE,
+            "Nova coverage %.1f%% is below the %.0f%% floor: "
+            "style the gap or consciously lower TARGET_COVERAGE."
+            % (100 * coverage, 100 * TARGET_COVERAGE),
+        )
 
     def test_seeded_surfaces_stay_covered(self):
         """Core launcher surfaces are contracted: these must never regress."""

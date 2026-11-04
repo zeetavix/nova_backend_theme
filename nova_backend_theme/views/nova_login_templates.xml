@@ -18,7 +18,11 @@
              the attribute rather than hasclass(). -->
         <xpath expr="//div[contains(@t-attf-class, 'o_database_list')]" position="before">
             <t t-set="nova_brand" t-value="request.env.company._nova_branding()"/>
-            <aside class="nova_login_brand" aria-hidden="true">
+            <!-- Brand panel: real content (headline, contact email), so it
+                is NOT aria-hidden. Decorative bits (ticks, fallback mark)
+                hide themselves instead — the mailto link below must stay
+                reachable to keyboard and screen-reader users. -->
+            <aside class="nova_login_brand" aria-label="About this sign-in page">
                 <div class="nova_login_brand_inner">
                     <div class="nova_login_lockup"
                          t-attf-class="nova_login_lockup #{'is_wordmark' if nova_brand['logo_wordmark'] else ''}">
@@ -43,15 +47,15 @@
                     <p class="nova_login_sub">Records, invoices and conversations — right where you left them.</p>
                     <ul class="nova_login_points">
                         <li>
-                            <span class="nova_login_tick">&#10003;</span>
+                            <span class="nova_login_tick" aria-hidden="true">&#10003;</span>
                             <span>Every module in one place</span>
                         </li>
                         <li>
-                            <span class="nova_login_tick">&#10003;</span>
+                            <span class="nova_login_tick" aria-hidden="true">&#10003;</span>
                             <span>Instant search and command palette</span>
                         </li>
                         <li>
-                            <span class="nova_login_tick">&#10003;</span>
+                            <span class="nova_login_tick" aria-hidden="true">&#10003;</span>
                             <span>Light and dark, both first-class</span>
                         </li>
                     </ul>

@@ -36,7 +36,7 @@
 // Event pills: soft fills with border + radius, icon dots kept.
 .o_calendar_widget {
     .fc-event, .fc-timegrid-event, .fc-daygrid-event {
-        border-radius: 8px;
+        border-radius: var(--nova-radius-sm, 8px);
         border: 1px solid $o-border-color;
         box-shadow: $nova-shadow-sm;
         font-weight: 500;
@@ -104,7 +104,7 @@
 // Filter chips keep their swatches; hover reveals remove.
 .o_calendar_filter .o_calendar_filter_item {
     border-radius: $o-border-radius;
-    transition: background $nova-dur-fast $o-easing-enter;
+    transition: background $nova-dur-base $o-easing-enter;
 
     &:hover {
         background: $o-gray-100;
@@ -143,7 +143,7 @@
 
 // Popovers reuse the modal language with a capped scroll body.
 .fc-more-popover, .o_cw_popover {
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     border: 1px solid $o-border-color;
     box-shadow: $nova-shadow-lg;
 }
@@ -157,7 +157,7 @@
 .o_calendar_widget {
     .fc-dayGridYear-view .fc-has-event {
         background: mix($nova-action, $o-view-background-color, 25%);
-        border-radius: 8px;
+        border-radius: var(--nova-radius-sm, 8px);
     }
 }
 

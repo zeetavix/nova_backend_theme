@@ -63,14 +63,15 @@ $o-action: $nova-action !default;
 $o-main-link-color: $nova-action-active !default;
 
 $o-success: #0A7D2C !default;
-// Distinct from action blue (was #0866FF = action): teal-info keeps semantics apart.
-$o-info: #0E7C8A !default;
+// Info is a quiet slate, never blue and never the action teal: informational
+// text must not read as a link or an action.
+$o-info: #3E5C76 !default;
 $o-warning: #8A5700 !default;
 $o-danger: #C81E1E !default;
 
 $o-theme-text-colors: (
     "success": #0A5C22,
-    "info": #0549C6,
+    "info": #2F4E63,
     "warning": #7A4E00,
     "danger": #B42323,
 ) !default;
@@ -123,7 +124,8 @@ $nova-shadow-lg: 0 8px 28px -6px rgba(28, 30, 33, 0.18), 0 2px 6px rgba(28, 30, 
 $nova-blur-bar: blur(16px) saturate(1.4) !default;
 
 // --- Motion: Apple-like, brief, cancellable ---
-// Durations: press 80 / fast 100 / base 120 / emphasis 150 / drag 400.
+// One duration (120ms) for all UI motion: fast/emphasis collapsed into it
+// (press 80ms stays for press physics, drag 400ms for drags).
 // Easing: enter (decelerate) for arrivals, exit (accelerate) for departures.
 // NOTE: enter curve is deliberately briefer than stock Community
 // (0.32,0.72,0,1 vs 0.05,0.7,0.1,1.0) — calmer, less bouncy.
@@ -131,9 +133,12 @@ $o-easing-enter: cubic-bezier(0.32, 0.72, 0, 1) !default;
 $o-easing-exit: cubic-bezier(0.3, 0, 0.8, 0.15) !default;
 
 $nova-dur-press: 80ms !default;
-$nova-dur-fast: 100ms !default;
 $nova-dur-base: 120ms !default;
-$nova-dur-em: 150ms !default;
+// Legacy aliases, kept at the unified value: other Nova modules
+// (nova_ai, grids) reference these tokens, and deleting them broke
+// their bundles. All UI motion is 120ms.
+$nova-dur-fast: 120ms !default;
+$nova-dur-em: 120ms !default;
 $nova-dur-drag: 400ms !default;
 
 $nova-lift: -2px !default;
@@ -226,4 +231,4 @@ $o-sheet-cancel-tpadding: $o-horizontal-padding !default;
 // --- Warm paper records (fintech calm; teal strictly for actions) ---
 $nova-paper: #FCFAF5 !default;
 $nova-paper-deep: #F4EFE6 !default;
-$nova-paper-border: #E7DFD2 !default;
+$nova-paper-border: #9A8F7C !default;

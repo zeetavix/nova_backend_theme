@@ -8,12 +8,12 @@
 
 .o_portal_wrap {
     .o_portal_navbar {
-        border-radius: 12px;
+        border-radius: var(--nova-radius-lg, 12px);
     }
 
     .o_portal_cards .o_portal_index_card {
-        border-radius: 10px;
-        transition: background 120ms ease, border-color 120ms ease;
+        border-radius: var(--nova-radius-base, 10px);
+        transition: background 120ms ease, border-color 120ms ease-out;
 
         &:hover {
             background: #F0F2F5;
@@ -43,7 +43,7 @@
     }
 
     .o_portal_pager .page-link {
-        border-radius: 6px;
+        border-radius: var(--nova-radius-sm, 8px);
         color: #1C1E21;
 
         &:focus-visible {
@@ -62,10 +62,10 @@
     }
 
     .o_portal_chatter_composer {
-        border-radius: 10px;
+        border-radius: var(--nova-radius-base, 10px);
     }
 
     .o_portal_chatter_attachment {
-        border-radius: 6px;
+        border-radius: var(--nova-radius-sm, 8px);
     }
 }

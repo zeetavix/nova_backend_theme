@@ -52,7 +52,7 @@
 }
 
 .o_web_client .o_graph_renderer .o_graph_custom_tooltip {
-    background: #2E2F30;
+    background: $nova-surface-overlay;
     border-color: $o-border-color;
     color: $nova-ink;
 }

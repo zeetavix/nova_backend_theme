@@ -126,6 +126,27 @@ colour/typography/spacing systems and Meta's clarity language.
             "nova_backend_theme/static/src/views/pivot/nova_pivot.scss",
             "nova_backend_theme/static/src/scss/nova_bridge.scss",
         ],
+        # Lazy dark twin: pivot (and any future lazy view) compiles with
+        # the dark variable overrides. Without this, lazy SCSS in dark
+        # sessions silently compiled against the LIGHT tokens (pivot hover
+        # went pale cyan under light text). Same pattern as web_hierarchy.
+        "web.assets_backend_lazy_dark": [
+            (
+                "before",
+                "nova_backend_theme/static/src/scss/nova_primary_variables.scss",
+                "nova_backend_theme/static/src/scss/nova_primary_variables.dark.scss",
+            ),
+            (
+                "before",
+                "nova_backend_theme/static/src/scss/nova_secondary_variables.scss",
+                "nova_backend_theme/static/src/scss/nova_secondary_variables.dark.scss",
+            ),
+            (
+                "before",
+                "nova_backend_theme/static/src/scss/nova_bootstrap_overridden.scss",
+                "nova_backend_theme/static/src/scss/nova_bootstrap_overridden.dark.scss",
+            ),
+        ],
         "web.assets_web_dark": [
             (
                 "before",
@@ -169,6 +190,7 @@ colour/typography/spacing systems and Meta's clarity language.
         "web.assets_frontend": [
             "nova_backend_theme/static/src/scss/nova_fonts.scss",
             "nova_backend_theme/static/src/webclient/login/nova_login.scss",
+            "nova_backend_theme/static/src/webclient/login/nova_login.js",
             "nova_backend_theme/static/src/portal/nova_portal.scss",
         ],
     },

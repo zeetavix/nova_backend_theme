@@ -47,7 +47,7 @@
 
 .o_activity_record > div {
     border-radius: $o-border-radius-sm;
-    transition: background $nova-dur-fast $o-easing-enter;
+    transition: background $nova-dur-base $o-easing-enter;
 
     &:hover {
         background: $o-gray-100;
@@ -57,6 +57,35 @@
 .o-mail-ActivityCell-counter {
     font-variant-numeric: tabular-nums;
     font-weight: 600;
+}
+
+// State cells: neutral canvas with a 3px state edge instead of the stock
+// full-bleed severity wash (salmon/tan/green blocks). The state still
+// speaks through the edge + the already-colored text; hover and selection
+// keep the list wash language. Specificity (0,3,0) beats the stock
+// bg-*-light utilities (0,1,0) — and the !important below answers theirs:
+// Bootstrap background utilities are !important, so a plain declaration
+// would lose no matter the specificity.
+.o_activity_view .o_activity_summary_cell {
+    &.bg-danger-light {
+        background-color: $o-view-background-color !important;
+        box-shadow: inset 3px 0 0 map-get($o-theme-text-colors, "danger");
+    }
+
+    &.bg-warning-light {
+        background-color: $o-view-background-color !important;
+        box-shadow: inset 3px 0 0 map-get($o-theme-text-colors, "warning");
+    }
+
+    &.bg-success-light {
+        background-color: $o-view-background-color !important;
+        box-shadow: inset 3px 0 0 map-get($o-theme-text-colors, "success");
+    }
+
+    &.bg-dark-light {
+        background-color: $o-view-background-color !important;
+        box-shadow: inset 3px 0 0 $nova-ink-muted;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {

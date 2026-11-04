@@ -23,7 +23,7 @@
 
     .o_pivot_cell_value {
         font-variant-numeric: tabular-nums;
-        transition: background $nova-dur-fast $o-easing-enter;
+        transition: background $nova-dur-base $o-easing-enter;
 
         &:hover {
             background: $nova-action-soft;
@@ -65,9 +65,9 @@
     .o_graph_custom_tooltip {
         background: $o-view-background-color;
         border: 1px solid $o-border-color;
-        border-radius: 8px;
+        border-radius: var(--nova-radius-sm, 8px);
         box-shadow: $nova-shadow-md;
-        padding: 6px 10px;
+        padding: 8px 12px;
         font-size: $font-size-sm;
     }
 }

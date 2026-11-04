@@ -137,7 +137,7 @@ img.nova_login_mark.is_wordmark {
 // instead of recolouring someone's artwork.
 .nova_login_mark.is_dark:not(.is_wordmark) {
     background: rgba(255, 255, 255, 0.94);
-    border-radius: 14px;
+    border-radius: var(--nova-radius-xl, 16px);
     padding: 6px;
     box-shadow: 0 8px 20px rgba(3, 26, 31, 0.28);
 }
@@ -147,7 +147,7 @@ img.nova_login_mark.is_wordmark {
     // plate: padding must never eat into the logo's own proportions.
     box-sizing: content-box;
     background: rgba(255, 255, 255, 0.94);
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     padding: 8px 14px;
     box-shadow: 0 8px 20px rgba(3, 26, 31, 0.28);
 }
@@ -242,7 +242,7 @@ main > .container:has(> .o_database_list) > .o_database_list {
     // !important: the card also carries Bootstrap's bg-100 utility.
     background: #ffffff !important;
     border: 1px solid $nv-line;
-    border-radius: 20px;
+    border-radius: var(--nova-radius-xl, 16px);
     box-shadow:
         0 1px 2px rgba(16, 24, 40, 0.04),
         0 18px 40px -12px rgba(16, 24, 40, 0.16);
@@ -266,7 +266,7 @@ main > .container:has(> .o_database_list) .card-body {
 .o_database_list .form-label,
 .o_database_list .col-form-label,
 .o_database_list label {
-    margin-bottom: 7px;
+    margin-bottom: 8px;
     font-size: 12.5px;
     font-weight: 600;
     letter-spacing: 0.01em;
@@ -285,12 +285,12 @@ main > .container:has(> .o_database_list) .card-body {
     color: $nv-ink;
     background: #ffffff;
     border: 1px solid $nv-field;
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     box-shadow: none;
     transition:
         border-color 120ms ease,
         box-shadow 120ms ease,
-        background-color 120ms ease;
+        background-color 120ms ease-out;
 
     &::placeholder {
         color: #A0A7B1;
@@ -342,7 +342,7 @@ main > .container:has(> .o_database_list) .card-body {
         background: var(--bs-btn-bg);
         color: var(--bs-btn-color);
         box-shadow: none;
-        transition: background-color 120ms ease, color 120ms ease;
+        transition: background-color 120ms ease, color 120ms ease-out;
 
         &:hover {
             background: var(--bs-btn-hover-bg);
@@ -358,7 +358,7 @@ main > .container:has(> .o_database_list) .card-body {
 }
 
 .o_database_list #db {
-    border-radius: 12px 0 0 12px;
+    border-radius: var(--nova-radius-lg, 12px) 0 0 12px;
 }
 
 // -------------------------------------------------------------- log in CTA
@@ -366,7 +366,7 @@ main > .container:has(> .o_database_list) .card-body {
     width: 100%;
     height: 46px;
     border: 0;
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     font-size: 14.5px;
     font-weight: 600;
     letter-spacing: 0.01em;
@@ -380,7 +380,7 @@ main > .container:has(> .o_database_list) .card-body {
     transition:
         transform 120ms ease,
         box-shadow 120ms ease,
-        background-color 120ms ease;
+        background-color 120ms ease-out;
 
     &:hover {
         background-color: $nv-teal-700 !important;
@@ -414,7 +414,7 @@ main > .container:has(> .o_database_list) .card-body {
     color: $nv-teal-700 !important;
     font-weight: 600;
     text-decoration: none;
-    border-radius: 6px;
+    border-radius: var(--nova-radius-sm, 8px);
 
     &:hover {
         color: $nv-teal-800 !important;
@@ -477,8 +477,8 @@ main > .container:has(> .o_database_list) .card-body {
     color: $nv-ink;
     background: #ffffff;
     border: 1px solid $nv-field;
-    border-radius: 12px !important;
-    transition: border-color 120ms ease, background-color 120ms ease;
+    border-radius: var(--nova-radius-lg, 12px) !important;
+    transition: border-color 120ms ease, background-color 120ms ease-out;
 
     &:hover {
         color: $nv-teal-800;
@@ -529,7 +529,7 @@ main > .container:has(> .o_database_list) .card-body {
     .o_avatar {
         width: 28px;
         height: 28px;
-        border-radius: 8px;
+        border-radius: var(--nova-radius-sm, 8px);
     }
 }
 
@@ -539,7 +539,7 @@ main > .container:has(> .o_database_list) .card-body {
     padding: 10px 12px;
     font-size: 13px;
     line-height: 1.5;
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     border: 1px solid transparent;
 }
 
@@ -639,7 +639,7 @@ main > .container:has(> .o_database_list) .card-body {
 
     main > .container:has(> .o_database_list) > .o_database_list {
         margin: 20px auto 32px !important;
-        border-radius: 18px;
+        border-radius: var(--nova-radius-xl, 16px);
     }
 
     main > .container:has(> .o_database_list) .card-body {
@@ -655,7 +655,7 @@ main > .container:has(> .o_database_list) .card-body {
     main > .container:has(> .o_database_list) > .o_database_list {
         margin: 16px 12px 24px !important;
         width: auto;
-        border-radius: 16px;
+        border-radius: var(--nova-radius-xl, 16px);
     }
 
     main > .container:has(> .o_database_list) .card-body {
@@ -688,18 +688,21 @@ main > .container:has(> .o_database_list) .card-body {
 // ------------------------------------------------------------------- dark
 // Values mirror the backend dark tokens: charcoal surfaces, teal accent
 // desaturated one step, borders stronger than shadows.
-@media (prefers-color-scheme: dark) {
+// A mixin (not just a media query): included for the OS preference AND
+// for Nova's own dark choice — nova_login.js sets data-nova-login="dark"
+// on <html> from the nova_color_scheme cookie.
+@mixin nova-login-dark {
     body:has(.o_database_list) {
         background:
-            radial-gradient(900px 620px at 92% 6%, rgba(58, 175, 169, 0.06), transparent 62%),
-            radial-gradient(760px 520px at 68% 104%, rgba(58, 175, 169, 0.04), transparent 64%),
+            radial-gradient(900px 620px at 92% 6%, color-mix(in srgb, var(--nova-accent, #3AAFA9) 6%, transparent), transparent 62%),
+            radial-gradient(760px 520px at 68% 104%, color-mix(in srgb, var(--nova-accent, #3AAFA9) 4%, transparent), transparent 64%),
             #101214 !important;
         color: #E8EAED;
     }
 
     .nova_login_brand {
         background:
-            radial-gradient(115% 85% at 8% 0%, rgba(58, 175, 169, 0.20), transparent 56%),
+            radial-gradient(115% 85% at 8% 0%, color-mix(in srgb, var(--nova-accent, #3AAFA9) 20%, transparent), transparent 56%),
             radial-gradient(90% 80% at 100% 100%, rgba(0, 0, 0, 0.45), transparent 62%),
             linear-gradient(148deg, #0C5F6A 0%, #074A54 46%, #04262C 100%);
     }
@@ -732,7 +735,7 @@ main > .container:has(> .o_database_list) .card-body {
         &:focus {
             background: #232629;
             border-color: $nv-teal-500;
-            box-shadow: 0 0 0 4px rgba(58, 175, 169, 0.22);
+            box-shadow: 0 0 0 4px color-mix(in srgb, var(--nova-accent, #3AAFA9) 22%, transparent);
         }
 
         &[readonly] {
@@ -815,6 +818,14 @@ main > .container:has(> .o_database_list) .card-body {
             color: #7FD8D2 !important;
         }
     }
+}
+
+@media (prefers-color-scheme: dark) {
+    @include nova-login-dark;
+}
+
+html[data-nova-login="dark"] {
+    @include nova-login-dark;
 }
 
 @media (prefers-reduced-motion: reduce) {

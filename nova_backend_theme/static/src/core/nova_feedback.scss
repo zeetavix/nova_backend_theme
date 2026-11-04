@@ -6,7 +6,7 @@
 
 // Loading indicator follows action blue, never blocks pointer.
 .o_loading_indicator_wrap {
-    z-index: 1080;
+    z-index: $nova-z-loader;
 }
 
 .o_loading_indicator {

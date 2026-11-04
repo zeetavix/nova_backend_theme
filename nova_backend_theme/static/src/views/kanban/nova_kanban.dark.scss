@@ -1,9 +1,9 @@
 ///
 /// Nova kanban (dark): border-led hover, stronger focus ring.
 ///
-/// NOTE: the light quick-create ships lazy and wins ties; focus fills
-/// carry an extra scope, and $o-white (pinned #FFF even in dark) is
-/// never used as a dark surface.
+/// NOTE: the light quick-create rules also load in dark sessions; the
+/// extra scope below guards the ties, and $o-white (pinned #FFF even in
+/// dark) is never used as a dark surface.
 ///
 
 .o_web_client .o_kanban_renderer .o_kanban_quick_create {
@@ -11,26 +11,23 @@
     input.o_input,
     textarea.o_input {
         &:focus, &:focus-within {
-            background-color: $nova-paper-deep;
+            // Dark fill, not paper: $nova-paper-deep is a light surface.
+            background-color: $o-gray-200;
         }
     }
 
     .o_field_many2many_tags,
     .o_field_many2many_tags_avatar {
         &:focus-within {
-            background-color: $nova-paper-deep;
+            background-color: $o-gray-200;
         }
     }
 }
 
 .o_kanban_renderer {
-    .o_kanban_group {
-        background: $o-view-background-color;
-    }
-
     .o_kanban_record {
         &:focus-within {
-            box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--nova-accent, #3AAFA9) 28%, transparent);
         }
     }
 
@@ -44,14 +41,14 @@
 
         &:focus-within {
             border-color: $nova-action;
-            box-shadow: 0 0 0 3px rgba(58, 175, 169, 0.28);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--nova-accent, #3AAFA9) 28%, transparent);
         }
 
         .o_input,
         input.o_input,
         textarea.o_input {
             border: 1px solid transparent;
-            border-radius: 8px;
+            border-radius: var(--nova-radius-sm, 8px);
             background-color: $nova-paper-deep;
 
             &:focus, &:focus-within {
@@ -65,7 +62,7 @@
         .o_field_many2many_tags,
         .o_field_many2many_tags_avatar {
             border: 1px solid transparent;
-            border-radius: 8px;
+            border-radius: var(--nova-radius-sm, 8px);
             background-color: $nova-paper-deep;
 
             &:focus-within {
@@ -117,4 +114,15 @@
     .o_kanban_group {
         min-width: 260px;
     }
+}
+
+// Dark company marks (partner logos) are dark strokes on transparency and
+// vanish on charcoal. A light rounded plate behind record and avatar
+// images shows through the transparency — the same treatment the login
+// logo already gets.
+.o_kanban_record .o_kanban_image,
+.o_kanban_record img.o_avatar,
+.o_kanban_record .o_m2o_avatar img {
+    background-color: #E8EAED;
+    border-radius: var(--nova-radius-sm, 8px);
 }

@@ -12,17 +12,16 @@
 }
 
 ::selection {
-    background: rgba(58, 175, 169, 0.35);
+    background: color-mix(in srgb, var(--nova-accent, #3AAFA9) 35%, transparent);
 }
 
-// Same honest-motion guard as the light bundle (which does not load in
-// dark sessions): brief, cancellable, off when the user asks.
+// Same honest-motion guard as the light bundle. No `transform: none`:
+// that would strip positioning transforms (centering, badge offsets).
 @media (prefers-reduced-motion: reduce) {
     .o_web_client *, .o_web_client *::before, .o_web_client *::after {
         animation-duration: 0.001ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.001ms !important;
-        transform: none !important;
         scroll-behavior: auto !important;
     }
 }

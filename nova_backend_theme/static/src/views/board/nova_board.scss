@@ -24,7 +24,7 @@
 .o-dashboard-action.bg-view.border {
     background: $o-view-background-color;
     border: 1px solid $o-border-color;
-    border-radius: 10px;
+    border-radius: var(--nova-radius-base, 10px);
     box-shadow: $nova-shadow-sm;
     margin: 0;
     overflow: hidden;

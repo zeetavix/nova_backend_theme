@@ -25,13 +25,30 @@
 // Mobile control-panel sheet: keep sticky usable, drop blur cost on small screens.
 @include media-breakpoint-down(md) {
     .o_control_panel.o_mobile_sticky {
-        z-index: 10;
+        z-index: $nova-z-burger;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
         background: $o-view-background-color;
     }
     .o_control_panel_actions {
         min-width: 0;
+    }
+
+    // Translucent navbar lets page content bleed through on phones
+    // (kanban cards floated behind it). Opaque on mobile in both modes:
+    // this file loads in the base bundle, and the color token adapts.
+    .o_main_navbar {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: $o-view-background-color;
+    }
+
+    // Kanban shows two kebabs on phones (view action menu + control-panel
+    // action menu with the same entries). Keep the view's, hide the twin.
+    // Plain :has() like the column spotlight: older browsers ignore it and
+    // keep both menus, which is the safe fallback.
+    .o_action_manager:has(.o_kanban_renderer) .o_control_panel .o_cp_action_menus {
+        display: none;
     }
 }
 

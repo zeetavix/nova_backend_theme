@@ -2,12 +2,12 @@
 /// Nova navbar (dark): charcoal blur, white ink, blue-soft active.
 ///
 .o_main_navbar {
-    --NavBar-entry-color: $nova-ink;
-    --NavBar-entry-color--hover: $o-main-headings-color;
-    --NavBar-entry-color--active: $o-main-headings-color;
+    --NavBar-entry-color: #{$nova-ink};
+    --NavBar-entry-color--hover: #{$o-main-headings-color};
+    --NavBar-entry-color--active: #{$o-main-headings-color};
     --NavBar-entry-backgroundColor--hover: rgba(255, 255, 255, 0.08);
     --NavBar-entry-backgroundColor--focus: rgba(255, 255, 255, 0.08);
-    --NavBar-entry-backgroundColor--active: rgba(58, 175, 169, 0.18);
+    --NavBar-entry-backgroundColor--active: color-mix(in srgb, var(--nova-accent, #3AAFA9) 18%, transparent);
 
     background: rgba(36, 37, 38, 0.86);
     border-bottom: 1px solid $o-border-color;
@@ -40,13 +40,13 @@
     }
 
     .o_menu_sections .dropdown.show .dropdown-toggle:not(.o-dropdown-toggle-custo) {
-        background: rgba(58, 175, 169, 0.20);
-        color: #4FD1C5;
+        background: color-mix(in srgb, var(--nova-accent, #3AAFA9) 20%, transparent);
+        color: $nova-action-hover;
     }
 
     .o_menu_systray .dropdown.show .dropdown-toggle:not(.o-dropdown-toggle-custo) {
-        background: rgba(58, 175, 169, 0.20);
-        color: #4FD1C5;
+        background: color-mix(in srgb, var(--nova-accent, #3AAFA9) 20%, transparent);
+        color: $nova-action-hover;
     }
 
     .o_user_menu .oe_topbar_name {
@@ -69,5 +69,5 @@
 
 .o_menu_systray .badge {
     border: 0;
-    box-shadow: 0 0 0 2px #242526;
+    box-shadow: 0 0 0 2px $o-view-background-color;
 }

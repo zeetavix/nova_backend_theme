@@ -21,7 +21,7 @@
     justify-content: center;
     color: $nova-ink-muted;
     cursor: pointer;
-    transition: background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+    transition: background $nova-dur-base $o-easing-enter, color $nova-dur-base $o-easing-enter;
 
     &:hover {
         background: $nova-action-soft;
@@ -67,9 +67,9 @@
     overflow: auto;
     background: $o-view-background-color;
     border: 1px solid $o-border-color;
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     box-shadow: $nova-shadow-md;
-    z-index: 1080;
+    z-index: $nova-z-bell;
 }
 
 .nova_bell_head {
@@ -90,7 +90,8 @@
     appearance: none;
     border: 0;
     background: transparent;
-    border-radius: 6px;
+    position: relative;
+    border-radius: var(--nova-radius-sm, 8px);
     min-width: 28px;
     min-height: 28px;
     font-size: 16px;
@@ -137,7 +138,7 @@
     padding: 8px 10px;
     cursor: pointer;
     text-align: start;
-    transition: background $nova-dur-fast $o-easing-enter;
+    transition: background $nova-dur-base $o-easing-enter;
 
     &:hover {
         background: $o-gray-100;
@@ -217,4 +218,11 @@
     .nova_bell_item {
         transition: none;
     }
+}
+
+// 44px touch target without visual bulk (glyph stays 28px).
+.nova_bell_close::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
 }

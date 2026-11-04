@@ -8,7 +8,8 @@
 .badge, .o_badge, .o_tag {
     border-radius: 999px;
     font-weight: 500;
-    padding: 4px 12px;
+    // 8px sides: "Nothing to Invoice" fits list columns without truncation.
+    padding: 4px 8px;
     letter-spacing: 0.01em;
     font-variant-numeric: tabular-nums;
 
@@ -56,12 +57,12 @@
 // Dropdown menus: calm menu — 12px, layered shadow, soft active.
 .dropdown-menu {
     border: 1px solid $o-border-color;
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     box-shadow: $nova-shadow-lg;
     padding: 8px;
     font-size: 14px;
     .dropdown-item {
-        border-radius: 8px;
+        border-radius: var(--nova-radius-sm, 8px);
         padding: 8px 12px;
         font-weight: 500;
 
@@ -162,7 +163,7 @@
 
 // Select-menu (long many2one lists): breathing search + roomy frame.
 .o_select_menu_menu {
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     border: 1px solid $o-border-color;
 }
 
@@ -173,19 +174,19 @@
 // Toasts / notifications: friendly, actionable. Severity rides the stock
 // `.o_notification_bar.bg-{type}` rail — never color alone.
 .o_notification_manager {
-    z-index: 1080;
+    z-index: $nova-z-bell;
     // libsass-safe responsive cap: fluid width + hard ceiling.
     width: calc(100vw - 32px);
     max-width: 360px;
 }
 
 .toast, .o_notification {
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     box-shadow: $nova-shadow-md;
 
     .o_notification_bar {
         width: 4px;
-        border-radius: 12px 0 0 12px;
+        border-radius: var(--nova-radius-lg, 12px) 0 0 12px;
     }
 
     > .d-flex.border {
@@ -229,8 +230,8 @@
 .tooltip-inner {
     background: $nova-ink;
     color: $o-white;
-    border-radius: 8px;
-    padding: 6px 10px;
+    border-radius: var(--nova-radius-sm, 8px);
+    padding: 8px 12px;
     font-size: $font-size-sm;
     box-shadow: $nova-shadow-md;
     max-width: 400px;
@@ -312,7 +313,7 @@
 
 // Dropdown items glide (smoothness), not snap.
 .dropdown-menu .dropdown-item {
-    transition: background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+    transition: background $nova-dur-base $o-easing-enter, color $nova-dur-base $o-easing-enter;
 }
 
 // Calendar container only here (pivot/graph live in lazy bundle: see views/pivot).

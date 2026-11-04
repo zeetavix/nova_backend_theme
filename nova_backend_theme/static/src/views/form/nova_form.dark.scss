@@ -55,9 +55,9 @@
 .o_web_client .o_form_view .o_form_sheet .o_field_widget select.o_input,
 .o_web_client .o_form_view .o_form_sheet .o_field_widget textarea.o_input {
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--nova-radius-sm, 8px);
     background-color: $nova-paper-deep;
-    padding: 6px 10px;
+    padding: 8px 12px;
 
     &:hover {
         border-color: $nova-paper-border;
@@ -111,7 +111,7 @@
 .o_web_client .o_form_view .o_form_sheet .o_field_many2many_tags,
 .modal .o_form_view .o_field_many2many_tags {
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--nova-radius-sm, 8px);
     background-color: $nova-paper-deep;
 
     &:hover {
@@ -152,7 +152,7 @@
 .modal .o_form_view .o_field_widget select.o_input,
 .modal .o_form_view .o_field_widget textarea.o_input {
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--nova-radius-sm, 8px);
     background-color: $nova-paper-deep;
 
     &:hover {
@@ -177,7 +177,7 @@
 .o_web_client .o_form_view .o_form_nosheet .o_field_widget select.o_input,
 .o_web_client .o_form_view .o_form_nosheet .o_field_widget textarea.o_input {
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--nova-radius-sm, 8px);
     background-color: $nova-paper-deep;
 
     &:hover {
@@ -192,7 +192,7 @@
 }
 
 .o_form_view .o_activity_details .note-editable {
-    padding: 6px 10px !important;
+    padding: 8px 12px !important;
 }
 
 .modal .o_form_view .o_field_widget.o_required_modifier .o_input,

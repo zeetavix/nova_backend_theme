@@ -13,6 +13,10 @@ $nova-ink: #E4E6EB !default;
 $nova-ink-muted: #B0B3B8 !default;
 $nova-surface-app: #18191A !default;
 $nova-surface-view: #242526 !default;
+// Raised / sunken dark surfaces as tokens (were hardcoded #2E2F30 /
+// #1E1F20 literals across ~10 dark files).
+$nova-surface-sunken: #1E1F20 !default;
+$nova-surface-overlay: #2E2F30 !default;
 $nova-border: #3E4042 !default;
 // Interactive borders meet 3:1 on dark view (was #4E4F50 at 1.87:1).
 $nova-border-strong: #8A8B8C !default;
@@ -46,14 +50,16 @@ $o-action: $nova-action !default;
 $o-main-link-color: $nova-action-hover !default;
 
 $o-success: #31A24C !default;
-$o-info: #4AB3C4 !default;
+// Quiet slate like light mode: info must read as information, not as a
+// link (blue) and not as the action teal.
+$o-info: #7FA8BC !default;
 $o-warning: #E5A100 !default;
 // Borders/icons only. Body text uses theme-text danger #FF7A90 (6.17:1).
 $o-danger: #F02849 !default;
 
 $o-theme-text-colors: (
     "success": #4ADE80,
-    "info": #7FB3FF,
+    "info": #9CC3D8,
     "warning": #FBBF24,
     "danger": #FF7A90,
 ) !default;

@@ -72,16 +72,20 @@ if (!novaNavbarPatched) {
                 };
                 onMounted(() => window.addEventListener("click", onGridClick, true));
                 onWillDestroy(() => window.removeEventListener("click", onGridClick, true));
-                try {
-                    const toggle = document.querySelector(APPS_TOGGLE_SELECTOR);
-                    if (toggle) {
-                        toggle.setAttribute("aria-label", _t("Home"));
-                        toggle.removeAttribute("aria-expanded");
-                        toggle.removeAttribute("aria-haspopup");
+                // The toggle only exists after mount: look it up here, not in
+                // setup(), or the "Home" label is never applied.
+                onMounted(() => {
+                    try {
+                        const toggle = document.querySelector(APPS_TOGGLE_SELECTOR);
+                        if (toggle) {
+                            toggle.setAttribute("aria-label", _t("Home"));
+                            toggle.removeAttribute("aria-expanded");
+                            toggle.removeAttribute("aria-haspopup");
+                        }
+                    } catch {
+                        // toggle keeps stock semantics
                     }
-                } catch {
-                    // toggle keeps stock semantics
-                }
+                });
             },
             openNovaHome() {
                 closeStrayAppsMenu(this);

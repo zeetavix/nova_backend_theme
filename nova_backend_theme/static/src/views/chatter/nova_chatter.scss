@@ -15,7 +15,7 @@
 // nothing can ever bleed through even if a rule re-introduces overlap.
 .o_web_client .o-mail-Chatter-top {
     position: relative !important;
-    z-index: 5;
+    z-index: $nova-z-chatter;
     background: $o-white;
     border-bottom: 1px solid $o-border-color;
 }
@@ -111,6 +111,10 @@
     &:focus-within {
         border-color: $nova-action;
         box-shadow: none;
+        // A 1px border shift alone is too quiet for keyboard users:
+        // the shared ring joins it (box-shadow stays none so the
+        // inner-field rings below can't double-frame).
+        @extend %nova-focus-ring;
     }
 }
 
@@ -305,7 +309,7 @@
 
 // Discuss bubbles keep their tails; corners go friendly.
 .o-mail-Message-bubble {
-    border-radius: 16px;
+    border-radius: var(--nova-radius-xl, 16px);
 }
 
 // Message bodies: readable measure, underlined links, preserved tracking.
@@ -354,13 +358,13 @@
 
 // Link previews + mention suggestions as calm cards.
 .o-mail-Chatter .o-mail-LinkPreviewCard, .o-mail-Chatter .o-mail-LinkPreviewVideo {
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     border: 1px solid $o-border-color;
 }
 
 .o-mail-Chatter .o-mail-MentionList-suggestionList:has(.o-open),
 .o-mail-Chatter .o-mail-Composer-suggestionList:has(.o-open) {
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     box-shadow: $nova-shadow-sm;
 }
 
@@ -384,7 +388,7 @@
 }
 
 .o-mail-Chatter .o-mail-Followers-dropdown {
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     border: 1px solid $o-border-color;
     box-shadow: $nova-shadow-sm;
 }
@@ -400,7 +404,7 @@
 .o-mail-Chatter .o-mail-Follower-action {
     opacity: 0.5;
     border-radius: 999px;
-    transition: opacity $nova-dur-fast $o-easing-enter, background $nova-dur-fast $o-easing-enter;
+    transition: opacity $nova-dur-base $o-easing-enter, background $nova-dur-base $o-easing-enter;
 
     .o-mail-Follower:hover &, .o-mail-Follower:focus-within & {
         opacity: 1;
@@ -419,7 +423,7 @@
 
 // Attachment cards: 12px calm cards, quiet info bar.
 .o-mail-Chatter .o-mail-AttachmentCard {
-    border-radius: 12px;
+    border-radius: var(--nova-radius-lg, 12px);
     border: 1px solid $o-border-color;
     overflow: hidden;
     transition: border-color $nova-dur-base $o-easing-enter, box-shadow $nova-dur-base $o-easing-enter;

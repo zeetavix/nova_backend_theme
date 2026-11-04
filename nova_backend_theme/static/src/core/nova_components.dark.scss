@@ -3,7 +3,7 @@
 ///
 
 .dropdown-menu {
-    background: #2E2F30;
+    background: $nova-surface-overlay;
     border-color: $o-border-color;
 
     .dropdown-item {
@@ -12,7 +12,7 @@
         }
 
         &.active, &:active {
-            background: rgba(58, 175, 169, 0.20);
+            background: color-mix(in srgb, var(--nova-accent, #3AAFA9) 20%, transparent);
             color: $o-main-headings-color;
         }
     }
@@ -24,7 +24,7 @@
 
 // m2o/e-mail autocomplete matches the dropdown language in dark.
 .o-autocomplete--dropdown-menu {
-    background-color: #2E2F30;
+    background-color: $nova-surface-overlay;
 
     .o-autocomplete--dropdown-item > a.ui-menu-item-wrapper {
         &:hover {
@@ -33,7 +33,7 @@
     }
 
     .o-autocomplete--dropdown-item > a.ui-state-active {
-        background-color: rgba(58, 175, 169, 0.20);
+        background-color: color-mix(in srgb, var(--nova-accent, #3AAFA9) 20%, transparent);
         color: $o-main-headings-color;
     }
 
@@ -60,9 +60,9 @@
 
 .badge, .o_badge, .o_tag {
     &.text-bg-primary, &.bg-primary {
-        background: rgba(58, 175, 169, 0.18);
-        color: #4FD1C5;
-        border-color: rgba(58, 175, 169, 0.4);
+        background: color-mix(in srgb, var(--nova-accent, #3AAFA9) 18%, transparent);
+        color: $nova-action-hover;
+        border-color: color-mix(in srgb, var(--nova-accent, #3AAFA9) 40%, transparent);
     }
     &.text-bg-success, &.bg-success {
         background: rgba($o-success, 0.18);
@@ -101,14 +101,9 @@
 }
 
 .tooltip-inner {
-    background: #1E1F20;
+    background: $nova-surface-sunken;
     color: #F5F6F7;
     border: 1px solid $o-border-color;
-}
-
-.o_list_renderer thead th {
-    background: rgba(36, 37, 38, 0.92);
-    color: $nova-ink-muted;
 }
 
 .o_list_renderer tbody tr td {
@@ -129,17 +124,17 @@
 }
 
 .o_kanban_renderer .o_kanban_group {
-    background: #1E1F20;
+    background: $nova-surface-sunken;
 }
 
 .o_kanban_renderer .o_kanban_record {
-    background: #242526;
+    background: $o-view-background-color;
 }
 
 .o_web_client .o_form_view .o_input:focus, .o_web_client .o_form_view .o_input:focus-within,
 .o_web_client .o_field_widget input.o_input:focus, .o_web_client .o_field_widget select.o_input:focus {
     border-bottom-color: $nova-action;
-    box-shadow: inset 0 -2px 0 $nova-action, 0 0 0 3px rgba(58, 175, 169, 0.28);
+    box-shadow: inset 0 -2px 0 $nova-action, 0 0 0 3px color-mix(in srgb, var(--nova-accent, #3AAFA9) 28%, transparent);
 }
 
 .o_select_menu_menu {
@@ -147,7 +142,9 @@
 }
 
 .o_notification .o_notification_close {
-    filter: invert(1);
+    // Bootstrap's own dark-glyph token (what .btn-close-white uses),
+    // not a hand-rolled inversion.
+    filter: var(--bs-btn-close-white-filter);
 }
 
 // Alerts: Bootstrap's light tints stay cream in dark, so re-tint all four
@@ -224,7 +221,7 @@ mark, .mark {
 // Bootstrap's subtle fills are light tints pinned !important (facet
 // labels, badges, switcher rows): re-tint them for dark.
 .o_web_client .bg-primary-subtle {
-    background-color: rgba(58, 175, 169, 0.16) !important;
+    background-color: color-mix(in srgb, var(--nova-accent, #3AAFA9) 16%, transparent) !important;
 }
 
 .o_web_client .bg-secondary-subtle {
@@ -247,7 +244,9 @@ mark, .mark {
     background-color: rgba($o-info, 0.16) !important;
 }
 
-// Dialog close (X): Bootstrap's glyph is dark-on-transparent; invert it.
+// Dialog close (X): Bootstrap's dark glyph token. The stock glyph is
+// dark-on-transparent; the framework's own white-filter flips it — the
+// same declaration .btn-close-white carries.
 .btn-close {
-    filter: invert(1);
+    filter: var(--bs-btn-close-white-filter);
 }

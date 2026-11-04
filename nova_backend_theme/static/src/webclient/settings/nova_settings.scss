@@ -27,11 +27,58 @@
 }
 
 // App titles + tips share the type hierarchy (no grey strips).
-.app_settings_block h2, .o_setting_box h2 {
+// Background is forced transparent. Stock paints the band via
+// `.o_base_settings_view .o_form_renderer .o_setting_container .settings
+// > .app_settings_block h2` (0,4,1), so this matches that depth exactly
+// instead of losing to it.
+.o_base_settings_view .o_form_renderer .o_setting_container .settings > .app_settings_block h2,
+.o_base_settings_view .o_form_renderer .o_setting_container .settings > .o_setting_box h2,
+.o_settings_container h2 {
     font-size: 15px;
     font-weight: 600;
     letter-spacing: -0.01em;
     color: $nova-ink;
+    background: transparent;
+    background-color: transparent;
+}
+
+// Wide screens: two-column card grid so blocks stop leaving the right
+// half empty. align-items keeps uneven cards from stretching.
+@include media-breakpoint-up(xl) {
+    .o_settings_container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+        column-gap: 16px;
+    }
+
+    .o_settings_container .app_settings_block,
+    .o_settings_container .o_setting_box {
+        margin-bottom: 0;
+    }
+}
+
+// Text inputs speak the boxed language (the underline invite field
+// broke it). Scoped to text/email only: checks, radios and inline
+// number inputs keep stock behavior.
+.o_settings_container .o_setting_box input.o_input[type="text"],
+.o_settings_container .o_setting_box input.o_input[type="email"],
+.o_settings_container .o_setting_box input.o_input:not([type]) {
+    border: 1px solid transparent;
+    border-radius: var(--nova-radius-sm, 8px);
+    background-color: $nova-paper-deep;
+    padding: 8px 12px;
+
+    &:hover {
+        border-color: $nova-paper-border;
+    }
+
+    &:focus, &:focus-visible {
+        border-color: $nova-action;
+        background-color: $o-view-background-color;
+        box-shadow: 0 0 0 3px rgba($nova-action, 0.15);
+        outline: none;
+    }
 }
 
 h3.o_setting_tip {
@@ -43,7 +90,7 @@ h3.o_setting_tip {
 // Documentation links stay quiet until hovered.
 .o_doc_link {
     color: $nova-ink-muted;
-    transition: color $nova-dur-fast $o-easing-enter;
+    transition: color $nova-dur-base $o-easing-enter;
 
     &:hover {
         color: $nova-action-active;
@@ -79,7 +126,7 @@ h3.o_setting_tip {
 // Left nav: pill hover, blue-soft selected, red-ink invalid.
 .settings_tab .tab {
     border-radius: $o-border-radius;
-    transition: background $nova-dur-fast $o-easing-enter, color $nova-dur-fast $o-easing-enter;
+    transition: background $nova-dur-base $o-easing-enter, color $nova-dur-base $o-easing-enter;
 
     &:hover {
         background: $o-gray-100;
@@ -106,6 +153,6 @@ h3.o_setting_tip {
 .highlighter {
     background: rgba($o-warning, 0.35);
     color: inherit;
-    border-radius: 3px;
+    border-radius: var(--nova-radius-sm, 8px);
     padding: 0 2px;
 }

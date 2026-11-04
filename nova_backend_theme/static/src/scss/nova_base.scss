@@ -15,11 +15,11 @@
 }
 
 // Visible keyboard focus everywhere (HIG Lens 1, Critical if missing).
-// Radius stays off table cells + switches so outlines hug their shape.
+// No border-radius here: the outline follows each element's own shape,
+// so pills keep their curve instead of squaring off on keyboard focus.
 .o_web_client :focus-visible:not(td):not(.o_data_cell):not(.form-check-input) {
     outline: 2px solid $nova-action;
     outline-offset: 2px;
-    border-radius: $o-border-radius-sm;
 }
 
 // Calm scrollbars with hoverable thumbs; thin + tinted in Firefox.
@@ -81,7 +81,7 @@
 
 // Full-screen mobile modals slide in natively; the pop is for sheets.
 .modal.show .modal-dialog {
-    animation: nova-pop $nova-dur-em $o-easing-enter;
+    animation: nova-pop $nova-dur-base $o-easing-enter;
 }
 
 .o_modal_full .modal-dialog {
@@ -89,7 +89,7 @@
 }
 
 .toast.show, .o_notification {
-    animation: nova-rise $nova-dur-em $o-easing-enter;
+    animation: nova-rise $nova-dur-base $o-easing-enter;
 }
 
 // Cards / sheets share one radius language. Shadows only float (dropdown/modal/sheet);
@@ -99,13 +99,15 @@
 }
 
 // Honest motion: brief, cancellable, off when user asks.
-// transform:none matters: without it lifts still snap to end-state under reduce.
+// NOTE: no `transform: none` here on purpose — that would also strip
+// positioning transforms (Bootstrap .translate-middle centering, the
+// launcher search-clear and pin buttons, navbar badge offsets). With
+// durations near zero, transforms simply complete instantly instead.
 @media (prefers-reduced-motion: reduce) {
     .o_web_client *, .o_web_client *::before, .o_web_client *::after {
         animation-duration: 0.001ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.001ms !important;
-        transform: none !important;
         scroll-behavior: auto !important;
     }
 }
@@ -118,6 +120,15 @@
     }
     .o_main_navbar, .o_control_panel {
         background: $o-view-background-color !important;
+    }
+}
+
+// Forced colors (Windows High Contrast): box-shadows vanish, so every
+// keyboard focus needs a real outline. One global rule covers the inputs,
+// search and composer whose rings are shadow-only.
+@media (forced-colors: active) {
+    .o_web_client :focus-visible {
+        outline: 2px solid CanvasText;
     }
 }
 

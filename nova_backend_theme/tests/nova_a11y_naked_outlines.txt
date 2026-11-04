@@ -1,2 +1,15 @@
-# Nova a11y baseline: outline:none rules without a box-shadow ring, per file.
-# Fix a file, then delete its line here.
+# Nova a11y baseline: outline:none blocks whose visible indicator lives on a
+# PARENT or CONTAINER block (same-file pairing the regex cannot see):
+# - list editable/invalid inputs: inset accent bar on td:focus-within.
+# - form/kanban inner inputs: ring on the field container.
+# - control panel search input: ring on .o_searchview:focus-within.
+# - chatter composer inners: ring on .o-mail-Composer:focus-within.
+# Counts below are the approved pairings; the guard fails on anything new.
+search/control_panel/nova_control_panel.scss: 1
+search/control_panel/nova_control_panel.dark.scss: 1
+views/form/nova_form.scss: 1
+views/form/nova_form.dark.scss: 1
+views/kanban/nova_kanban.scss: 1
+views/kanban/nova_kanban.dark.scss: 1
+views/list/nova_list.scss: 2
+views/list/nova_list.dark.scss: 2

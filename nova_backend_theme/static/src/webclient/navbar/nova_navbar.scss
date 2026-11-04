@@ -26,8 +26,8 @@
     }
     border-bottom: 1px solid $o-border-color;
     min-height: $nova-appbar-height;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 
     @if $o-enable-backdrop-blur {
         backdrop-filter: $nova-blur-bar;
@@ -117,7 +117,7 @@
 // Company rows: blue-soft current, semibold, visible focus.
 .o_switch_company_menu_dropdown .o_switch_company_item {
     border-radius: $o-border-radius-sm;
-    transition: background $nova-dur-fast $o-easing-enter;
+    transition: background $nova-dur-base $o-easing-enter;
 
     &.alert-secondary, &.bg-primary-subtle {
         background: $nova-action-soft;

@@ -3,7 +3,7 @@
 ///
 
 .o_command_palette {
-    background: #242526;
+    background: $o-view-background-color;
     border-color: $o-border-color;
 }
 
@@ -39,7 +39,8 @@
     color: $nova-ink-muted;
 }
 
-// The light palette ships lazy and wins the tie: scoped duplicate.
+// The light palette rules load in dark sessions too: scoped duplicate
+// guards the tie.
 .o_web_client .o_command_palette kbd {
     background: $o-gray-200;
     border-color: $o-border-color;

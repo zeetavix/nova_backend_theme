@@ -8,7 +8,7 @@
 // non-sticky toasts are logged but not shown.
 //
 
-import { Component, signal } from "@odoo/owl";
+import { Component, onWillUnmount, signal } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { patch } from "@web/core/utils/patch";
@@ -301,6 +301,15 @@ export class NovaToastBell extends Component {
         } catch {
             // bell refreshes on open instead
         }
+        // The bell remounts (view switches); a leaked listener would
+        // refresh a dead component on every toast.
+        onWillUnmount(() => {
+            try {
+                window.removeEventListener("nova:toasts", this.onStorage);
+            } catch {
+                // already gone
+            }
+        });
         try {
             maybeMorningDigest(this.notification);
         } catch {

@@ -58,10 +58,10 @@
 
     // Search as 12px rounded field (matches dropdown language); chips stay pills.
     .o_cp_searchview {
-        border-radius: 12px;
+        border-radius: var(--nova-radius-lg, 12px);
     }
     .o_cp_searchview .o_searchview {
-        border-radius: 12px;
+        border-radius: var(--nova-radius-lg, 12px);
         border-color: $nova-border-strong;
         background: $o-gray-100;
         padding: 2px 8px;
@@ -88,7 +88,7 @@
 
     // Joined pill group: square the seam so outer 12px never doubles.
     .o_cp_searchview.input-group.rounded-pill {
-        border-radius: 12px;
+        border-radius: var(--nova-radius-lg, 12px);
     }
 
     .o_cp_searchview > .o_searchview:not(:last-child) {
@@ -132,7 +132,10 @@
     }
 
     // Facet × : quiet circle, red-soft hover, never shouts at rest.
+    // 44px target via invisible hit area (glyph stays 24px, row height
+    // unchanged).
     .o_facet_remove {
+        position: relative;
         border-radius: 999px;
         padding: 2px 6px;
         min-width: 24px;
@@ -140,7 +143,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        transition: background $nova-dur-fast $o-easing-enter;
+        transition: background $nova-dur-base $o-easing-enter;
 
         &:hover {
             background: rgba($o-danger, 0.1);
@@ -152,17 +155,23 @@
         }
     }
 
+    .o_facet_remove::after {
+        content: "";
+        position: absolute;
+        inset: -10px;
+    }
+
     // Autocomplete panel: calm menu card. The 4px stand-off keeps its top
     // edge from merging with the search field's own border/focus ring.
     .o_searchview_autocomplete {
-        border-radius: 12px;
+        border-radius: var(--nova-radius-lg, 12px);
         border: 1px solid $o-border-color;
         box-shadow: $nova-shadow-lg;
         padding: 6px;
         margin-top: 4px;
 
         .o-dropdown-item {
-            border-radius: 8px;
+            border-radius: var(--nova-radius-sm, 8px);
             padding-left: 24px;
         }
 
@@ -248,7 +257,7 @@
         cursor: pointer;
         border-radius: $o-border-radius-sm;
         padding: 0 2px;
-        transition: color $nova-dur-fast $o-easing-enter;
+        transition: color $nova-dur-base $o-easing-enter;
 
         &:hover {
             color: $nova-action-active;
@@ -280,7 +289,7 @@
 
     // Search dropdown toggler matches the 12px field + blue ring.
     .o_searchview_dropdown_toggler {
-        border-radius: 12px;
+        border-radius: var(--nova-radius-lg, 12px);
 
         &.show {
             border-color: $nova-action;
@@ -323,7 +332,7 @@
 
 .o_search_panel_filter_value, .o_search_panel_category_value {
     border-radius: $o-border-radius-sm;
-    transition: background $nova-dur-fast $o-easing-enter;
+    transition: background $nova-dur-base $o-easing-enter;
 
     &:hover {
         background: $o-gray-100;

@@ -7,9 +7,16 @@
         color: $nova-ink;
         border-bottom-color: $o-border-color;
     }
+}
 
-    .o_burger_menu_content.o_burger_menu_app {
-        background: $o-view-background-color;
-        color: $nova-ink;
-    }
+// Extra .o_web_client scope, and BOTH container variants: stock paints
+// the app panel via `.o_burger_menu …, .o_app_menu_sidebar …` (0,3,0)
+// with $o-burger-base-bg ($o-white, pinned white even in dark). The mobile
+// drawer lives under .o_app_menu_sidebar WITHOUT any .o_burger_menu
+// ancestor — the earlier fix only covered the .o_burger_menu variant, so
+// the white panel kept winning and the light-ink menu washed out.
+.o_web_client .o_burger_menu .o_burger_menu_content.o_burger_menu_app,
+.o_web_client .o_app_menu_sidebar .o_burger_menu_content.o_burger_menu_app {
+    background-color: $o-view-background-color;
+    color: $nova-ink;
 }

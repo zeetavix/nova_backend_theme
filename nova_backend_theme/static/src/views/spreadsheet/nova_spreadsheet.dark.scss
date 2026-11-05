@@ -27,18 +27,33 @@
     --os-cell-color: #{$nova-ink};
 }
 
-// Dashboards: the lib's own dark machinery (os-theme-dependant +
-// --os-dark-mode-filter) covers the sheet backdrop, but the KPI /
-// chart grid inside renders light. Invert the grid with the lib's own
-// filter so figures, text and charts flip together, and neutralise
-// nested pre-inverted wrappers so nothing flips twice.
-.o_web_client .o_spreadsheet_dashboard_action .o-dashboard-grid {
-    filter: var(--os-dark-mode-filter,
-        invert(1) hue-rotate(170deg) contrast(0.85) brightness(1.2));
+// Dashboards: NO Nova filters anywhere here. The o-spreadsheet lib fully
+// owns interior dark mode (it detects dark itself, draws dark figures,
+// and flips its own pre-inverted assets). Every Nova invert attempt
+// double-flipped something. Nova only paints surfaces dark.
+// The full-area canvas backdrop (.o-dashboard-background) otherwise keeps
+// its light/teal paint in dark mode (white gutters around the sheet).
+.o_web_client .o-dashboard-background {
+    background-color: $o-view-background-color;
 }
 
-.o_web_client .o_spreadsheet_dashboard_action .o-dashboard-grid .os-theme-dependant {
-    filter: none;
+// Belt and suspenders: the whole dashboard canvas chain charcoal, so no
+// light layer can peek through anywhere around the sheet.
+.o_web_client .o_action.o_spreadsheet_dashboard_action,
+.o_web_client .o_action.o_spreadsheet_dashboard_action .o_content,
+.o_web_client .o_action.o_spreadsheet_dashboard_action .o_renderer,
+.o_web_client .o_action.o_spreadsheet_dashboard_action .o_spreadsheet_container,
+.o_web_client .o_action.o_spreadsheet_dashboard_action .o-spreadsheet {
+    background-color: $o-view-background-color;
+}
+
+// The grid itself: the lib paints it with
+// `background-color: light-dark(var(--os-background-gray-color), #1e1f29)`.
+// light-dark() keys off `color-scheme`, which Odoo sets to a custom
+// `bright` token — not a valid CSS keyword, so browsers always resolve
+// the LIGHT branch, even in dark mode. Plain dark token instead.
+.o_web_client .o_spreadsheet_dashboard_action .o-grid.o-dashboard-grid {
+    background-color: $o-view-background-color;
 }
 
 // The sheet backdrop is painted inline light (the lib's invert helper

@@ -64,6 +64,16 @@
         }
     }
 
+    // Container menus (Agent brain, Configuration: no direct action, so
+    // Odoo renders a dropdown toggle instead of an entry) must stand at
+    // the same 32px as entries — stock leaves them at 26px, which reads
+    // as a misaligned group next to Agents/Studio/Sessions.
+    .o_menu_sections .dropdown-toggle:not(:disabled) {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+    }
+
     .o_menu_sections .dropdown.show .dropdown-toggle:not(.o-dropdown-toggle-custo) {
         background: $nova-action-soft;
         color: $nova-action-active;

@@ -23,9 +23,11 @@
 }
 
 // Bright daytime event pills (pending-activity cream) glare on charcoal:
-// take the edge off without killing their data colors.
+// take the edge off without killing their data colors. Plain .fc-event:
+// week-view all-day chips don't carry the daygrid/list classes.
 .o_calendar_widget .fc-daygrid-event,
-.o_calendar_widget .fc-list-event {
+.o_calendar_widget .fc-list-event,
+.o_calendar_widget .fc-event {
     filter: saturate(0.85) brightness(0.9);
 }
 

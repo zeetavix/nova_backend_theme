@@ -39,7 +39,7 @@ export class NovaAiPromptDialog extends Component {
                 </div>
                 <div class="nova_ai_prompt_actions">
                     <button class="btn btn-primary nova_ai_prompt_go"
-                            t-on-click="onGenerate"
+                            t-on-click="this.onGenerate"
                             t-att-disabled="this.state.busy or !this.state.prompt.trim()">
                         <span t-if="this.state.busy" class="nova_ai_prompt_spin" aria-hidden="true"/>
                         <svg t-else="" class="nova_ai_glyph" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c.7 4.6 3 6.9 7.6 7.6-4.6.7-6.9 3-7.6 7.6-.7-4.6-3-6.9-7.6-7.6 4.6-.7 6.9-3 7.6-7.6Z" fill="currentColor"/><circle cx="19" cy="5.5" r="1.7" fill="currentColor"/><circle cx="5" cy="18.5" r="1.7" fill="currentColor"/></svg>

@@ -51,10 +51,12 @@
     background: $o-view-background-color;
     border-color: $o-border-color;
 
+    // Modal chrome stays charcoal; the form sheet inside keeps its warm
+    // paper so header / sheet / footer read as three separate layers.
     .modal-header,
     .modal-body,
     .modal-footer {
-        background: $nova-paper;
+        background: $o-view-background-color;
     }
 }
 

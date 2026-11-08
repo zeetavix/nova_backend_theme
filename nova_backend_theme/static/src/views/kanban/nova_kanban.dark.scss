@@ -126,3 +126,19 @@
     background-color: #E8EAED;
     border-radius: var(--nova-radius-sm, 8px);
 }
+
+// Card/column luminance (dark): Apple HIG, lighter = higher. Columns are
+// wells that melt into the page; cards float above them on the overlay
+// surface with an edge and a shadow. (Core previously had this inverted:
+// sunken-light columns with darker cards sitting in them.)
+.o_web_client .o_kanban_renderer {
+    .o_kanban_group {
+        background: transparent;
+    }
+
+    .o_kanban_record {
+        background: $nova-surface-overlay;
+        border-color: $o-border-color;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    }
+}

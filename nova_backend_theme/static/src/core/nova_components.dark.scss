@@ -58,6 +58,16 @@
     .modal-footer {
         background: $o-view-background-color;
     }
+
+    // Bootstrap's X icon is near-black: invert it like their own dark theme.
+    .modal-header .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+        opacity: 0.7;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
 }
 
 .badge, .o_badge, .o_tag {

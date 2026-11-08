@@ -124,12 +124,15 @@ h3.o_setting_tip {
 }
 
 // Left nav: pill hover, blue-soft selected, red-ink invalid.
+// Tabs are anchors, so cancel Bootstrap's global link underline on hover.
 .settings_tab .tab {
     border-radius: $o-border-radius;
+    text-decoration: none;
     transition: background $nova-dur-base $o-easing-enter, color $nova-dur-base $o-easing-enter;
 
     &:hover {
         background: $o-gray-100;
+        text-decoration: none;
     }
 
     &.selected {

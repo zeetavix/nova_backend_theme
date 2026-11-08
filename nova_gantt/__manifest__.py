@@ -1,7 +1,7 @@
 # Part of Nova. See LICENSE file for full copyright and licensing details.
 {
     "name": "Nova Gantt",
-    "summary": "Modular 2D Gantt view engine for Odoo Community (better than Enterprise)",
+    "summary": "Modular 2D Gantt view engine for Odoo Community",
     "description": """
 Nova Gantt — clean-room Gantt view engine for Odoo Community (LGPL-3).
 

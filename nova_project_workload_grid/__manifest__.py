@@ -1,7 +1,7 @@
 # Part of Nova. See LICENSE file for full copyright and licensing details.
 {
     "name": "Nova Project Workload Grid",
-    "summary": "Better-than-Enterprise workload grid for Odoo Community",
+    "summary": "Workload grid for Odoo Community",
     "description": """
 Nova Project Workload Grid — clean-room deadline load matrix for Community (LGPL-3).
 
@@ -17,7 +17,7 @@ Nova Project Workload Grid — clean-room deadline load matrix for Community (LG
 
 No Enterprise code is copied. All Python + OWL is original.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.0.1",
     "category": "Services/Project",
     "author": "Zeetavix",
     "maintainer": "Zeetavix",

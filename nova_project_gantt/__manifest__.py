@@ -1,7 +1,7 @@
 # Part of Nova. See LICENSE file for full copyright and licensing details.
 {
     "name": "Nova Project Gantt",
-    "summary": "Better-than-Enterprise project portfolio Gantt for Odoo Community",
+    "summary": "Project portfolio Gantt for Odoo Community",
     "description": """
 Nova Project Gantt — clean-room portfolio timeline for Community (LGPL-3).
 
@@ -16,7 +16,7 @@ Nova Project Gantt — clean-room portfolio timeline for Community (LGPL-3).
 
 No Enterprise code is copied. All Python + OWL is original.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.0.1",
     "category": "Services/Project",
     "author": "Zeetavix",
     "maintainer": "Zeetavix",

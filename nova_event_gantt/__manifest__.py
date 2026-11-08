@@ -1,7 +1,7 @@
 # Part of Nova. See LICENSE file for full copyright and licensing details.
 {
     "name": "Nova Event Gantt",
-    "summary": "Better-than-Enterprise event timeline for Odoo Community",
+    "summary": "Event timeline for Odoo Community",
     "description": """
 Nova Event Gantt — clean-room event timeline for Community (LGPL-3).
 
@@ -16,7 +16,7 @@ Nova Event Gantt — clean-room event timeline for Community (LGPL-3).
 
 No Enterprise code is copied. All Python + OWL is original.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.0.1",
     "category": "Marketing/Events",
     "author": "Zeetavix",
     "maintainer": "Zeetavix",

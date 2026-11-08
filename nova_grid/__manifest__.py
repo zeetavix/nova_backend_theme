@@ -1,7 +1,7 @@
 # Part of Nova. See LICENSE file for full copyright and licensing details.
 {
     "name": "Nova Grid",
-    "summary": "Modular 2D grid view engine for Odoo Community (better than Enterprise)",
+    "summary": "Modular 2D grid view engine for Odoo Community",
     "description": """
 Nova Grid — clean-room grid view engine for Odoo Community (LGPL-3).
 

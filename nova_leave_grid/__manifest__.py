@@ -1,7 +1,7 @@
 # Part of Nova. See LICENSE file for full copyright and licensing details.
 {
     "name": "Nova Leave Grid",
-    "summary": "Better-than-Enterprise leave grid for Odoo Community",
+    "summary": "Leave grid for Odoo Community",
     "description": """
 Nova Leave Grid — clean-room time-off matrix for Community (LGPL-3).
 

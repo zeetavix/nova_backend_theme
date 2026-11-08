@@ -1,7 +1,7 @@
 # Part of Nova. See LICENSE file for full copyright and licensing details.
 {
     "name": "Nova Attendance Grid",
-    "summary": "Better-than-Enterprise attendance grid for Odoo Community",
+    "summary": "Attendance grid for Odoo Community",
     "description": """
 Nova Attendance Grid — clean-room attendance matrix for Community (LGPL-3).
 

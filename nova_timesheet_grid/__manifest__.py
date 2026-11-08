@@ -1,7 +1,7 @@
 # Part of Nova. See LICENSE file for full copyright and licensing details.
 {
     "name": "Nova Timesheet Grid",
-    "summary": "Better-than-Enterprise timesheet grid for Odoo Community",
+    "summary": "Timesheet grid for Odoo Community",
     "description": """
 Nova Timesheet Grid — clean-room timesheet grid for Community (LGPL-3).
 

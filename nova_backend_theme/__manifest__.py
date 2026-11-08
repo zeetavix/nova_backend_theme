@@ -39,6 +39,7 @@ colour/typography/spacing systems and Meta's clarity language.
     "license": "LGPL-3",
     "depends": ["web"],
     "images": [
+        "static/description/cover_grid.png",
         "static/description/screens/01-home.png",
         "static/description/screens/02-sales-list.png",
         "static/description/screens/03-sale-form.png",

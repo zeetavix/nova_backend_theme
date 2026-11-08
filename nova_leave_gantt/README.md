@@ -1,6 +1,6 @@
 # Nova Leave Gantt
 
-Better-than-Enterprise time-off timeline for Odoo Community
+Time-off timeline for Odoo Community
 
 Nova Leave Gantt — clean-room who's-out timeline for Community (LGPL-3).
 

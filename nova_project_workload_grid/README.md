@@ -1,6 +1,6 @@
 # Nova Project Workload Grid
 
-Better-than-Enterprise workload grid for Odoo Community
+Workload grid for Odoo Community
 
 Nova Project Workload Grid — clean-room deadline load matrix for Community (LGPL-3).
 

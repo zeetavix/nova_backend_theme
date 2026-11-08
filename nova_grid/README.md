@@ -1,6 +1,6 @@
 # Nova Grid
 
-Modular 2D grid view engine for Odoo Community (better than Enterprise)
+Modular 2D grid view engine for Odoo Community
 
 Nova Grid — clean-room grid view engine for Odoo Community (LGPL-3).
 

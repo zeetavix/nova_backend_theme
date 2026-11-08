@@ -1,6 +1,6 @@
 # Nova Attendance Grid
 
-Better-than-Enterprise attendance grid for Odoo Community
+Attendance grid for Odoo Community
 
 Nova Attendance Grid — clean-room attendance matrix for Community (LGPL-3).
 

@@ -18,7 +18,7 @@ Nova Attendance Grid — clean-room attendance matrix for Community (LGPL-3).
 
 No Enterprise code is copied. All Python + OWL is original.
 """,
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.0.1",
     "category": "Human Resources/Attendances",
     "author": "Zeetavix",
     "maintainer": "Zeetavix",

@@ -1,6 +1,6 @@
 # Nova Project Gantt
 
-Better-than-Enterprise project portfolio Gantt for Odoo Community
+Project portfolio Gantt for Odoo Community
 
 Nova Project Gantt — clean-room portfolio timeline for Community (LGPL-3).
 

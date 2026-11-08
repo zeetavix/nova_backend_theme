@@ -1,6 +1,6 @@
 # Nova Leave Grid
 
-Better-than-Enterprise leave grid for Odoo Community
+Leave grid for Odoo Community
 
 Nova Leave Grid — clean-room time-off matrix for Community (LGPL-3).
 

@@ -1,6 +1,6 @@
 # Nova Timesheet Grid
 
-Better-than-Enterprise timesheet grid for Odoo Community
+Timesheet grid for Odoo Community
 
 Nova Timesheet Grid — clean-room timesheet grid for Community (LGPL-3).
 

@@ -1,6 +1,6 @@
 # Nova Event Gantt
 
-Better-than-Enterprise event timeline for Odoo Community
+Event timeline for Odoo Community
 
 Nova Event Gantt — clean-room event timeline for Community (LGPL-3).
 

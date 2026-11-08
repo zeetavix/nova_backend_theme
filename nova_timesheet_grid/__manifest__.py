@@ -15,7 +15,7 @@ Nova Timesheet Grid — clean-room timesheet grid for Community (LGPL-3).
 
 No Enterprise code is copied. All Python + OWL is original.
 """,
-    "version": "20.0.2.1.0",
+    "version": "20.0.2.1.1",
     "category": "Services/Timesheets",
     "author": "Zeetavix",
     "maintainer": "Zeetavix",

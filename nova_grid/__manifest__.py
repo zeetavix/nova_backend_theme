@@ -19,7 +19,7 @@ Nova Grid — clean-room grid view engine for Odoo Community (LGPL-3).
 
 No Enterprise code is copied. All Python + OWL is original.
 """,
-    "version": "20.0.2.3.0",
+    "version": "20.0.2.3.1",
     "category": "Productivity",
     "author": "Zeetavix",
     "maintainer": "Zeetavix",

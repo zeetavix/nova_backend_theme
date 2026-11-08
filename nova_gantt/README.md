@@ -1,6 +1,6 @@
 # Nova Gantt
 
-Modular 2D Gantt view engine for Odoo Community (better than Enterprise)
+Modular 2D Gantt view engine for Odoo Community
 
 Nova Gantt — clean-room Gantt view engine for Odoo Community (LGPL-3).
 

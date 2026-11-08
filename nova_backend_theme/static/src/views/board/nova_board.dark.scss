@@ -16,3 +16,10 @@
 .o_dashboard .o_view_nocontent .o_nocontent_help {
     color: $nova-ink-muted;
 }
+
+// Sale dashboard date-range filter: stock button is bg-transparent with
+// inherited near-black text, unreadable on the dark wrapper.
+.o_date_filter_wrapper,
+.o_date_filter_wrapper .dropdown-toggle {
+    color: $nova-ink;
+}

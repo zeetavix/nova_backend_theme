@@ -28,7 +28,7 @@ guarded and degrade silently when those apps are absent.
 Inspired by Apple HIG (accessibility, typography, layout, dark mode),
 colour/typography/spacing systems and Meta's clarity language.
 """,
-    "version": "20.0.1.3.0",
+    "version": "20.0.1.3.1",
     "category": "Theme/Backend",
     "author": "Zeetavix",
     "maintainer": "Zeetavix",

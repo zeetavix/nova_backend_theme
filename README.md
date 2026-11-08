@@ -9,7 +9,8 @@ A backend theme, 2D grid/Gantt/split views, per-app use-cases, and a
 model-agnostic AI agent layer — **all free and open source (LGPL-3)**.
 No Enterprise code copied or required, anywhere.
 
-![Nova launcher: greeting, today's activity, quick create, apps and insights](nova_backend_theme/static/description/screens/03-home.png)
+![Nova launcher: greeting, today's activity, quick create, apps and
+insights](nova_backend_theme/static/description/screens/01-home.png)
 
 ## Why Nova
 
@@ -25,10 +26,14 @@ No Enterprise code copied or required, anywhere.
 
 | | |
 |---|---|
-| Light lists, calm and scannable | ![Sales orders list](nova_backend_theme/static/description/screens/04-sales-list.png) |
-| Forms that read like paper | ![Sale order form](nova_backend_theme/static/description/screens/05-sale-form.png) |
-| A real dark theme | ![Sales list in dark mode](nova_backend_theme/static/description/screens/11-sales-dark.png) |
-| Your identity on the login page | ![Branded login, light and dark](nova_backend_theme/static/description/screens/01-login-light.png) |
+| Light lists, calm and scannable | ![Sales orders
+list](nova_backend_theme/static/description/screens/02-sales-list.png) |
+| Forms that read like paper | ![Sale order
+form](nova_backend_theme/static/description/screens/03-sale-form.png) |
+| A real dark theme | ![Sales list in dark
+mode](nova_backend_theme/static/description/screens/06-sales-dark.png) |
+| Your identity on the login page | ![Branded login, light and
+dark](nova_backend_theme/static/description/screens/08-login.png) |
 
 ### Views
 
